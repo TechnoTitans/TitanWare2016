@@ -8,12 +8,10 @@ public class TalonSRX extends CANTalon implements Motor {
 
 	private Encoder encoder;
 	private final double SPEED = 0.5;
-	private int channel;
 
 	public TalonSRX(int channel, boolean reverseDirection) {
 		super(channel);
 		super.setInverted(reverseDirection);
-		this.channel = channel;
 	}
 
 	public TalonSRX(int channel, boolean reverseDirection, Encoder encoder) {
@@ -65,6 +63,7 @@ public class TalonSRX extends CANTalon implements Motor {
 			while (Math.abs(encoder.getDistance()) < distance) {
 				// do nothing
 			}
+			talonSrx.stop();
 			// encoder.reset();
 		}
 	}
@@ -79,11 +78,11 @@ public class TalonSRX extends CANTalon implements Motor {
 		return encoder;
 	}
 
+	// TODO: make sure this works.
 	@Override
 	public int getChannel() {
 		return super.getDeviceID();
 	}
-
 
 	@Override
 	public boolean isReversed() {

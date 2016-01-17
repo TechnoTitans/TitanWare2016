@@ -1,10 +1,17 @@
 package org.usfirst.frc.team1683.driveTrain;
 
+import java.util.ArrayList;
+
 /**
- * <finish this documentation later>
  * @author David Luo
  *
  */
-public abstract class DriveTrain {
-	//TODO: this class
+public interface DriveTrain {
+	
+	ArrayList<Motor> motors = new ArrayList<>();
+
+	public void moveDistance(double distance);
+	public void turn(double degrees);
+	public void driveMode(double distance);
+	public void stop();
 }
