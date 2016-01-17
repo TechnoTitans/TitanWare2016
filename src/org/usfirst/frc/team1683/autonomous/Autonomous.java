@@ -9,7 +9,7 @@ package org.usfirst.frc.team1683.autonomous;
 public abstract class Autonomous {
 	// TODO: make automous
 
-	public static enum State {
+	protected static enum State {
 		INIT_CASE, END_CASE
 	}
 }
