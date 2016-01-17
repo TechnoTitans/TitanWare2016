@@ -35,13 +35,12 @@ public class TalonSRX extends CANTalon implements Motor {
 		super.disableControl();
 
 	}
-	
+
 	@Override
 	public void moveDistance(double distance) {
 		if (hasEncoder()) {
 			new Thread(new MotorMover(this, distance)).start();
-		}
-		else {
+		} else {
 			System.out.println("ENCODER NOT PRESENT");
 		}
 	}

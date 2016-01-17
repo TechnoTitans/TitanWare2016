@@ -61,8 +61,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	public void moveDistance(double distance) {
 		if (hasEncoder()) {
 			new Thread(new MotorMover(this, distance)).start();
-		}
-		else {
+		} else {
 			System.out.println("ENCODER NOT PRESENT");
 		}
 
@@ -94,7 +93,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	public boolean isReversed() {
 		return super.getInverted();
 	}
-	
+
 	public void set(double speed) {
 		super.set(speed);
 	}
