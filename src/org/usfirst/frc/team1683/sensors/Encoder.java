@@ -1,6 +1,6 @@
 package org.usfirst.frc.team1683.sensors;
 
-public class Encoder extends edu.wpi.first.wpilibj.Encoder{
+public class Encoder extends edu.wpi.first.wpilibj.Encoder {
 
 	// Pulses per inch(?) from encoder
 	private double wheelDistancePerPulse;
@@ -17,7 +17,7 @@ public class Encoder extends edu.wpi.first.wpilibj.Encoder{
 	public double getDistance() {
 		return super.getDistance();
 	}
-	
+
 	/**
 	 * @return speed in inches/sec
 	 */
