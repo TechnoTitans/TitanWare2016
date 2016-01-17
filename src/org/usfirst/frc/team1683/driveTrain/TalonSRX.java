@@ -4,81 +4,90 @@ import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class TalonSRX extends CANTalon implements Motor{
+public class TalonSRX extends CANTalon implements Motor {
 
-	boolean reverseDirection;
-	Encoder encoder;
-	boolean hasEncoder = false;;
-	int channel;
-	
+	private Encoder encoder;
+	private final double SPEED = 0.5;
+	private int channel;
+
 	public TalonSRX(int channel, boolean reverseDirection) {
 		super(channel);
+		super.setInverted(reverseDirection);
 		this.channel = channel;
-		this.reverseDirection = reverseDirection;
-		// TODO Auto-generated constructor stub
 	}
+
 	public TalonSRX(int channel, boolean reverseDirection, Encoder encoder) {
 		super(channel);
-		this.reverseDirection = reverseDirection;
-		hasEncoder = true;
+		super.setInverted(reverseDirection);
 		this.encoder = encoder;
-		// TODO Auto-generated constructor stub
 	}
-	
-	
-	public void setSpeed(double speed) {
-		if (reverseDirection) super.set(speed);
-		else super.set(-speed);
+
+	public void set(double speed) {
+		super.set(speed);
 	}
 
 	@Override
 	public String getSmartDashboardType() {
 		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		super.disableControl();
-		
+
 	}
 	
-	 private class MotorMover implements Runnable {
-		public MotorMover() {
-			//does stuff
+	@Override
+	public void moveDistance(double distance) {
+		if (hasEncoder()) {
+			new Thread(new MotorMover(this, distance)).start();
 		}
+		else {
+			System.out.println("ENCODER NOT PRESENT");
+		}
+	}
+
+	private class MotorMover implements Runnable {
+
+		double distance;
+		TalonSRX talonSrx;
+
+		public MotorMover(TalonSRX talonSrx, double distance) {
+			this.distance = distance;
+			this.talonSrx = talonSrx;
+		}
+
+		@Override
 		public void run() {
-			
+			encoder.reset();
+			talonSrx.set(SPEED);
+			while (Math.abs(encoder.getDistance()) < distance) {
+				// do nothing
+			}
+			// encoder.reset();
 		}
 	}
 
 	@Override
 	public boolean hasEncoder() {
-		if (hasEncoder) return true;
-		else return false;
+		return !encoder.equals(null);
 	}
 
 	@Override
 	public Encoder getEncoder() {
-		// TODO Auto-generated method stub
 		return encoder;
 	}
 
 	@Override
 	public int getChannel() {
-		// TODO Auto-generated method stub
-		return channel;
+		return super.getDeviceID();
 	}
-	@Override
-	public void moveDistance(double distance) {
-		// TODO Auto-generated method stub
-		
-	}
+
+
 	@Override
 	public boolean isReversed() {
-		// TODO Auto-generated method stub
-		return false;
+		return super.getInverted();
 	}
 
 }
