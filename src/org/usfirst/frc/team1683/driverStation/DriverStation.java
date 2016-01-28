@@ -15,7 +15,7 @@ public class DriverStation {
 	public static Joystick rightStick = new Joystick(HWR.RIGHT_JOYSTICK);
 	public static Joystick auxStick = new Joystick(HWR.AUX_JOYSTICK);
 	
-	public static boolean anitBounce (/*args*/) {
+	public static boolean antiBounce (/*args*/) {
 		return false;
 	}
 
