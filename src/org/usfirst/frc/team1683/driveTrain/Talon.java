@@ -11,18 +11,6 @@ import org.usfirst.frc.team1683.sensors.Encoder;
 public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 
 	private Encoder encoder;
-	private final double SPEED = 0.5;
-
-	public Talon(int channel, boolean reversed) {
-		super(channel);
-		setInverted(reversed);
-	}
-
-	public Talon(int channel, boolean reversed, Encoder encoder) {
-		super(channel);
-		setInverted(reversed);
-		this.encoder = encoder;
-	}
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -31,18 +19,29 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 */
 	private class MotorMover implements Runnable {
 
-		double distance;
-		Talon talon;
+		private double distance;
+		private double speed;
+		private Talon talon;
+		private Encoder encoder;
 
-		public MotorMover(Talon talon, double distance) {
-			this.distance = distance;
+		public MotorMover(Talon talon, double distance, Encoder encoder) {
 			this.talon = talon;
+			this.distance = distance;
+			this.encoder = encoder;
+			this.speed = Motor.MID_SPEED;
+		}
+
+		public MotorMover(Talon talon, double distance, Encoder encoder, double speed) {
+			this.talon = talon;
+			this.distance = distance;
+			this.encoder = encoder;
+			this.speed = speed;
 		}
 
 		@Override
 		public void run() {
 			encoder.reset();
-			talon.set(SPEED);
+			talon.set(speed);
 			while (Math.abs(encoder.getDistance()) < distance) {
 				// do nothing
 			}
@@ -53,29 +52,81 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	}
 
 	/**
-	 * Move distance in inches
+	 * Constructor
 	 * 
-	 * @param distance
-	 *            in inches
+	 * @param channel
+	 *            The port where the Talon is plugged in.
+	 * @param reversed
+	 *            If the Talon should invert the signal.
 	 */
-	public void moveDistance(double distance) {
-		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance)).start();
-		} else {
-			System.out.println("ENCODER NOT PRESENT");
-		}
-
+	public Talon(int channel, boolean reversed) {
+		super(channel);
+		setInverted(reversed);
 	}
 
 	/**
-	 * Stops motor
+	 * Constructor
+	 * 
+	 * @param channel
+	 *            The port where the Talon is plugged in.
+	 * @param reversed
+	 *            If the Talon should invert the signal.
+	 * @param encoder
+	 *            Encoder to attach to this Talon.
+	 */
+	public Talon(int channel, boolean reversed, Encoder encoder) {
+		super(channel);
+		setInverted(reversed);
+		this.encoder = encoder;
+	}
+
+	/**
+	 * Move distance in inches
+	 * 
+	 * @param distance
+	 *            Distance in inches
+	 */
+	public void moveDistance(double distance) throws EncoderNotFoundException {
+		if (hasEncoder()) {
+			new Thread(new MotorMover(this, distance, encoder)).start();
+		} else {
+			throw new EncoderNotFoundException();
+		}
+	}
+
+	/**
+	 * Move distance in inches
+	 * 
+	 * @param distance
+	 *            Distance in inches.
+	 * @param speed
+	 *            Speed from 0 to 1.
+	 */
+	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
+		if (hasEncoder()) {
+			new Thread(new MotorMover(this, distance, encoder, speed)).start();
+		} else {
+			throw new EncoderNotFoundException();
+		}
+	}
+
+	/** 
+	 * Set the speed of the Talon.
+	 * @param Speed from 0 to 1.
+	 */
+	public void set(double speed) {
+		super.set(speed);
+	}
+
+	/**
+	 * Stops motor.
 	 */
 	public void stop() {
 		super.stopMotor();
 	}
 
 	/**
-	 * @return if there is an encoder attached to this Talon.
+	 * @return If there is an encoder attached to this Talon.
 	 */
 	@Override
 	public boolean hasEncoder() {
@@ -83,18 +134,18 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	}
 
 	/**
-	 * @return the encoder attached to this Talon if exists, null otherwise.
+	 * @return The encoder attached to this Talon if exists, null otherwise.
 	 */
 	@Override
 	public Encoder getEncoder() {
 		return encoder;
 	}
 
+	/**
+	 * @return If the Talon is reversed.
+	 */
 	public boolean isReversed() {
 		return super.getInverted();
 	}
 
-	public void set(double speed) {
-		super.set(speed);
-	}
 }

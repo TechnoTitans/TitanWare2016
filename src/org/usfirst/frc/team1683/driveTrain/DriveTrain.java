@@ -10,11 +10,14 @@ public interface DriveTrain {
 
 	ArrayList<Motor> motors = new ArrayList<>();
 
-	public void moveDistance(double distance);
+	void moveDistance(double distance) throws EncoderNotFoundException;
+
+	public void moveDistance(double distance, double speed) throws EncoderNotFoundException;
 
 	public void turn(double degrees);
 
-	public void driveMode(double distance);
-
 	public void stop();
+
+	public void driveMode();
+
 }

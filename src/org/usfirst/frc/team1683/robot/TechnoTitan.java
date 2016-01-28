@@ -1,10 +1,19 @@
 
 package org.usfirst.frc.team1683.robot;
 
+import org.usfirst.frc.team1683.sensors.Encoder;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer.StaticInterface;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.usfirst.frc.team1683.driveTrain.DriveTrain;
+import org.usfirst.frc.team1683.driveTrain.Talon;
+import org.usfirst.frc.team1683.driveTrain.TalonSRX;
+import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.DriverStation;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -14,20 +23,31 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class TechnoTitan extends IterativeRobot {
-	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
-	String autoSelected;
-	SendableChooser chooser;
+	// final String[] AUTOS = {"Default", "My Auto"};
+	// final String defaultAuto = "Default";
+	// final String customAuto = "My Auto";
+	// String autoSelected;
+	// SendableChooser chooser;
+	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
+	public static final boolean LEFT_REVERSE = false;
+	public static final boolean RIGHT_REVERSE = true;
+	
+	TankDrive drive;
 
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		chooser = new SendableChooser();
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
-		SmartDashboard.putData("Auto choices", chooser);
+		// chooser = new SendableChooser();
+		// chooser.addDefault("Default Auto", defaultAuto);
+		// chooser.addObject("My Auto", customAuto);
+		// SmartDashboard.putData("Auto choices", chooser);
+		Encoder leftEncoder = new Encoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
+		Encoder rightEncoder = new Encoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
+		TalonSRX left = new TalonSRX(HWR.LEFT_DRIVE_TRAIN, LEFT_REVERSE, leftEncoder);
+		TalonSRX right = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN, RIGHT_REVERSE, rightEncoder);
+		drive = new TankDrive(left, right);
 	}
 
 	/**
@@ -42,32 +62,32 @@ public class TechnoTitan extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
-		autoSelected = (String) chooser.getSelected();
+		// autoSelected = (String) chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
+//		System.out.println("Auto selected: " + autoSelected);
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
-		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case defaultAuto:
-		default:
-			// Put default auto code here
-			break;
-		}
+		// switch (autoSelected) {
+		// case customAuto:
+		// // Put custom auto code here
+		// break;
+		// case defaultAuto:
+		// default:
+		// // Put default auto code here
+		// break;
+		// }
 	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-
+		drive.driveMode();
 	}
 
 	/**

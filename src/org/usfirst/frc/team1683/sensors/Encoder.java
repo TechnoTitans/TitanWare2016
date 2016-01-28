@@ -8,7 +8,7 @@ public class Encoder extends edu.wpi.first.wpilibj.Encoder {
 	public Encoder(int aChannel, int bChannel, boolean reverseDirection, double wheelDistancePerPulse) {
 		super(aChannel, bChannel, reverseDirection);
 		this.wheelDistancePerPulse = wheelDistancePerPulse;
-		this.setDistancePerPulse(wheelDistancePerPulse);
+		super.setDistancePerPulse(wheelDistancePerPulse);
 	}
 
 	/**
