@@ -1,5 +1,8 @@
 package org.usfirst.frc.team1683.autonomous;
 
+import org.usfirst.frc.team1683.driveTrain.EncoderNotFoundException;
+import org.usfirst.frc.team1683.driveTrain.TankDrive;
+
 /**
  * Reaches base of defense
  * 
@@ -8,8 +11,10 @@ package org.usfirst.frc.team1683.autonomous;
  */
 public class ReachDefense extends Autonomous{
 	
-	
-	public void run() {
+	public ReachDefense(TankDrive tankDrive) {
+		super(tankDrive);
+	}
+	public void run() { 
 		switch(presentState) {
 		case INIT_CASE:
 		{
@@ -18,7 +23,11 @@ public class ReachDefense extends Autonomous{
 		}
 		case DRIVE_FORWARD:
 		{
-			tankDrive.moveDistance(distance);
+			try {
+				tankDrive.moveDistance(reachDistance);
+			} catch(EncoderNotFoundException e) {
+				System.err.println("Need encoders on tankDrive");
+			}
 			nextState = State.END_CASE;
 			break;
 		}
