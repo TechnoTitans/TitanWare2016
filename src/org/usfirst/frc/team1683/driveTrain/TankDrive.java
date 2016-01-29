@@ -10,19 +10,13 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  */
 public class TankDrive implements DriveTrain {
 
-	private Motor left;
-	private Motor right;
+	private MotorGroup left;
+	private MotorGroup right;
 	private Gyro gyro;
 
-	public TankDrive(Motor left, Motor right) {
-		if (left instanceof Talon && right instanceof Talon) {
-			this.left = (Talon) left;
-			this.right = (Talon) right;
-		} else if (left instanceof TalonSRX && right instanceof TalonSRX) {
-			this.left = (TalonSRX) left;
-			this.right = (TalonSRX) right;
-		}
-
+	public TankDrive(MotorGroup left, MotorGroup right) {
+		this.left = left;
+		this.right = right;
 	}
 
 	/**

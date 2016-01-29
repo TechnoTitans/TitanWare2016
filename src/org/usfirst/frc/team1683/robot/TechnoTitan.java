@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Timer.StaticInterface;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import java.util.ArrayList;
+
 import org.usfirst.frc.team1683.driveTrain.DriveTrain;
+import org.usfirst.frc.team1683.driveTrain.Motor;
+import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
@@ -29,8 +33,8 @@ public class TechnoTitan extends IterativeRobot {
 	// String autoSelected;
 	// SendableChooser chooser;
 	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
-	public static final boolean LEFT_REVERSE = false;
-	public static final boolean RIGHT_REVERSE = true;
+	public static final boolean LEFT_REVERSE = true;
+	public static final boolean RIGHT_REVERSE = false;
 	
 	TankDrive drive;
 
@@ -45,9 +49,15 @@ public class TechnoTitan extends IterativeRobot {
 		// SmartDashboard.putData("Auto choices", chooser);
 		Encoder leftEncoder = new Encoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
 		Encoder rightEncoder = new Encoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
-		TalonSRX left = new TalonSRX(HWR.LEFT_DRIVE_TRAIN, LEFT_REVERSE, leftEncoder);
-		TalonSRX right = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN, RIGHT_REVERSE, rightEncoder);
-		drive = new TankDrive(left, right);
+		ArrayList<Motor> left = new ArrayList<>();
+		ArrayList<Motor> right = new ArrayList<>();
+		left.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE));
+		left.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
+		right.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE));
+		right.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
+		MotorGroup leftGroup = new MotorGroup(left, leftEncoder);
+		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
+		drive = new TankDrive(leftGroup, rightGroup);
 	}
 
 	/**

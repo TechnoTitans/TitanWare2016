@@ -1,13 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
-import java.nio.DoubleBuffer;
-import java.security.acl.Group;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.sound.midi.ControllerEventListener;
-
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 /**
