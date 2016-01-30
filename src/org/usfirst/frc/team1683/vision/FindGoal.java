@@ -7,8 +7,17 @@ public class FindGoal {
 	public static NetworkTable table2;
 	private double[] GOAL_X,GOAL_Y,HEIGHT,WIDTH,AREA;
 	double[] XAXIS,YAXIS,XAXIS1,YAXIS1,XVALUES,YVALUES,maxKX2,minKX3,maxKX1,minKX4;
-	double[][] edges=new double[4][2];
+	double[][] vertices=new double[4][2];
+	private double focal=(183*33)/20;
 	private double[] defaultvalue=null;
+	/*
+	 * TODO Need to find following values
+	 * private final double HeightOffGround;
+	 * private final double HeightTower;
+	 * private final double HeightTarget;
+	 * private final double NodalDistance;
+	 * private final double FocalLength;
+	 */	
 	public FindGoal(){
 		table=NetworkTable.getTable("GRIP/myContoursReport");
 		table2=NetworkTable.getTable("GRIP/myLinesReport");
@@ -18,7 +27,7 @@ public class FindGoal {
 		YAXIS1   = FindGoal.table2.getNumberArray("y2",defaultvalue);
 		XVALUES=MergeArray(XAXIS,XAXIS1);
 		YVALUES=MergeArray(YAXIS,YAXIS1);
-		edges=FindVertices(XVALUES,YVALUES);
+		vertices=CalmRec(FindVertices(XVALUES,YVALUES));
 		AREA 	= FindGoal.table.getNumberArray("areas",defaultvalue);
 		GOAL_X 	= FindGoal.table.getNumberArray("centerX",defaultvalue);
 		GOAL_Y 	= FindGoal.table.getNumberArray("centerY",defaultvalue);
@@ -35,9 +44,9 @@ public class FindGoal {
         System.arraycopy(b,0,c,a.length,b.length);
         return c;
 	}
-	//public double FindDistanceAway(){
-		//TODO:find distance
-	//}
+	public double FindDistanceAway(double[][] vertices,double focallength){
+		
+	}
 	/*
 	 * FindEdges Take points in the picture and returns coordinates of vertices
 	 */
@@ -46,22 +55,32 @@ public class FindGoal {
 		double edge[][]={{a[0],b[0]},{a[0],b[0]},{a[0],b[0]},{a[0],b[0]}};
 		for(int k=0;k<XVALUES.length;k++){
 			if(maxKX2<(b[k]-a[k])){
-				edges[2][0]=a[k];
-				edges[2][1]=b[k];
+				vertices[1][0]=a[k];
+				vertices[1][1]=b[k];
 			}
 			if(minKX3>(b[k]-a[k])){
-				edges[3][0]=a[k];
-				edges[3][1]=b[k];
+				vertices[2][0]=a[k];
+				vertices[2][1]=b[k];
 			}
 			if(minKX4>(b[k]+a[k])){
-				edges[4][0]=a[k];
-				edges[4][1]=b[k];
+				vertices[3][0]=a[k];
+				vertices[3][1]=b[k];
 			}
 			if(maxKX1>(b[k]+a[k])){
-				edges[1][0]=a[k];
-				edges[1][1]=b[k];
+				vertices[0][0]=a[k];
+				vertices[0][1]=b[k];
 			}
 		}
 		return edge;
+	}
+	/*
+	 * Smooth out vertices
+	 */
+	public double[][] CalmRec(double[][] vertices){
+		vertices[0][0]=0.5*(vertices[0][0]+vertices[2][0]);
+		vertices[2][0]=vertices[0][0];
+		vertices[1][0]=0.5*(vertices[1][0]+vertices[3][0]);
+		vertices[3][0]=vertices[1][0];
+		return vertices;
 	}
 }
