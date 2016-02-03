@@ -45,6 +45,7 @@ public class TankDrive implements DriveTrain {
 	@Override
 	public void turn(double degrees) {
 		// TODO Needs encoder/gyro
+		gyro.getAngle();
 
 	}
 
