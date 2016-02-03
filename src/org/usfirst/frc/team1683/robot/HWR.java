@@ -14,12 +14,17 @@ public class HWR {
 	public static final int LEFT_DRIVE_TRAIN_BACK = HWP.CAN_2;
 	public static final int RIGHT_DRIVE_TRAIN_FRONT = HWP.CAN_3;
 	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_4;
+	
+	public static final int BELT = HWP.PWM_1;
 
 	// Encoders
-	public static final int LEFT_DRIVE_ENCODER_A = HWP.DIO_4;
-	public static final int LEFT_DRIVE_ENCODER_B = HWP.DIO_5;
-	public static final int RIGHT_DRIVE_ENCODER_A = HWP.DIO_2;
-	public static final int RIGHT_DRIVE_ENCODER_B = HWP.DIO_3;
+	public static final int LEFT_DRIVE_ENCODER_A = HWP.DIO_5;
+	public static final int LEFT_DRIVE_ENCODER_B = HWP.DIO_4;
+	public static final int RIGHT_DRIVE_ENCODER_A = HWP.DIO_3;
+	public static final int RIGHT_DRIVE_ENCODER_B = HWP.DIO_2;
+	
+	public static final int BELT_ENCODER_A = HWP.DIO_0;
+	public static final int BELT_ENCODER_B = HWP.DIO_1;
 
 	// Joysticks
 	public static final int LEFT_JOYSTICK = HWP.JOY_0;

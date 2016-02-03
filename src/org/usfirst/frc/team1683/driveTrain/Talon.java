@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 /**
@@ -11,6 +12,7 @@ import org.usfirst.frc.team1683.sensors.Encoder;
 public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 
 	private Encoder encoder;
+	private Thread thread;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -24,28 +26,30 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 		private Talon talon;
 		private Encoder encoder;
 
-		public MotorMover(Talon talon, double distance, Encoder encoder) {
-			this.talon = talon;
-			this.distance = distance;
-			this.encoder = encoder;
-			this.speed = Motor.MID_SPEED;
-		}
-
 		public MotorMover(Talon talon, double distance, Encoder encoder, double speed) {
 			this.talon = talon;
 			this.distance = distance;
 			this.encoder = encoder;
-			this.speed = speed;
+			if (distance < 0)
+				this.speed = -speed;
+			else
+				this.speed = speed;
 		}
 
 		@Override
 		public void run() {
 			encoder.reset();
 			talon.set(speed);
-			while (Math.abs(encoder.getDistance()) < distance) {
-				// do nothing
+			synchronized (this) {
+				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+					SmartDashboard.sendData("Encoder Distance", encoder.getDistance());
+					System.out.println("eDistance" + encoder.getDistance());
+					System.out.println("eRaw" + encoder.getRaw());
+
+				}
 			}
 			talon.stop();
+			notify();
 			// encoder.reset();
 		}
 
@@ -61,7 +65,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 */
 	public Talon(int channel, boolean reversed) {
 		super(channel);
-		setInverted(reversed);
+		super.setInverted(reversed);
 	}
 
 	/**
@@ -76,7 +80,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 */
 	public Talon(int channel, boolean reversed, Encoder encoder) {
 		super(channel);
-		setInverted(reversed);
+		super.setInverted(reversed);
 		this.encoder = encoder;
 	}
 
@@ -86,12 +90,9 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @param distance
 	 *            Distance in inches
 	 */
+	@Override
 	public void moveDistance(double distance) throws EncoderNotFoundException {
-		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance, encoder)).start();
-		} else {
-			throw new EncoderNotFoundException();
-		}
+		moveDistance(distance, Motor.MID_SPEED);
 	}
 
 	/**
@@ -102,17 +103,35 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @param speed
 	 *            Speed from 0 to 1.
 	 */
+	@Override
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
+
 		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance, encoder, speed)).start();
+			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
+				thread = new Thread(new MotorMover(this, distance, encoder, speed));
+			}
+			if (thread.getState().equals(Thread.State.NEW)) {
+				thread.start();
+
+				synchronized (thread) {
+					try {
+						thread.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		} else {
 			throw new EncoderNotFoundException();
 		}
 	}
 
-	/** 
+	/**
 	 * Set the speed of the Talon.
-	 * @param Speed from 0 to 1.
+	 * 
+	 * @param Speed
+	 *            from 0 to 1.
 	 */
 	public void set(double speed) {
 		super.set(speed);
@@ -142,10 +161,16 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	}
 
 	/**
+	 * @return The channel this Talon is attatched to.
+	 */
+	public int getChannel() {
+		return super.getChannel();
+	}
+
+	/**
 	 * @return If the Talon is reversed.
 	 */
 	public boolean isReversed() {
 		return super.getInverted();
 	}
-
 }

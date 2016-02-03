@@ -1,6 +1,8 @@
 package org.usfirst.frc.team1683.driveTrain;
 
 import java.util.ArrayList;
+
+import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 /**
@@ -14,6 +16,7 @@ public class MotorGroup {
 
 	private ArrayList<Motor> motors;
 	private Encoder encoder;
+	private Thread thread;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -25,32 +28,31 @@ public class MotorGroup {
 
 		private double distance;
 		private double speed;
-
-		private Encoder encoder;
 		private MotorGroup motors;
-
-		public MotorMover(MotorGroup group, double distance, Encoder encoder) {
-			this.motors = group;
-			this.encoder = encoder;
-			this.speed = Motor.MID_SPEED;
-			this.distance = distance;
-		}
+		private Encoder encoder;
 
 		public MotorMover(MotorGroup group, double distance, Encoder encoder, double speed) {
 			this.motors = group;
-			this.encoder = encoder;
-			this.speed = speed;
 			this.distance = distance;
+			this.encoder = encoder;
+			if (distance < 0) {
+				this.speed = -speed;
+			} else {
+				this.speed = speed;
+			}
 		}
 
 		@Override
 		public void run() {
 			encoder.reset();
 			motors.set(speed);
-			while (Math.abs(encoder.getDistance()) < distance) {
-				// do nothing
+			synchronized (this) {
+				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+					// do nothing
+				}
 			}
 			motors.stop();
+			notify();
 		}
 	}
 
@@ -86,11 +88,7 @@ public class MotorGroup {
 	 *             If encoder is not found.
 	 */
 	public void moveDistance(double distance) throws EncoderNotFoundException {
-		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance, encoder)).start();
-		} else {
-			throw new EncoderNotFoundException();
-		}
+		moveDistance(distance, Motor.MID_SPEED);
 	}
 
 	/**
@@ -103,7 +101,21 @@ public class MotorGroup {
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
 		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance, encoder, speed)).start();
+			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
+				thread = new Thread(new MotorMover(this, distance, encoder, speed));
+			}
+
+			if (thread.getState().equals(Thread.State.NEW)) {
+				thread.start();
+
+				synchronized (thread) {
+					try {
+						thread.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		} else {
 			throw new EncoderNotFoundException();
 		}

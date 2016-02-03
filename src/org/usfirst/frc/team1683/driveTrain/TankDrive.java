@@ -1,10 +1,13 @@
 package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.DriverStation;
+import org.usfirst.frc.team1683.sensors.Encoder;
+
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * Represents the drive train in tank drive configuration.
+ * 
  * @author David Luo
  *
  */
@@ -20,18 +23,23 @@ public class TankDrive implements DriveTrain {
 	}
 
 	/**
-	 * @param distance Distance to move in inches.
-	 * @throws EncoderNotFoundException Encoder not found.
+	 * @param distance
+	 *            Distance to move in inches.
+	 * @throws EncoderNotFoundException
+	 *             Encoder not found.
 	 */
 	@Override
 	public void moveDistance(double distance) throws EncoderNotFoundException {
-		left.moveDistance(distance);
-		right.moveDistance(distance);
+		moveDistance(distance, Motor.MID_SPEED);
 	}
+
 	/**
-	 * @param distance Distance to move in inches.
-	 * @param speed Speed from 0 to 1.
-	 * @throws EncoderNotFoundException Encoder not found.
+	 * @param distance
+	 *            Distance to move in inches.
+	 * @param speed
+	 *            Speed from 0 to 1.
+	 * @throws EncoderNotFoundException
+	 *             Encoder not found.
 	 */
 	@Override
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
@@ -40,7 +48,8 @@ public class TankDrive implements DriveTrain {
 	}
 
 	/**
-	 * @param degrees How much to turn the robot.
+	 * @param degrees
+	 *            How much to turn the robot.
 	 */
 	@Override
 	public void turn(double degrees) {
@@ -69,5 +78,16 @@ public class TankDrive implements DriveTrain {
 		right.set(rSpeed);
 	}
 
-
+	public Encoder getLeftEncoder() {
+		return left.getEncoder();
+	}
+	
+	public Encoder getRightEncoder() {
+		return right.getEncoder();
+	}
+	
+	public void resetEncoders() {
+		left.getEncoder().reset();
+		right.getEncoder().reset();
+	}
 }
