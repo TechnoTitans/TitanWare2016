@@ -1,25 +1,17 @@
 package org.usfirst.frc.team1683.vision;
-import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.vision.Contour;
-
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 public class FindGoal {
 	public static NetworkTable tableContour;
 	private double[] GOAL_X, GOAL_Y, HEIGHT, WIDTH, AREA;
-	private double focal = (131 * 33) / 14;
 	private double distance;
 	private double[] defaultvalue = null;
 	private double defaultdouble=0;
 	private int ObjectNumber=0;
 	private double optic_angle;
-	private double FOVf;
-	private double FOVp;
-	/*
-	 * TODO Need to find following values private final double HeightOffGround;
-	 * private final double HeightTower; private final double HeightTarget;
-	 * private final double NodalDistance; private final double FocalLength;
-	 */
+	private double FOVpx;
+	private double Targetft;
 	public FindGoal(){
 		tableContour=NetworkTable.getTable("GRIP/myContoursReport");
 	}
@@ -42,7 +34,8 @@ public class FindGoal {
 		
 		return contours;
 	}
-	public double FindDistance(double area,double focal,double defaultarea){
-		
+	public double FindDistance(double width){
+		this.distance=Targetft*FOVpx/(2*width*Math.tan(optic_angle));
+		return distance;
 	}
 }
