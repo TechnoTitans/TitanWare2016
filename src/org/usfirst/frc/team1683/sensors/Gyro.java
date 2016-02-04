@@ -2,7 +2,8 @@ package org.usfirst.frc.team1683.sensors;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.GyroBase;
-
+//**Author
+//**Devansh Yerpude
 public class Gyro extends AnalogGyro implements Sensor{
 	
 	public Gyro(int channel) {
