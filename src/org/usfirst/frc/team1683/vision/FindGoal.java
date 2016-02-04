@@ -12,6 +12,9 @@ public class FindGoal {
 	private double optic_angle;
 	private double FOVpx;
 	private double Targetft;
+	/*
+	 * go to https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
+	 */
 	public FindGoal(){
 		tableContour=NetworkTable.getTable("GRIP/myContoursReport");
 	}

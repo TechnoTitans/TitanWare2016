@@ -1,6 +1,6 @@
 
 package org.usfirst.frc.team1683.robot;
-
+import org.usfirst.frc.team1683.vision.FindGoal;
 import org.usfirst.frc.team1683.sensors.Encoder;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
 
@@ -49,6 +49,7 @@ public class TechnoTitan extends IterativeRobot {
 		// chooser.addDefault("Default Auto", defaultAuto);
 		// chooser.addObject("My Auto", customAuto);
 		// SmartDashboard.putData("Auto choices", chooser);
+		//FindGoal vision=new FindGoal();
 		Encoder leftEncoder = new Encoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
 		Encoder rightEncoder = new Encoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
 		ArrayList<Motor> left = new ArrayList<>();
@@ -61,6 +62,7 @@ public class TechnoTitan extends IterativeRobot {
 		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
 		drive = new TankDrive(leftGroup, rightGroup);
 		accel = new BuiltInAccelTester();
+
 		
 		
 		
