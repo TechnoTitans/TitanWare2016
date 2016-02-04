@@ -12,6 +12,9 @@ public class FindGoal {
 	private double[] defaultvalue = null;
 	private double defaultdouble=0;
 	private int ObjectNumber=0;
+	private double optic_angle;
+	private double FOVf;
+	private double FOVp;
 	/*
 	 * TODO Need to find following values private final double HeightOffGround;
 	 * private final double HeightTower; private final double HeightTarget;
@@ -38,5 +41,8 @@ public class FindGoal {
 		}
 		
 		return contours;
+	}
+	public double FindDistance(double area,double focal,double defaultarea){
+		
 	}
 }
