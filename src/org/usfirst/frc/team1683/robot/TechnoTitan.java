@@ -2,6 +2,7 @@
 package org.usfirst.frc.team1683.robot;
 
 import org.usfirst.frc.team1683.sensors.Encoder;
+import org.usfirst.frc.team1683.test.BuiltInAccelTester;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -37,6 +38,7 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean RIGHT_REVERSE = false;
 	
 	TankDrive drive;
+	BuiltInAccelTester accel; 
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -58,6 +60,10 @@ public class TechnoTitan extends IterativeRobot {
 		MotorGroup leftGroup = new MotorGroup(left, leftEncoder);
 		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
 		drive = new TankDrive(leftGroup, rightGroup);
+		accel = new BuiltInAccelTester();
+		
+		
+		
 	}
 
 	/**
@@ -98,6 +104,7 @@ public class TechnoTitan extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		drive.driveMode();
+		accel.test();
 	}
 
 	/**

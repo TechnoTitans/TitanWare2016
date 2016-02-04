@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 public class TalonSRX extends CANTalon implements Motor {
 
 	private Encoder encoder;
+	private Thread thread;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -24,32 +26,31 @@ public class TalonSRX extends CANTalon implements Motor {
 
 		private double distance;
 		private double speed;
-
-		private Encoder encoder;
 		private TalonSRX talonSrx;
-
-		public MotorMover(TalonSRX talonSrx, double distance, Encoder encoder) {
-			this.distance = distance;
-			this.speed = Motor.MID_SPEED;
-			this.talonSrx = talonSrx;
-			this.encoder = encoder;
-		}
+		private Encoder encoder;
 
 		public MotorMover(TalonSRX talonSrx, double distance, Encoder encoder, double speed) {
-			this.distance = distance;
-			this.speed = speed;
 			this.talonSrx = talonSrx;
+			this.distance = distance;
 			this.encoder = encoder;
+			if (distance < 0)
+				this.speed = -speed;
+			else
+				this.speed = speed;
 		}
 
 		@Override
 		public void run() {
 			encoder.reset();
 			talonSrx.set(speed);
-			while (Math.abs(encoder.getDistance()) < distance) {
-				// do nothing
+			synchronized (this) {
+				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+					SmartDashboard.sendData("encoder val", encoder.getDistance());
+					// do nothing
+				}
 			}
 			talonSrx.stop();
+			notify();
 			// encoder.reset();
 		}
 	}
@@ -59,12 +60,12 @@ public class TalonSRX extends CANTalon implements Motor {
 	 * 
 	 * @param channel
 	 *            The port where the TalonSRX is plugged in.
-	 * @param reverseDirection
+	 * @param reversed
 	 *            If the TalonSRX should invert the signal.
 	 */
-	public TalonSRX(int channel, boolean reverseDirection) {
+	public TalonSRX(int channel, boolean reversed) {
 		super(channel);
-		super.setInverted(reverseDirection);
+		super.setInverted(reversed);
 	}
 
 	/**
@@ -72,14 +73,14 @@ public class TalonSRX extends CANTalon implements Motor {
 	 * 
 	 * @param channel
 	 *            The port where the TalonSRX is plugged in.
-	 * @param reverseDirection
+	 * @param reversed
 	 *            If the TalonSRX should invert the signal.
 	 * @param encoder
 	 *            Encoder to attach to this TalonSRX.
 	 */
-	public TalonSRX(int channel, boolean reverseDirection, Encoder encoder) {
+	public TalonSRX(int channel, boolean reversed, Encoder encoder) {
 		super(channel);
-		super.setInverted(reverseDirection);
+		super.setInverted(reversed);
 		this.encoder = encoder;
 	}
 
@@ -91,11 +92,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	 */
 	@Override
 	public void moveDistance(double distance) throws EncoderNotFoundException {
-		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance, encoder)).start();
-		} else {
-			throw new EncoderNotFoundException();
-		}
+		moveDistance(distance, Motor.MID_SPEED);
 	}
 
 	/**
@@ -108,8 +105,22 @@ public class TalonSRX extends CANTalon implements Motor {
 	 */
 	@Override
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
+
 		if (hasEncoder()) {
-			new Thread(new MotorMover(this, distance, encoder, speed)).start();
+			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
+				thread = new Thread(new MotorMover(this, distance, encoder, speed));
+			}
+			if (thread.getState().equals(Thread.State.NEW)) {
+				thread.start();
+				
+				synchronized (thread) {
+					try {
+						thread.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		} else {
 			throw new EncoderNotFoundException();
 		}
@@ -131,6 +142,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	@Override
 	public void stop() {
 		super.disableControl();
+//		super.stopMotor();
 
 	}
 
