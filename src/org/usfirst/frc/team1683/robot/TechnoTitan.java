@@ -99,7 +99,7 @@ public class TechnoTitan extends IterativeRobot {
 		// // Put default auto code here
 		// break;
 		// }
-		
+		vision.FindDistance();
 	}
 
 	/**
