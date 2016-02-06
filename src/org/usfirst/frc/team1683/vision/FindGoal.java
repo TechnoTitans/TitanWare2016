@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1683.vision;
 import org.usfirst.frc.team1683.vision.Contour;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 public class FindGoal {
@@ -9,9 +10,9 @@ public class FindGoal {
 	private double[] defaultvalue = null;
 	private double defaultdouble=0;
 	private int ObjectNumber=0;
-	private double optic_angle;
-	private double FOVpx;
-	private double Targetft;
+	private double optic_angle=49; //M1103 cameras only
+	private double FOVpx=600; //pixels of the grip program
+	private double Targetin=20; //target width
 	/*
 	 * go to https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
 	 */
@@ -32,13 +33,14 @@ public class FindGoal {
 			System.out.println("TableKeyNotDefinedException");
 		}
 		for (int i = 0; i < contours.length; i++) {
-			contours[i] = new Contour(i, AREA[i], WIDTH[i], HEIGHT[i], GOAL_X[i], GOAL_Y[i]);
+			contours[i] = new Contour(i,HEIGHT[i], WIDTH[i],GOAL_X[i], GOAL_Y[i],AREA[i]);
 		}
 		
 		return contours;
 	}
 	public double FindDistance(double width){
-		this.distance=Targetft*FOVpx/(2*width*Math.tan(optic_angle));
+		this.distance=Targetin*FOVpx/(2*width*Math.tan(optic_angle));
+		SmartDashboard.sendData("DistanceTarget",this.distance);
 		return distance;
 	}
 }

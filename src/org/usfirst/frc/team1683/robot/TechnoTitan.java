@@ -36,7 +36,7 @@ public class TechnoTitan extends IterativeRobot {
 	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
 	public static final boolean LEFT_REVERSE = true;
 	public static final boolean RIGHT_REVERSE = false;
-	
+	FindGoal vision;
 	TankDrive drive;
 	BuiltInAccelTester accel; 
 
@@ -62,7 +62,7 @@ public class TechnoTitan extends IterativeRobot {
 		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
 		drive = new TankDrive(leftGroup, rightGroup);
 		accel = new BuiltInAccelTester();
-
+		vision=new FindGoal();
 		
 		
 		
@@ -99,6 +99,7 @@ public class TechnoTitan extends IterativeRobot {
 		// // Put default auto code here
 		// break;
 		// }
+		
 	}
 
 	/**
