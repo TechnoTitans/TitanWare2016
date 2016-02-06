@@ -14,7 +14,9 @@ public class BuiltInAccelTester {
 		SmartDashboard.sendData("X", accel.getX());
 		SmartDashboard.sendData("Y", accel.getY());
 		SmartDashboard.sendData("Z", accel.getZ());
-		
+		SmartDashboard.sendData("isFlat", accel.isFlat());
+		SmartDashboard.sendData("Angle XZ", accel.getAngleXZ());
+		SmartDashboard.sendData("Angle YZ", accel.getAngleYZ());
 	}
 
 }

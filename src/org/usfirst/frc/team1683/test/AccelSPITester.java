@@ -1,0 +1,25 @@
+package org.usfirst.frc.team1683.test;
+
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
+import org.usfirst.frc.team1683.sensors.AccelSPI;
+
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+
+public class AccelSPITester {
+	AccelSPI accel;
+	
+	public AccelSPITester() {
+		accel = new AccelSPI(Accelerometer.Range.k2G);
+	}
+
+	public void test() {
+		SmartDashboard.sendData("X static class", accel.getXaxis());
+	 	SmartDashboard.sendData("Y static class", accel.getYaxis());
+		SmartDashboard.sendData("Z static class", accel.getZaxis());
+		SmartDashboard.sendData("X normal", accel.getX());
+		SmartDashboard.sendData("Y normal", accel.getY());
+		SmartDashboard.sendData("Z normal", accel.getZ());
+		
+	}
+}
