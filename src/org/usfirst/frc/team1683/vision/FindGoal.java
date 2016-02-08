@@ -7,7 +7,7 @@ public class FindGoal {
 	public static NetworkTable tableContour;
 	private double[] GOAL_X, GOAL_Y, HEIGHT, WIDTH, AREA;
 	private double distance;
-	private double[] defaultvalue = null;
+	private double[] defaultvalue = new double[0];
 	private double optic_angle=49; //M1103 cameras only
 	private double FOVpx=300; //pixels of the grip program
 	private double Targetin=20; //target width
@@ -19,21 +19,14 @@ public class FindGoal {
 	}
 	public Contour[] getData() {
 		Contour[] contours;
+		SmartDashboard.sendData("myTests","Test");
 		try {
 			AREA =FindGoal.tableContour.getNumberArray("areas", defaultvalue);
 			GOAL_X = FindGoal.tableContour.getNumberArray("centerX", defaultvalue);
 			GOAL_Y = FindGoal.tableContour.getNumberArray("centerY", defaultvalue);
 			WIDTH = FindGoal.tableContour.getNumberArray("width", defaultvalue);
 			HEIGHT = FindGoal.tableContour.getNumberArray("height", defaultvalue);
-			SmartDashboard.sendData("Areas1",AREA[0]);
-			if(AREA.length==0){
-				contours=null;
-				SmartDashboard.sendData("Failure","Nothing found");
-			}
-			else{
-				SmartDashboard.sendData("Failure","Something found");
-				contours = new Contour[AREA.length];
-			}
+			contours = new Contour[AREA.length];
 		}
 		catch(TableKeyNotDefinedException exp) {
 			System.out.println("TableKeyNotDefinedExceptionFix");
@@ -54,11 +47,11 @@ public class FindGoal {
 		}
 		return maxarea;
 	}
-	public double FindDistance(){
+	/*public double FindDistance(){
 		Contour[] contours = getData();
 		// TODO: create method to find closest contour (instead of just getting contour[0])
 		this.distance=Targetin*FOVpx/(2*contours[0].WIDTH*Math.tan(optic_angle));
 		SmartDashboard.sendData("DistanceTarget",this.distance);
 		return distance;
-	}
+	}*/
 }

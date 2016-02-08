@@ -93,7 +93,7 @@ public class TechnoTitan extends IterativeRobot {
 	
 	public void testInit() {
 		accel = new BuiltInAccelTester();
-		accel2 = new AccelSPITester();
+		//accel2 = new AccelSPITester();
 		gyro = new GyroTester();
 		
 		
