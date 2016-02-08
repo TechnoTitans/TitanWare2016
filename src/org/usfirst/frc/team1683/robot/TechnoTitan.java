@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team1683.robot;
 import org.usfirst.frc.team1683.vision.FindGoal;
+import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 import org.usfirst.frc.team1683.test.AccelSPITester;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
@@ -12,8 +13,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Timer.StaticInterface;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import java.sql.Driver;
 import java.util.ArrayList;
 
+import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.DriveTrain;
 import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
@@ -36,6 +39,7 @@ public class TechnoTitan extends IterativeRobot {
 	// final String customAuto = "My Auto";
 	// String autoSelected;
 	// SendableChooser chooser;
+	public static AutonomousSwitcher switcher;
 	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
 	public static final boolean LEFT_REVERSE = true;
 	public static final boolean RIGHT_REVERSE = false;
@@ -55,8 +59,8 @@ public class TechnoTitan extends IterativeRobot {
 		// chooser.addObject("My Auto", customAuto);
 		// SmartDashboard.putData("Auto choices", chooser);
 		//FindGoal vision=new FindGoal();
-		Encoder leftEncoder = new Encoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
-		Encoder rightEncoder = new Encoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
+		DIOEncoder leftEncoder = new DIOEncoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
+		DIOEncoder rightEncoder = new DIOEncoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
 		ArrayList<Motor> left = new ArrayList<>();
 		ArrayList<Motor> right = new ArrayList<>();
 		left.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE));
@@ -67,7 +71,7 @@ public class TechnoTitan extends IterativeRobot {
 		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
 		drive = new TankDrive(leftGroup, rightGroup);
 
-		
+		switcher = new AutonomousSwitcher(drive);
 
 		vision = new VisionTest();		
 		
@@ -89,20 +93,15 @@ public class TechnoTitan extends IterativeRobot {
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 //		System.out.println("Auto selected: " + autoSelected);
+		switcher.updateAutoSelected();
 	}
 	
-	public void testInit() {
-		accel = new BuiltInAccelTester();
-		//accel2 = new AccelSPITester();
-		gyro = new GyroTester();
-		
-		
-	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
+		switcher.run();
 		// switch (autoSelected) {
 		// case customAuto:
 		// // Put custom auto code here
@@ -121,6 +120,14 @@ public class TechnoTitan extends IterativeRobot {
 		drive.driveMode();
 		//accel.test();
 		vision.test();
+	}
+	
+	public void testInit() {
+		accel = new BuiltInAccelTester();
+		//accel2 = new AccelSPITester();
+		gyro = new GyroTester();
+		
+		
 	}
 
 	/**
