@@ -2,7 +2,10 @@ package org.usfirst.frc.team1683.autonomous;
 
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
+import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
+
+import edu.wpi.first.wpilibj.Timer.StaticInterface;
 
 /**
  * Class to be inherited by all auto classes.
@@ -12,27 +15,31 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  */
 public abstract class Autonomous {
 	// TODO: make autonomous
-	protected static TankDrive tankDrive;
-//	protected static Encoder leftEncoder;
-//	protected static Encoder rightEncoder;
-	
+	protected TankDrive tankDrive;
+	protected Encoder leftEncoder;
+	protected Encoder rightEncoder;
+
 	public Autonomous(TankDrive tankDrive) {
 		this.tankDrive = tankDrive;
-		//leftEncoder = tankDrive.leftEncoder;
-		//rightEncoder = tankDrive.rightEncoder;
+		leftEncoder = tankDrive.getLeftEncoder();
+		rightEncoder = tankDrive.getRightEncoder();
 	}
-	
+
 	protected static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD, 
+		INIT_CASE, END_CASE, DRIVE_FORWARD,
 	}
-	
+
+	public static enum AutonomousMode {
+		DO_NOTHING, REACH_DEFENSE
+	}
+
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
-	public static double reachDistance;  //74  inches
-	
-	
+	public static double reachDistance; // 74 inches
 
 	public void updatePreferences() {
 		reachDistance = DriverStation.getDouble("reachDistance");
 	}
+
+	 public abstract void run();
 }

@@ -4,10 +4,10 @@ import org.usfirst.frc.team1683.driveTrain.TankDrive;
 
 public class DoNothing extends Autonomous {
 
-	public DoNothing(TankDrive tankDrive) {
-		super(tankDrive);
-		// TODO Auto-generated constructor stub
+	public DoNothing(TankDrive driveTrain){
+		super(driveTrain);
 	}
+	
 	public void run() {
 		switch(presentState) {
 		case INIT_CASE:
