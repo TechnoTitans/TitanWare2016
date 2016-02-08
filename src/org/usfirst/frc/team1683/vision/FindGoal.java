@@ -26,10 +26,17 @@ public class FindGoal {
 			WIDTH = FindGoal.tableContour.getNumberArray("width", defaultvalue);
 			HEIGHT = FindGoal.tableContour.getNumberArray("height", defaultvalue);
 			SmartDashboard.sendData("Areas1",AREA[0]);
-			contours = new Contour[AREA.length];
+			if(AREA.length==0){
+				contours=null;
+				SmartDashboard.sendData("Failure","Nothing found");
+			}
+			else{
+				SmartDashboard.sendData("Failure","Something found");
+				contours = new Contour[AREA.length];
+			}
 		}
 		catch(TableKeyNotDefinedException exp) {
-			System.out.println("TableKeyNotDefinedException");
+			System.out.println("TableKeyNotDefinedExceptionFix");
 			contours = null;
 		}
 		for (int i = 0; i < contours.length; i++) {
