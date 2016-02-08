@@ -15,6 +15,8 @@ public interface DriveTrain {
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException;
 
 	public void turn(double degrees);
+	
+	public void set(double speed);
 
 	public void stop();
 
