@@ -7,11 +7,9 @@ public class FindGoal {
 	public static NetworkTable tableContour;
 	private double[] GOAL_X, GOAL_Y, HEIGHT, WIDTH, AREA;
 	private double distance;
-	private double[] defaultvalue = null;
-	private double defaultdouble=0;
-	private int ObjectNumber=0;
+	private double[] defaultvalue = new double[0];
 	private double optic_angle=49; //M1103 cameras only
-	private double FOVpx=800; //pixels of the grip program
+	private double FOVpx=300; //pixels of the grip program
 	private double Targetin=20; //target width
 	/*
 	 * go to https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
@@ -20,17 +18,19 @@ public class FindGoal {
 		tableContour=NetworkTable.getTable("GRIP/myContoursReport");
 	}
 	public Contour[] getData() {
-		ObjectNumber 	= (int) FindGoal.tableContour.getNumber("ObjectNumber",defaultdouble);
-		Contour[] contours = new Contour[ObjectNumber];
+		Contour[] contours;
+		SmartDashboard.sendData("myTests","Test");
 		try {
 			AREA =FindGoal.tableContour.getNumberArray("areas", defaultvalue);
 			GOAL_X = FindGoal.tableContour.getNumberArray("centerX", defaultvalue);
 			GOAL_Y = FindGoal.tableContour.getNumberArray("centerY", defaultvalue);
 			WIDTH = FindGoal.tableContour.getNumberArray("width", defaultvalue);
 			HEIGHT = FindGoal.tableContour.getNumberArray("height", defaultvalue);
+			contours = new Contour[AREA.length];
 		}
 		catch(TableKeyNotDefinedException exp) {
-			System.out.println("TableKeyNotDefinedException");
+			System.out.println("TableKeyNotDefinedExceptionFix");
+			contours = null;
 		}
 		for (int i = 0; i < contours.length; i++) {
 			contours[i] = new Contour(i,HEIGHT[i], WIDTH[i],GOAL_X[i], GOAL_Y[i],AREA[i]);
@@ -38,11 +38,20 @@ public class FindGoal {
 		
 		return contours;
 	}
-	public double FindDistance(){
+	public double ClosestContour(double[] area){
+		int maxarea=0;
+		for(int i=0;i<area.length;i++){
+			if(area[i]>area[maxarea]){
+				maxarea=i;
+			}
+		}
+		return maxarea;
+	}
+	/*public double FindDistance(){
 		Contour[] contours = getData();
 		// TODO: create method to find closest contour (instead of just getting contour[0])
 		this.distance=Targetin*FOVpx/(2*contours[0].WIDTH*Math.tan(optic_angle));
 		SmartDashboard.sendData("DistanceTarget",this.distance);
 		return distance;
-	}
+	}*/
 }

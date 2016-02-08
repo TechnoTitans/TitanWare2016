@@ -107,7 +107,6 @@ public class MotorGroup {
 
 			if (thread.getState().equals(Thread.State.NEW)) {
 				thread.start();
-
 				synchronized (thread) {
 					try {
 						thread.wait();
@@ -125,10 +124,10 @@ public class MotorGroup {
 	 * Set collective speed of motors.
 	 * 
 	 * @param speed
-	 *            Speed from 0 to 1.
+	 * Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-		for (Motor m : getMotors()) {
+		for (Motor m : getMotors()){
 			m.set(speed);
 		}
 	}
