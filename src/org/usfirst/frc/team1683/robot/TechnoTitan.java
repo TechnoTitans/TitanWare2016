@@ -2,7 +2,9 @@
 package org.usfirst.frc.team1683.robot;
 import org.usfirst.frc.team1683.vision.FindGoal;
 import org.usfirst.frc.team1683.sensors.Encoder;
+import org.usfirst.frc.team1683.test.AccelSPITester;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
+import org.usfirst.frc.team1683.test.GyroTester;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -39,6 +41,8 @@ public class TechnoTitan extends IterativeRobot {
 	FindGoal vision;
 	TankDrive drive;
 	BuiltInAccelTester accel; 
+	AccelSPITester accel2;
+	GyroTester gyro;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -61,7 +65,9 @@ public class TechnoTitan extends IterativeRobot {
 		MotorGroup leftGroup = new MotorGroup(left, leftEncoder);
 		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
 		drive = new TankDrive(leftGroup, rightGroup);
-		accel = new BuiltInAccelTester();
+
+		
+
 		vision=new FindGoal();
 		
 		
@@ -84,6 +90,14 @@ public class TechnoTitan extends IterativeRobot {
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 //		System.out.println("Auto selected: " + autoSelected);
+	}
+	
+	public void testInit() {
+		accel = new BuiltInAccelTester();
+		accel2 = new AccelSPITester();
+		gyro = new GyroTester();
+		
+		
 	}
 
 	/**
@@ -114,7 +128,12 @@ public class TechnoTitan extends IterativeRobot {
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
+		accel.test();
+		accel2.test();
+		//gyro.test();
+		
 
 	}
 
 }
+

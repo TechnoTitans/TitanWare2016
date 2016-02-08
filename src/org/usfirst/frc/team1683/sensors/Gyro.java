@@ -2,14 +2,19 @@ package org.usfirst.frc.team1683.sensors;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.GyroBase;
-//**Author
-//**Devansh Yerpude
+/**
+ * 
+ * @author Sneha Kadiyala
+ *
+ */
 public class Gyro extends AnalogGyro implements Sensor{
+	public final static double SENSITIVITY = 0.00666693;
 	
 	public Gyro(int channel) {
 		super(channel);
 		super.initGyro();
 		super.reset();
+		super.setSensitivity(SENSITIVITY);
 	}
 	@Override
 	public double getRaw() {
@@ -23,9 +28,19 @@ public class Gyro extends AnalogGyro implements Sensor{
 		super.calibrate();
 	}
 
-	@Override
-	public double getAngle() {
-		return super.getAngle()%360;
+	
+	public double getDirection() {
+		double angle;
+		if (super.getAngle() > 0){
+			angle = super.getAngle() % 360.0;
+		}
+		else if (super.getAngle() < 0){
+			angle = 360.0 - Math.abs(super.getAngle() % 360.0);
+		}
+		else {
+			angle = super.getAngle();
+		}
+		return angle;
 	}
 
 	@Override
