@@ -24,4 +24,8 @@ public class DIOEncoder extends edu.wpi.first.wpilibj.Encoder implements Encoder
 	public double getSpeed() {
 		return super.getRate();
 	}
+	
+	public void reset() {
+		super.reset();
+	}
 }
