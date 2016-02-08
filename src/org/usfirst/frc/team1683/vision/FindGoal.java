@@ -38,6 +38,15 @@ public class FindGoal {
 		
 		return contours;
 	}
+	public double ClosestContour(double[] area){
+		int maxarea=0;
+		for(int i=0;i<area.length;i++){
+			if(area[i]>area[maxarea]){
+				maxarea=i;
+			}
+		}
+		return maxarea;
+	}
 	public double FindDistance(){
 		Contour[] contours = getData();
 		// TODO: create method to find closest contour (instead of just getting contour[0])
