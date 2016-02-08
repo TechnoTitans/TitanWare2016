@@ -4,6 +4,7 @@ import org.usfirst.frc.team1683.vision.FindGoal;
 import org.usfirst.frc.team1683.sensors.Encoder;
 import org.usfirst.frc.team1683.test.AccelSPITester;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
+import org.usfirst.frc.team1683.test.VisionTest;
 import org.usfirst.frc.team1683.test.GyroTester;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -38,7 +39,7 @@ public class TechnoTitan extends IterativeRobot {
 	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
 	public static final boolean LEFT_REVERSE = true;
 	public static final boolean RIGHT_REVERSE = false;
-	FindGoal vision;
+	VisionTest vision;
 	TankDrive drive;
 	BuiltInAccelTester accel; 
 	AccelSPITester accel2;
@@ -68,9 +69,7 @@ public class TechnoTitan extends IterativeRobot {
 
 		
 
-		vision=new FindGoal();
-		
-		
+		vision = new VisionTest();		
 		
 	}
 
@@ -113,7 +112,6 @@ public class TechnoTitan extends IterativeRobot {
 		// // Put default auto code here
 		// break;
 		// }
-		vision.FindDistance();
 	}
 
 	/**
@@ -121,7 +119,8 @@ public class TechnoTitan extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		drive.driveMode();
-		accel.test();
+		//accel.test();
+		vision.test();
 	}
 
 	/**
