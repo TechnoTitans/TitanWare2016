@@ -21,7 +21,7 @@ public class FindGoal {
 		Contour[] contours;
 		SmartDashboard.sendData("myTests","Test");
 		try {
-			AREA =FindGoal.tableContour.getNumberArray("areas", defaultvalue);
+			AREA =FindGoal.tableContour.getNumberArray("area", defaultvalue);
 			GOAL_X = FindGoal.tableContour.getNumberArray("centerX", defaultvalue);
 			GOAL_Y = FindGoal.tableContour.getNumberArray("centerY", defaultvalue);
 			WIDTH = FindGoal.tableContour.getNumberArray("width", defaultvalue);
@@ -38,7 +38,7 @@ public class FindGoal {
 		
 		return contours;
 	}
-	public double ClosestContour(double[] area){
+	public int ClosestContour(double[] area){
 		int maxarea=0;
 		for(int i=0;i<area.length;i++){
 			if(area[i]>area[maxarea]){
@@ -47,11 +47,33 @@ public class FindGoal {
 		}
 		return maxarea;
 	}
-	/*public double FindDistance(){
+	/*
+	 * checks distance to target not to base of target
+	 */
+	public double FindDistance(){
 		Contour[] contours = getData();
-		// TODO: create method to find closest contour (instead of just getting contour[0])
 		this.distance=Targetin*FOVpx/(2*contours[0].WIDTH*Math.tan(optic_angle));
 		SmartDashboard.sendData("DistanceTarget",this.distance);
 		return distance;
-	}*/
+	}
+	/*
+	 * 	checks if robot is aligned. -1 for too far left. 0 for just right. 1 for too far right. 2 for error
+	 */
+	public int isCentered() {
+		Contour[] contours = getData();
+		double offset=FOVpx-contours[ClosestContour(AREA)].WIDTH;
+		if(offset>2){
+			return 1;
+		}
+		else if(offset<-2){
+			return -1;
+		}
+		else if((offset<-2)&&(offset>2)){
+			return 0;
+		}
+		else{
+			return 2;
+		}
+	}
+	
 }
