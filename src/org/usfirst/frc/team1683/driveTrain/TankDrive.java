@@ -1,6 +1,7 @@
 package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.DriverStation;
+import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -58,6 +59,15 @@ public class TankDrive implements DriveTrain {
 
 	}
 
+	/**
+	 * Sets the speed.
+	 */
+	@Override
+	public void set(double speed) {
+		left.set(speed);
+		right.set(speed);
+	};
+	
 	/**
 	 * Stop the drive train.
 	 */

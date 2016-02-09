@@ -12,7 +12,7 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  * @author David Luo
  *
  */
-public class MotorGroup {
+public class MotorGroup extends ArrayList<Motor>{
 
 	private ArrayList<Motor> motors;
 	private Encoder encoder;
@@ -56,6 +56,13 @@ public class MotorGroup {
 		}
 	}
 
+	public MotorGroup() {
+	}
+	
+	public MotorGroup(Encoder encoder) {
+		this.encoder = encoder;
+	}
+	
 	/**
 	 * Constructor
 	 * 
@@ -63,7 +70,10 @@ public class MotorGroup {
 	 *            The motors to be grouped. Each motor is individually reversed.
 	 */
 	public MotorGroup(ArrayList<Motor> motorsArr) {
-		this.motors = motorsArr;
+//		this.motors = motorsArr;
+		for (Motor motor : motorsArr) {
+			this.add(motor);
+		}
 	}
 
 	/**
@@ -127,7 +137,7 @@ public class MotorGroup {
 	 * Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-		for (Motor m : getMotors()){
+		for (Motor m : this){
 			m.set(speed);
 		}
 	}
@@ -136,7 +146,7 @@ public class MotorGroup {
 	 * Stops group.
 	 */
 	public void stop() {
-		for (Motor m : getMotors()) {
+		for (Motor m : this) {
 			m.stop();
 		}
 	}
@@ -155,10 +165,10 @@ public class MotorGroup {
 		return encoder;
 	}
 
-	/**
-	 * @return The motors in the group.
-	 */
-	public ArrayList<Motor> getMotors() {
-		return motors;
-	}
+//	/**
+//	 * @return The motors in the group.
+//	 */
+//	public Motor getMotors() {
+//		return motors;
+//	}
 }

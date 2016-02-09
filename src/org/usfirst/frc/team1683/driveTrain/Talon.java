@@ -1,7 +1,7 @@
 package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.sensors.Encoder;
+import org.usfirst.frc.team1683.sensors.DIOEncoder;
 
 /**
  * Class to represent the Talons attached to motors.
@@ -11,7 +11,7 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  */
 public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 
-	private Encoder encoder;
+	private DIOEncoder encoder;
 	private Thread thread;
 
 	/**
@@ -24,9 +24,9 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 		private double distance;
 		private double speed;
 		private Talon talon;
-		private Encoder encoder;
+		private DIOEncoder encoder;
 
-		public MotorMover(Talon talon, double distance, Encoder encoder, double speed) {
+		public MotorMover(Talon talon, double distance, DIOEncoder encoder, double speed) {
 			this.talon = talon;
 			this.distance = distance;
 			this.encoder = encoder;
@@ -78,7 +78,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @param encoder
 	 *            Encoder to attach to this Talon.
 	 */
-	public Talon(int channel, boolean reversed, Encoder encoder) {
+	public Talon(int channel, boolean reversed, DIOEncoder encoder) {
 		super(channel);
 		super.setInverted(reversed);
 		this.encoder = encoder;
@@ -156,7 +156,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @return The encoder attached to this Talon if exists, null otherwise.
 	 */
 	@Override
-	public Encoder getEncoder() {
+	public DIOEncoder getEncoder() {
 		return encoder;
 	}
 
