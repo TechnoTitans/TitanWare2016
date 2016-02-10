@@ -10,10 +10,10 @@ package org.usfirst.frc.team1683.robot;
 public class HWR {
 
 	// Motors
-	public static final int LEFT_DRIVE_TRAIN_FRONT = HWP.CAN_1;
+	public static final int LEFT_DRIVE_TRAIN_FRONT = HWP.CAN_3;
 	public static final int LEFT_DRIVE_TRAIN_BACK = HWP.CAN_2;
-	public static final int RIGHT_DRIVE_TRAIN_FRONT = HWP.CAN_3;
-	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_4;
+	public static final int RIGHT_DRIVE_TRAIN_FRONT = HWP.CAN_4;
+	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_1;
 	
 	public static final int BELT = HWP.PWM_1;
 
