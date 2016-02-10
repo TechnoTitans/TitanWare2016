@@ -113,4 +113,14 @@ public class TankDrive implements DriveTrain {
 		left.getEncoder().reset();
 		right.getEncoder().reset();
 	}
+
+	@Override
+	public MotorGroup getLeftGroup() {
+		return left;
+	}
+
+	@Override
+	public MotorGroup getRightGroup() {
+		return right;
+	}
 }

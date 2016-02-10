@@ -121,9 +121,11 @@ public class TalonSRX extends CANTalon implements Motor {
 				// e.printStackTrace();
 				// }
 				// }
+				SmartDashboard.sendData("EncoderNotFound", false);
 			}
 		} else {
-			throw new EncoderNotFoundException();
+//			throw new EncoderNotFoundException();
+			SmartDashboard.sendData("EncoderNotFound", true);
 		}
 	}
 
@@ -152,7 +154,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	 */
 	@Override
 	public boolean hasEncoder() {
-		return !encoder.equals(null);
+		return !(encoder == null);
 	}
 
 	/**

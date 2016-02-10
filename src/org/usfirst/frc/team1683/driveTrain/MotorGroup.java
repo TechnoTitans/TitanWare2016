@@ -3,6 +3,7 @@ package org.usfirst.frc.team1683.driveTrain;
 import java.util.ArrayList;
 
 import org.omg.PortableServer.THREAD_POLICY_ID;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 /**
@@ -47,6 +48,9 @@ public class MotorGroup extends ArrayList<Motor> {
 //			synchronized (this) {
 				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
 					motors.set(speed);
+					
+					SmartDashboard.sendData("EncoderDistance", encoder.getDistance());
+					SmartDashboard.sendData("TargetDistance", distance);
 					// do nothing
 				}
 //			}
@@ -90,11 +94,15 @@ public class MotorGroup extends ArrayList<Motor> {
 	 *             If encoder not found.
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
-		// for (Motor motor : this) {
-		// motor.moveDistance(distance, speed);
-		// }
 		if (hasEncoder()) {
-
+//			for (Motor motor : this) {
+//				motor.moveDistance(distance, speed);
+//			}
+			thread = new Thread(new MotorMover(this, distance, speed));
+			thread.start();
+		}
+		else {
+			throw new EncoderNotFoundException();
 		}
 	}
 
@@ -123,7 +131,7 @@ public class MotorGroup extends ArrayList<Motor> {
 	 * @return If there is an encoder associated with the group.
 	 */
 	public boolean hasEncoder() {
-		return !encoder.equals(null);
+		return !(encoder==null);
 	}
 
 	/**
