@@ -30,7 +30,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		private TalonSRX talonSrx;
 		private Encoder encoder;
 
-		public MotorMover(TalonSRX talonSrx, double distance, Encoder encoder, double speed) {
+		public MotorMover(TalonSRX talonSrx, double distance, double speed) {
 			this.talonSrx = talonSrx;
 			this.distance = distance;
 			this.encoder = encoder;
@@ -43,16 +43,16 @@ public class TalonSRX extends CANTalon implements Motor {
 		@Override
 		public void run() {
 			encoder.reset();
-			talonSrx.set(speed);
-			synchronized (this) {
-				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
-					SmartDashboard.sendData("encoder val", encoder.getDistance());
-					// do nothing
-				}
+			// synchronized (this) {
+			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+				talonSrx.set(speed);
+//				SmartDashboard.sendData("encoder val", encoder.getDistance());
+				// do nothing
 			}
+			// }
 			talonSrx.stop();
-			notify();
-			// encoder.reset();
+			// notify();
+			encoder.reset();
 		}
 	}
 
@@ -109,18 +109,18 @@ public class TalonSRX extends CANTalon implements Motor {
 
 		if (hasEncoder()) {
 			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
-				thread = new Thread(new MotorMover(this, distance, encoder, speed));
+				thread = new Thread(new MotorMover(this, distance, speed));
 			}
 			if (thread.getState().equals(Thread.State.NEW)) {
 				thread.start();
-				
-				synchronized (thread) {
-					try {
-						thread.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+
+				// synchronized (thread) {
+				// try {
+				// thread.wait();
+				// } catch (InterruptedException e) {
+				// e.printStackTrace();
+				// }
+				// }
 			}
 		} else {
 			throw new EncoderNotFoundException();
@@ -143,7 +143,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	@Override
 	public void stop() {
 		super.disableControl();
-//		super.stopMotor();
+		// super.stopMotor();
 
 	}
 

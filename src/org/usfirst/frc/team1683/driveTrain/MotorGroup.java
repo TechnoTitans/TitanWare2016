@@ -12,11 +12,12 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  * @author David Luo
  *
  */
-public class MotorGroup extends ArrayList<Motor>{
+public class MotorGroup extends ArrayList<Motor> {
 
 	private ArrayList<Motor> motors;
 	private Encoder encoder;
 	private Thread thread;
+	private MotorMover mover;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -29,12 +30,10 @@ public class MotorGroup extends ArrayList<Motor>{
 		private double distance;
 		private double speed;
 		private MotorGroup motors;
-		private Encoder encoder;
 
-		public MotorMover(MotorGroup group, double distance, Encoder encoder, double speed) {
+		public MotorMover(MotorGroup group, double distance, double speed) {
 			this.motors = group;
 			this.distance = distance;
-			this.encoder = encoder;
 			if (distance < 0) {
 				this.speed = -speed;
 			} else {
@@ -45,48 +44,29 @@ public class MotorGroup extends ArrayList<Motor>{
 		@Override
 		public void run() {
 			encoder.reset();
-			motors.set(speed);
-			synchronized (this) {
+//			synchronized (this) {
 				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+					motors.set(speed);
 					// do nothing
 				}
-			}
+//			}
 			motors.stop();
-			notify();
+			this.notifyAll();
 		}
+
 	}
 
-	public MotorGroup() {
-	}
-	
-	public MotorGroup(Encoder encoder) {
+	public MotorGroup(Encoder encoder, Motor... motors) {
 		this.encoder = encoder;
-	}
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param motorsArr
-	 *            The motors to be grouped. Each motor is individually reversed.
-	 */
-	public MotorGroup(ArrayList<Motor> motorsArr) {
-//		this.motors = motorsArr;
-		for (Motor motor : motorsArr) {
+		for (Motor motor : motors) {
 			this.add(motor);
 		}
 	}
 
-	/**
-	 * Constructor
-	 * 
-	 * @param motorArr
-	 *            The motors to be grouped. Each motor is individually reversed.
-	 * @param encoder
-	 *            The encoder attached to the group of motors.
-	 */
-	public MotorGroup(ArrayList<Motor> motorArr, Encoder encoder) {
-		this.motors = motorArr;
-		this.encoder = encoder;
+	public MotorGroup(Motor... motors) {
+		for (Motor motor : motors) {
+			this.add(motor);
+		}
 	}
 
 	/**
@@ -110,23 +90,11 @@ public class MotorGroup extends ArrayList<Motor>{
 	 *             If encoder not found.
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
+		// for (Motor motor : this) {
+		// motor.moveDistance(distance, speed);
+		// }
 		if (hasEncoder()) {
-			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
-				thread = new Thread(new MotorMover(this, distance, encoder, speed));
-			}
 
-			if (thread.getState().equals(Thread.State.NEW)) {
-				thread.start();
-				synchronized (thread) {
-					try {
-						thread.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} else {
-			throw new EncoderNotFoundException();
 		}
 	}
 
@@ -134,11 +102,11 @@ public class MotorGroup extends ArrayList<Motor>{
 	 * Set collective speed of motors.
 	 * 
 	 * @param speed
-	 * Speed from 0 to 1.
+	 *            Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-		for (Motor m : this){
-			m.set(speed);
+		for (Motor motor : this) {
+			motor.set(speed);
 		}
 	}
 
@@ -146,8 +114,8 @@ public class MotorGroup extends ArrayList<Motor>{
 	 * Stops group.
 	 */
 	public void stop() {
-		for (Motor m : this) {
-			m.stop();
+		for (Motor motor : this) {
+			motor.stop();
 		}
 	}
 
@@ -165,10 +133,18 @@ public class MotorGroup extends ArrayList<Motor>{
 		return encoder;
 	}
 
-//	/**
-//	 * @return The motors in the group.
-//	 */
-//	public Motor getMotors() {
-//		return motors;
-//	}
+	public void setBrakeMode(boolean enabled) {
+		for (Motor motor : this) {
+			if (motor instanceof TalonSRX) {
+				((TalonSRX) motor).enableBrakeMode(enabled);
+			}
+		}
+	}
+	
+	// /**
+	// * @return The motors in the group.
+	// */
+	// public Motor getMotors() {
+	// return motors;
+	// }
 }

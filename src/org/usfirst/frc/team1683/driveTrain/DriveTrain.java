@@ -2,13 +2,15 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team1683.sensors.Encoder;
+
 /**
  * @author David Luo
  *
  */
 public interface DriveTrain {
 
-	ArrayList<Motor> motors = new ArrayList<>();
+//	ArrayList<Motor> motors = new ArrayList<>();
 
 	void moveDistance(double distance) throws EncoderNotFoundException;
 
@@ -19,6 +21,14 @@ public interface DriveTrain {
 	public void set(double speed);
 
 	public void stop();
+	
+	public void coast();
+	
+	public void resetEncoders();
+	
+	public Encoder getLeftEncoder();
+
+	public Encoder getRightEncoder();
 
 	public void driveMode();
 
