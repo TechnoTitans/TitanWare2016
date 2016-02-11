@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.DriverStation;
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -67,12 +66,21 @@ public class TankDrive implements DriveTrain {
 		left.set(speed);
 		right.set(speed);
 	};
-	
+
 	/**
 	 * Stop the drive train.
 	 */
 	@Override
 	public void stop() {
+		left.setBrakeMode(true);
+		right.setBrakeMode(true);
+		left.stop();
+		right.stop();
+	}
+
+	public void coast() {
+		left.setBrakeMode(false);
+		right.setBrakeMode(false);
 		left.stop();
 		right.stop();
 	}
@@ -82,6 +90,9 @@ public class TankDrive implements DriveTrain {
 	 */
 	@Override
 	public void driveMode() {
+		left.setBrakeMode(false);
+		right.setBrakeMode(false);
+
 		double lSpeed = DriverStation.leftStick.getRawAxis(DriverStation.YAxis);
 		double rSpeed = DriverStation.rightStick.getRawAxis(DriverStation.YAxis);
 
@@ -92,13 +103,23 @@ public class TankDrive implements DriveTrain {
 	public Encoder getLeftEncoder() {
 		return left.getEncoder();
 	}
-	
+
 	public Encoder getRightEncoder() {
 		return right.getEncoder();
 	}
-	
+
 	public void resetEncoders() {
 		left.getEncoder().reset();
 		right.getEncoder().reset();
+	}
+
+	@Override
+	public MotorGroup getLeftGroup() {
+		return left;
+	}
+
+	@Override
+	public MotorGroup getRightGroup() {
+		return right;
 	}
 }

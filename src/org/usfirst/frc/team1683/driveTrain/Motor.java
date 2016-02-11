@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1683.driveTrain;
 
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -29,6 +28,8 @@ public interface Motor extends PIDOutput {
 	public boolean hasEncoder();
 
 	public Encoder getEncoder();
+
+//	public void setBrakeMode(boolean enable);
 
 	public int getChannel();
 

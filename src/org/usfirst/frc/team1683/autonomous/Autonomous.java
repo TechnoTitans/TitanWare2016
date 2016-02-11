@@ -26,13 +26,15 @@ public abstract class Autonomous {
 	}
 
 	protected static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD,
+		INIT_CASE, END_CASE, DRIVE_FORWARD,BREACH_DEFENSE,REACH_DISTANCE,FIND_TARGET,FIRE
 	}
 
 	public static enum AutonomousMode {
-		DO_NOTHING, REACH_DEFENSE
+		DO_NOTHING, REACH_DEFENSE, TEST_AUTO
 	}
-
+	protected static enum FinalPosition{
+		LEFT_SIDE,CENTER,RIGHT_SIDE
+	}
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
 	public static double reachDistance; // 74 inches

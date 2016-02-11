@@ -10,29 +10,30 @@ package org.usfirst.frc.team1683.robot;
 public class HWR {
 
 	// Motors
-	public static final int LEFT_DRIVE_TRAIN_FRONT = HWP.CAN_1;
+	public static final int LEFT_DRIVE_TRAIN_FRONT = HWP.CAN_3;
 	public static final int LEFT_DRIVE_TRAIN_BACK = HWP.CAN_2;
-	public static final int RIGHT_DRIVE_TRAIN_FRONT = HWP.CAN_3;
-	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_4;
-	
-	public static final int BELT = HWP.PWM_1;
+	public static final int RIGHT_DRIVE_TRAIN_FRONT = HWP.CAN_4;
+	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_1;
+
+	// TODO: Get these values
+	public static final int SHOOTER_LEFT = 0;
+	public static final int SHOOTER_RIGHT = 0;
 
 	// Encoders
-	public static final int LEFT_DRIVE_ENCODER_A = HWP.DIO_5;
-	public static final int LEFT_DRIVE_ENCODER_B = HWP.DIO_4;
-	public static final int RIGHT_DRIVE_ENCODER_A = HWP.DIO_3;
-	public static final int RIGHT_DRIVE_ENCODER_B = HWP.DIO_2;
-	
-	public static final int BELT_ENCODER_A = HWP.DIO_0;
-	public static final int BELT_ENCODER_B = HWP.DIO_1;
+	// TODO: Get these values
+	public static final int LEFT_DRIVE_ENCODER = 0;
+	public static final int RIGHT_DRIVE_ENCODER = 0;
 
 	// Joysticks
 	public static final int LEFT_JOYSTICK = HWP.JOY_0;
 	public static final int RIGHT_JOYSTICK = HWP.JOY_1;
 	public static final int AUX_JOYSTICK = HWP.JOY_2;
-	
-	//Gyro 
+
+	// Gyro
 	public static final int GYRO = HWP.ANALOG_1;
 	
+	// Compressor
+	// TODO: Get these values
+	public static final int COMPRESSOR = 0;
 
 }

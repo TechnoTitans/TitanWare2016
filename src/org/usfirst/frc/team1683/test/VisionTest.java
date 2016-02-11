@@ -15,6 +15,6 @@ public class VisionTest{
 	public void test(){
 		contours = vision.getData();
 		//SmartDashboard.sendData("DistanceTarget", vision.FindDistance());
-		SmartDashboard.sendData("DistanceTarget", 0);
+		SmartDashboard.sendData("DistanceTarget", vision.FindDistance());
 	}
 }

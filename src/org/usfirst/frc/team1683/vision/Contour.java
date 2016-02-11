@@ -1,4 +1,10 @@
 package org.usfirst.frc.team1683.vision;
+/**
+ * Contour class
+ * 
+ * @author Yi Liu
+ *
+ */
 public class Contour {
 	
 	public final int INDEX;

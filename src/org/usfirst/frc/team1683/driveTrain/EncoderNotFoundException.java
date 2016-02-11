@@ -5,7 +5,12 @@ package org.usfirst.frc.team1683.driveTrain;
  * @author David Luo
  *
  */
-public class EncoderNotFoundException extends Exception {
+public class EncoderNotFoundException extends RuntimeException{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public EncoderNotFoundException() {
 		super();
 	}
