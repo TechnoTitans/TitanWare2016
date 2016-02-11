@@ -2,10 +2,11 @@ package org.usfirst.frc.team1683.autonomous;
 
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1683.autonomous.Autonomous.AutonomousMode;
 import org.usfirst.frc.team1683.driveTrain.DriveTrain;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 
 /**
  * 
@@ -47,9 +48,13 @@ public class AutonomousSwitcher {
 	}
 
 	public void updateAutoSelected() {
+		SmartDashboard.sendData("AUTO SELECTED", SmartDashboard.getString("Auto Selector"));
 		switch (toMode(SmartDashboard.getString("Auto Selector", DEFAULT_AUTO.name()))) {
 		case REACH_DEFENSE:
 			autoSelected = new ReachDefense((TankDrive) driveTrain);
+			break;
+		case TEST_AUTO:
+			autoSelected = new TestAuto((TankDrive) driveTrain);
 			break;
 		case DO_NOTHING:
 		default:
@@ -59,7 +64,7 @@ public class AutonomousSwitcher {
 	}
 	
 	private AutonomousMode toMode(String mode) {
-		return Enum.valueOf(Autonomous.AutonomousMode.class, mode);
+		return AutonomousMode.valueOf(mode);
 	}
 
 	public Autonomous getAutoSelected() {

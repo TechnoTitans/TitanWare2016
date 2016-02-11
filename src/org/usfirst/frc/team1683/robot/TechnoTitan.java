@@ -1,30 +1,18 @@
 
 package org.usfirst.frc.team1683.robot;
-import org.usfirst.frc.team1683.vision.FindGoal;
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
-import org.usfirst.frc.team1683.sensors.Encoder;
-import org.usfirst.frc.team1683.test.AccelSPITester;
-import org.usfirst.frc.team1683.test.BuiltInAccelTester;
-import org.usfirst.frc.team1683.test.VisionTest;
-import org.usfirst.frc.team1683.test.GyroTester;
-
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Timer.StaticInterface;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
-import java.sql.Driver;
-import java.util.ArrayList;
-
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
-import org.usfirst.frc.team1683.driveTrain.DriveTrain;
-import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
-import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
-import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
+import org.usfirst.frc.team1683.sensors.DIOEncoder;
+import org.usfirst.frc.team1683.sensors.QuadEncoder;
+import org.usfirst.frc.team1683.test.AccelSPITester;
+import org.usfirst.frc.team1683.test.BuiltInAccelTester;
+import org.usfirst.frc.team1683.test.GyroTester;
+import org.usfirst.frc.team1683.test.VisionTest;
+
+import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -59,22 +47,35 @@ public class TechnoTitan extends IterativeRobot {
 		// chooser.addObject("My Auto", customAuto);
 		// SmartDashboard.putData("Auto choices", chooser);
 		//FindGoal vision=new FindGoal();
-		DIOEncoder leftEncoder = new DIOEncoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
-		DIOEncoder rightEncoder = new DIOEncoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
-		ArrayList<Motor> left = new ArrayList<>();
-		ArrayList<Motor> right = new ArrayList<>();
-		left.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE));
-		left.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
-		right.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE));
-		right.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
-		MotorGroup leftGroup = new MotorGroup(left, leftEncoder);
-		MotorGroup rightGroup = new MotorGroup(right, rightEncoder);
+		
+//		DIOEncoder leftEncoder = new DIOEncoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
+//		DIOEncoder rightEncoder = new DIOEncoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
+
+//		leftGroup.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE));
+//		leftGroup.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
+//		rightGroup.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE));
+//		rightGroup.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
+		/*
+		TalonSRX encoderTalon = new TalonSRX(3, false);
+		QuadEncoder encoder = new QuadEncoder(encoderTalon, 1024);
+		MotorGroup leftGroup = new MotorGroup(encoder, encoderTalon);
+		MotorGroup rightGroup = new MotorGroup(encoder, new TalonSRX(5,true));
+//		leftGroup.add(encoderTalon);
+//		rightGroup.add(new TalonSRX(5, true));
+		leftGroup.setBrakeMode(true);
+		rightGroup.setBrakeMode(true);
 		drive = new TankDrive(leftGroup, rightGroup);
 
 		switcher = new AutonomousSwitcher(drive);
 
 		vision = new VisionTest();		
+		*/
 		
+		MotorGroup leftGroup = new MotorGroup(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE),
+				new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
+		MotorGroup rightGroup = new MotorGroup(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE),
+				new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
+		drive = new TankDrive(leftGroup, rightGroup);
 	}
 
 	/**
@@ -93,15 +94,16 @@ public class TechnoTitan extends IterativeRobot {
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 //		System.out.println("Auto selected: " + autoSelected);
-		switcher.updateAutoSelected();
+//		switcher.updateAutoSelected();
 	}
 	
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
+	boolean run = false;
 	public void autonomousPeriodic() {
-		switcher.run();
+//		switcher.run();
 		// switch (autoSelected) {
 		// case customAuto:
 		// // Put custom auto code here
@@ -111,7 +113,16 @@ public class TechnoTitan extends IterativeRobot {
 		// // Put default auto code here
 		// break;
 		// }
+//		
+//		if (!run) {
+//			drive.moveDistance(250, 1);
+//			run = true;
+//		}
+		
+//		SmartDashboard.sendData("getPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
+//		SmartDashboard.sendData("getEncPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getEncPosition()); 
 	}
+	
 
 	/**
 	 * This function is called periodically during operator control
@@ -119,7 +130,7 @@ public class TechnoTitan extends IterativeRobot {
 	public void teleopPeriodic() {
 		drive.driveMode();
 		//accel.test();
-		vision.test();
+//		vision.test();42
 	}
 	
 	public void testInit() {

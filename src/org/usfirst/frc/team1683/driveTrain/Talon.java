@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
-import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
+import org.usfirst.frc.team1683.sensors.Encoder;
 
 /**
  * Class to represent the Talons attached to motors.
@@ -11,7 +10,7 @@ import org.usfirst.frc.team1683.sensors.DIOEncoder;
  */
 public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 
-	private DIOEncoder encoder;
+	private Encoder encoder;
 	private Thread thread;
 
 	/**
@@ -24,12 +23,10 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 		private double distance;
 		private double speed;
 		private Talon talon;
-		private DIOEncoder encoder;
 
-		public MotorMover(Talon talon, double distance, DIOEncoder encoder, double speed) {
+		public MotorMover(Talon talon, double distance, double speed) {
 			this.talon = talon;
 			this.distance = distance;
-			this.encoder = encoder;
 			if (distance < 0)
 				this.speed = -speed;
 			else
@@ -39,17 +36,13 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 		@Override
 		public void run() {
 			encoder.reset();
-			talon.set(speed);
-			synchronized (this) {
-				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
-					SmartDashboard.sendData("Encoder Distance", encoder.getDistance());
-					System.out.println("eDistance" + encoder.getDistance());
-					System.out.println("eRaw" + encoder.getRaw());
-
-				}
+			// synchronized (this) {
+			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+				talon.set(speed);
 			}
+			// }
 			talon.stop();
-			notify();
+			// notify();
 			// encoder.reset();
 		}
 
@@ -78,7 +71,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @param encoder
 	 *            Encoder to attach to this Talon.
 	 */
-	public Talon(int channel, boolean reversed, DIOEncoder encoder) {
+	public Talon(int channel, boolean reversed, Encoder encoder) {
 		super(channel);
 		super.setInverted(reversed);
 		this.encoder = encoder;
@@ -108,19 +101,18 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 
 		if (hasEncoder()) {
 			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
-				thread = new Thread(new MotorMover(this, distance, encoder, speed));
+				thread = new Thread(new MotorMover(this, distance, speed));
 			}
 			if (thread.getState().equals(Thread.State.NEW)) {
 				thread.start();
 
-				synchronized (thread) {
-					try {
-						thread.wait();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				// synchronized (thread) {
+				// try {
+				// thread.wait();
+				// } catch (InterruptedException e) {
+				// e.printStackTrace();
+				// }
+				// }
 			}
 		} else {
 			throw new EncoderNotFoundException();
@@ -156,7 +148,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @return The encoder attached to this Talon if exists, null otherwise.
 	 */
 	@Override
-	public DIOEncoder getEncoder() {
+	public Encoder getEncoder() {
 		return encoder;
 	}
 

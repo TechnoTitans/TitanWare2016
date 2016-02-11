@@ -13,20 +13,21 @@ public class QuadEncoder implements Encoder {
 	private double distancePerRevolution;
 
 	public QuadEncoder(TalonSRX talonSRX, double distancePerRevolution){
-		if (talonSRX.isSensorPresent(FeedbackDevice.QuadEncoder) == FeedbackDeviceStatus.FeedbackStatusPresent) {
+//		if (talonSRX.isSensorPresent(FeedbackDevice.QuadEncoder) == FeedbackDeviceStatus.FeedbackStatusPresent) {
 			this.talonSRX = talonSRX;
-		} else {
+//		} else {
 //			throw new EncoderNotFoundException();
-			this.talonSRX = null;
-		}
+//			this.talonSRX = null;
+//		}
 		
 		this.talonSRX.configEncoderCodesPerRev((int) distancePerRevolution);
 	}
 
 	@Override
 	public double getDistance() {
-		double pos = talonSRX.getEncPosition();
-		return (pos%PULSES_PER_REVOLUTION)/PULSES_PER_REVOLUTION*360;
+//		double pos = talonSRX.getEncPosition();
+//		return (pos%PULSES_PER_REVOLUTION)/PULSES_PER_REVOLUTION*360;
+		return talonSRX.getPosition();
 	}
 
 	public double getPosition() {
@@ -41,6 +42,11 @@ public class QuadEncoder implements Encoder {
 	
 	public void reset() {
 		talonSRX.setPosition(0);
+//		talonSRX.setpos
+	}
+	
+	public TalonSRX getTalon() {
+		return talonSRX;
 	}
 
 }
