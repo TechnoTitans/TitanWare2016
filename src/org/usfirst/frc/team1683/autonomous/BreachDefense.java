@@ -31,10 +31,11 @@ public class BreachDefense extends Autonomous {
 				break;
 			}
 		}
+		//uses accel to tell if on defense or not
 		case CROSS_DEFENSE: {
 			if(!accel.isFlat()){
 			tankDrive.set(Motor.MID_SPEED);
-			}
+			} 
 			else tankDrive.stop();
 
 			nextState = State.END_CASE;
