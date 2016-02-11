@@ -1,7 +1,10 @@
 package org.usfirst.frc.team1683.autonomous;
 import org.usfirst.frc.team1683.driveTrain.EncoderNotFoundException;
+import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.vision.FindGoal;
+import org.usfirst.frc.team1683.driveTrain.Motor;
+
 /**
  * Shoots at target
  * 
@@ -9,12 +12,14 @@ import org.usfirst.frc.team1683.vision.FindGoal;
  *
  */
 public class ShootAtTarget extends Autonomous {
-	public ShootAtTarget(TankDrive driveTrain) {
+	FindGoal findgoal=new FindGoal();
+	BuiltInAccel accel;
+	public ShootAtTarget(TankDrive driveTrain,BuiltInAccel accel) {
 		super(driveTrain);
+		this.accel=accel;
 	}
 	
 	public void run() {
-		FindGoal findgoal=new FindGoal();
 		switch (presentState) {
 		case INIT_CASE: {
 			nextState = State.DRIVE_FORWARD;
@@ -30,8 +35,13 @@ public class ShootAtTarget extends Autonomous {
 			break;
 		}
 		case BREACH_DEFENSE:{
-			//TODO:add autonomous code for each of the seperate obstacles
-			nextState=State.REACH_DISTANCE;//after breaching defense, arrive at a good point for shooting.
+			if(!accel.isFlat()){
+				tankDrive.set(Motor.MID_SPEED);
+			}
+			else{
+				tankDrive.stop();
+			}
+			nextState=State.REACH_DISTANCE;//after breaching defense, arrive at a good point for shooting
 			break;
 		}
 		case REACH_DISTANCE:{
@@ -40,7 +50,7 @@ public class ShootAtTarget extends Autonomous {
 			break;
 		}
 		case FIND_TARGET:{
-			while(findgoal.isCentered()==2){
+			while(findgoal.isCentered()!=0){
 				tankDrive.turn(2);
 			}
 			break;

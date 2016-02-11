@@ -17,6 +17,15 @@ public class FindGoal {
 	private double optic_angle=49; //M1103 cameras only
 	private double FOVpx=300; //pixels of the grip program
 	private double Targetin=20; //target width
+	private double ShooterAngle=0;//TODO
+	private final double ShooterWidthLength=0;//TODO:length of shooter
+	private final double ShooterHeightLength=0;//TODO
+	private final double TargetHeight=0;//TODO
+	private final double CameraHeight=0;//TODO
+	private final double ShooterHeight=0;//TODO
+	private final double CameraShooterDistance=0;//TODO
+	
+	private double HeightRobot=0;//TODO:Find distance between robot shooter and target;
 	/*
 	 * go to https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
 	 */
@@ -25,7 +34,6 @@ public class FindGoal {
 	}
 	public Contour[] getData() {
 		Contour[] contours;
-		SmartDashboard.sendData("myTests","Test");
 		try {
 			AREA =FindGoal.tableContour.getNumberArray("area", defaultvalue);
 			GOAL_X = FindGoal.tableContour.getNumberArray("centerX", defaultvalue);
@@ -61,12 +69,20 @@ public class FindGoal {
 		SmartDashboard.sendData("DistanceTarget",this.distance);
 		return distance;
 	}
+	public double AngleTriangle(double c,double a){
+		return (Math.sin(a/c));
+	}
+	public void getAngle(double ShooterAngle){
+		this.ShooterAngle=ShooterAngle;
+	}
 	/*
 	 * 	checks if robot is aligned. -1 for too far left. 0 for just right. 1 for too far right. 2 for error
 	 */
+	//2.82
 	//public double ShooterSpeed(){
 		//TODO:Test values for shooter. Plot points on graphical analysis and take derivative.
 	//}
+	
 	public int isCentered() {
 		Contour[] contours = getData();
 		double offset=FOVpx-contours[ClosestContour(AREA)].WIDTH;
@@ -83,5 +99,8 @@ public class FindGoal {
 			return 2;
 		}
 	}
-	
+	//Assisted aiming
+	//public double FindAngle(double distances){
+		
+	//}
 }

@@ -32,9 +32,6 @@ public abstract class Autonomous {
 	public static enum AutonomousMode {
 		DO_NOTHING, REACH_DEFENSE, TEST_AUTO
 	}
-	protected static enum Obstacle{
-		PORTULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLY_PORT, ROCK_WALL,ROUGH_TERRAIN,LOW_BAR,PLATFORMS
-	}
 	protected static enum FinalPosition{
 		LEFT_SIDE,CENTER,RIGHT_SIDE
 	}
