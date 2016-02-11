@@ -23,6 +23,7 @@ public class ReachDefense extends Autonomous {
 			break;
 		}
 		case DRIVE_FORWARD: {
+
 			try {
 				tankDrive.moveDistance(reachDistance);
 			} catch (EncoderNotFoundException e) {

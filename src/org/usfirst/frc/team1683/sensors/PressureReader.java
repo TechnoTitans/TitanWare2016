@@ -17,11 +17,11 @@ public class PressureReader implements Sensor {
 		this.portNumber = portNumber;
 		sensor = new AnalogInput(portNumber);
 	}
-
+// gets port number and returns it
 	public double getPortNumber() {
 		return portNumber;
 	}
-
+// gets voltage and returns average as an Analog Value
 	public double getRaw() {
 		return sensor.getAverageVoltage();
 
