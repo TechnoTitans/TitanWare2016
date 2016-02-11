@@ -26,7 +26,7 @@ public abstract class Autonomous {
 	}
 
 	protected static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD,BREACH_DEFENSE,REACH_DISTANCE,FIND_TARGET,FIRE
+		INIT_CASE, END_CASE, DRIVE_FORWARD,BREACH_DEFENSE,REACH_DISTANCE,FIND_TARGET,FIRE, CROSS_DEFENSE
 	}
 
 	public static enum AutonomousMode {
