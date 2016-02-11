@@ -2,7 +2,6 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import java.util.ArrayList;
 
-import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
@@ -15,16 +14,13 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  */
 public class MotorGroup extends ArrayList<Motor> {
 
-	private ArrayList<Motor> motors;
+	// This variable was required for some reason.
+	private static final long serialVersionUID = 1L;
 	private Encoder encoder;
 	private Thread thread;
-	private MotorMover mover;
 
 	/**
 	 * Private class to move motor in separate thread.
-	 * 
-	 * @author David Luo
-	 *
 	 */
 	private class MotorMover implements Runnable {
 
@@ -45,21 +41,29 @@ public class MotorGroup extends ArrayList<Motor> {
 		@Override
 		public void run() {
 			encoder.reset();
-//			synchronized (this) {
-				while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
-					motors.set(speed);
-					
-					SmartDashboard.sendData("EncoderDistance", encoder.getDistance());
-					SmartDashboard.sendData("TargetDistance", distance);
-					// do nothing
-				}
-//			}
+			// synchronized (this) {
+			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+				motors.set(speed);
+
+				SmartDashboard.sendData("EncoderDistance", encoder.getDistance());
+				SmartDashboard.sendData("TargetDistance", distance);
+				// do nothing
+			}
+			// }
 			motors.stop();
 			this.notifyAll();
 		}
 
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param encoder
+	 *            The encoder attached to this MotorGroup
+	 * @param motors
+	 *            The motors.
+	 */
 	public MotorGroup(Encoder encoder, Motor... motors) {
 		this.encoder = encoder;
 		for (Motor motor : motors) {
@@ -67,6 +71,12 @@ public class MotorGroup extends ArrayList<Motor> {
 		}
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param motors
+	 *            The motors.
+	 */
 	public MotorGroup(Motor... motors) {
 		for (Motor motor : motors) {
 			this.add(motor);
@@ -93,15 +103,15 @@ public class MotorGroup extends ArrayList<Motor> {
 	 * @throws EncoderNotFoundException
 	 *             If encoder not found.
 	 */
+	// TODO: make this linear instead of rotations
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
 		if (hasEncoder()) {
-//			for (Motor motor : this) {
-//				motor.moveDistance(distance, speed);
-//			}
+			// for (Motor motor : this) {
+			// motor.moveDistance(distance, speed);
+			// }
 			thread = new Thread(new MotorMover(this, distance, speed));
 			thread.start();
-		}
-		else {
+		} else {
 			throw new EncoderNotFoundException();
 		}
 	}
@@ -131,7 +141,7 @@ public class MotorGroup extends ArrayList<Motor> {
 	 * @return If there is an encoder associated with the group.
 	 */
 	public boolean hasEncoder() {
-		return !(encoder==null);
+		return !(encoder == null);
 	}
 
 	/**
@@ -148,7 +158,7 @@ public class MotorGroup extends ArrayList<Motor> {
 			}
 		}
 	}
-	
+
 	// /**
 	// * @return The motors in the group.
 	// */
