@@ -1,5 +1,11 @@
 package org.usfirst.frc.team1683.vision;
 import org.usfirst.frc.team1683.vision.Contour;
+/**
+ * Vision methods
+ * 
+ * @author Yi Liu
+ *
+ */
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
@@ -35,7 +41,6 @@ public class FindGoal {
 		for (int i = 0; i < contours.length; i++) {
 			contours[i] = new Contour(i,HEIGHT[i], WIDTH[i],GOAL_X[i], GOAL_Y[i],AREA[i]);
 		}
-		
 		return contours;
 	}
 	public int ClosestContour(double[] area){
@@ -52,13 +57,16 @@ public class FindGoal {
 	 */
 	public double FindDistance(){
 		Contour[] contours = getData();
-		this.distance=Targetin*FOVpx/(2*contours[0].WIDTH*Math.tan(optic_angle));
+		this.distance=Targetin*FOVpx/(2*contours[ClosestContour(AREA)].WIDTH*Math.tan(optic_angle));
 		SmartDashboard.sendData("DistanceTarget",this.distance);
 		return distance;
 	}
 	/*
 	 * 	checks if robot is aligned. -1 for too far left. 0 for just right. 1 for too far right. 2 for error
 	 */
+	//public double ShooterSpeed(){
+		//TODO:Test values for shooter. Plot points on graphical analysis and take derivative.
+	//}
 	public int isCentered() {
 		Contour[] contours = getData();
 		double offset=FOVpx-contours[ClosestContour(AREA)].WIDTH;
