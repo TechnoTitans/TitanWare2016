@@ -13,7 +13,7 @@ public class VisionTest{
 	}
 	
 	public void test(){
-		contours = vision.getData();
+		contours = vision.getData();//
 		if(contours.length!=0){
 			SmartDashboard.sendData("DistanceTarget", vision.FindDistance());
 			SmartDashboard.sendData("Centered",vision.isCentered());
