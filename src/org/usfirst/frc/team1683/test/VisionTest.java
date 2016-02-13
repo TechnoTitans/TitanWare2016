@@ -17,9 +17,9 @@ public class VisionTest{
 		if(contours.length!=0){
 			SmartDashboard.sendData("DistanceTarget", vision.FindDistance());
 			SmartDashboard.sendData("Centered",vision.isCentered());
-			SmartDashboard.sendData("YAimPOint",(20*(contours[0].Y_POS+contours[0].HEIGHT/2)/contours[0].WIDTH));
+			SmartDashboard.sendData("YAimPoint",(20*(contours[0].Y_POS+contours[0].HEIGHT/2)/contours[0].WIDTH));
 			SmartDashboard.sendData("Closest",vision.ClosestContour(contours));
-			SmartDashboard.sendData("",);
+			SmartDashboard.sendData("HeightTarget",vision.FindHeight());
 		}
 	}
 }
