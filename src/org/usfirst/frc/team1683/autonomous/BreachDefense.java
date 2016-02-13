@@ -43,7 +43,16 @@ public class BreachDefense extends Autonomous {
 		}
 		case END_CASE: {
 			break;
-		}
+		}		
+		case FIND_TARGET:
+			break;
+		case FIRE:
+			break;
+		case REACH_DISTANCE:
+			break;
+		default:
+			break;
+		
 		}
 		presentState = nextState;
 	}
