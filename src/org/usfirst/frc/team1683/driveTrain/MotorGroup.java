@@ -18,6 +18,7 @@ public class MotorGroup extends ArrayList<Motor> {
 	private static final long serialVersionUID = 1L;
 	private Encoder encoder;
 	private Thread thread;
+	private AntiDrift antiDrift;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -43,7 +44,13 @@ public class MotorGroup extends ArrayList<Motor> {
 			encoder.reset();
 			// synchronized (this) {
 			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
-				motors.set(speed);
+				if(isAntiDriftEnabled()) {
+					speed = antiDrift.antiDrift(speed, motors);
+					motors.set(speed);
+				}
+				else {
+					motors.set(speed);
+				}
 
 				SmartDashboard.sendData("EncoderDistance", encoder.getDistance());
 				SmartDashboard.sendData("TargetDistance", distance);
@@ -165,4 +172,28 @@ public class MotorGroup extends ArrayList<Motor> {
 	// public Motor getMotors() {
 	// return motors;
 	// }
+	
+	//probably want to find a better way to use antidrift than this way.
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		return true;
+	}
+	
+	public void enableAntiDrift(AntiDrift antiDrift) {
+		this.antiDrift = antiDrift;
+	}
+	
+	public void disableAntiDrift() {
+		this.antiDrift = null;
+	}
+	
+	public boolean isAntiDriftEnabled() {
+		return !(antiDrift == null);
+	}
 }
