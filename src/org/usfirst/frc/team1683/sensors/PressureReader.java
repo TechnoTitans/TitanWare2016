@@ -1,5 +1,5 @@
 package org.usfirst.frc.team1683.sensors;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
 public class PressureReader implements Sensor {
 	private final double MAX_VOLTAGE = 4.5;
@@ -31,12 +31,15 @@ public class PressureReader implements Sensor {
 		averageVoltage= sensor.getAverageVoltage();
 		if( averageVoltage > MAX_VOLTAGE ){
 			pressure=MAX_PRESSURE;
+			SmartDashboard.putNumber("Pressure", pressure);
 		}
 		else if (averageVoltage < MIN_VOLTAGE){
 			pressure=MIN_PRESSURE;
+			SmartDashboard.putNumber("Pressure", pressure);
 		}
 		else {
 			pressure= PRESSURE_SLOPE*(averageVoltage-MIN_VOLTAGE);
+			SmartDashboard.putNumber("Pressure", pressure);
 		}
 		
 		return pressure;
