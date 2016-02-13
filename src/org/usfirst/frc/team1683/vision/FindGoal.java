@@ -54,10 +54,10 @@ public class FindGoal {
 		}
 		return contours;
 	}
-	public int ClosestContour(Contour[] contourss){
+	public int ClosestContour(Contour[] contours){
 		int maxarea=0;
-		for(int i=0;i<contourss.length;i++){
-			if(contourss[maxarea].AREA>contourss[i].AREA){
+		for(int i=0;i<contours.length;i++){
+			if(contours[maxarea].AREA>contours[i].AREA){
 				maxarea=i;
 			}
 		}
@@ -66,10 +66,16 @@ public class FindGoal {
 	/*
 	 * checks distance to target not to base of target
 	 */
-	public double FindDistance(Contour[] contourss){
-		this.distance=Targetin*FOVpx/(2*contourss[0].WIDTH*Math.tan(optic_angle));
-		SmartDashboard.sendData("DistanceTarget",this.distance);
-		System.out.println(this.distance);
+	public double FindDistance(){
+		Contour[] contours = getData();
+		if(contours.length!=0){
+			this.distance=Targetin*FOVpx/(2*contours[0].WIDTH*Math.tan(optic_angle));
+			SmartDashboard.sendData("DistanceTarget",this.distance);
+			System.out.println(this.distance);
+		}
+		else{
+			SmartDashboard.sendData("DistanceTarget",1234567);
+		}
 		return this.distance;
 	}
 	public double AngleTriangle(double c,double a){
@@ -84,17 +90,31 @@ public class FindGoal {
 	//public double ShooterSpeed(){
 		//TODO:Test values for shooter. Plot points on graphical analysis and take derivative.
 	//}
-	public double FindHeight(Contour[] contourss){
-		double cameratarget=20*(contourss[ClosestContour(contourss)].Y_POS-160)/contourss[ClosestContour(contourss)].WIDTH;
+	public double FindHeight(){
+		Contour[] contours=getData();
+		double cameratarget;
+		if(contours.length!=0){
+			cameratarget=20*(contours[ClosestContour(contours)].Y_POS-160)/contours[ClosestContour(contours)].WIDTH;
+		}
+		else{
+			cameratarget=1234567;
+		}
 		return (cameratarget-SHOOTER_HEIGHT);
 	}
-	public double FindDistanceToTarget(Contour[] contourss){
-		double CameraTargetDistance=Math.sqrt(Math.pow(2,(FindDistance(contourss)))-Math.pow(2,(FindHeight(contourss))));
+	public double FindDistanceToTarget(){
+		double CameraTargetDistance=Math.sqrt(Math.pow(2,(FindDistance()))-Math.pow(2,(FindHeight())));
 		return CameraTargetDistance;
 	}
-	public int isCentered(Contour[] contourss) {
+	public int isCentered() {
+		Contour[] contours = getData();
 		double offset;
-		offset=FOVpx/2-contourss[0].X_POS;
+		if(contours.length!=0){
+			 offset=FOVpx/2-contours[0].X_POS;
+		}
+		else{
+			 offset=1234567;
+		}
+		SmartDashboard.sendData("Offset",offset);
 		if(offset<-CENTER_WIDTH_PX){
 			return 1;
 		}
