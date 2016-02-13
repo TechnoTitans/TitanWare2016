@@ -18,7 +18,7 @@ public class TankDrive implements DriveTrain {
 	private Gyro gyro;
 	private Thread thread;
 
-	private AntiDrift antiDrift;
+	//private AntiDrift antiDrift;
 	private final double kp = 0.03;
 
 	private class RobotTurner implements Runnable {
@@ -59,7 +59,7 @@ public class TankDrive implements DriveTrain {
 		this.left = left;
 		this.right = right;
 		this.gyro = gyro;
-		antiDrift = new AntiDrift(left, right, gyro, kp);
+		//antiDrift = new AntiDrift(left, right, gyro, kp);
 	}
 
 	/**
@@ -177,19 +177,19 @@ public class TankDrive implements DriveTrain {
 		return right;
 	}
 
-	public void enableAntiDrift() {
-		left.enableAntiDrift(antiDrift);
-		right.enableAntiDrift(antiDrift);
-	}
+	//public void enableAntiDrift() {
+	///	left.enableAntiDrift(antiDrift);
+	//	right.enableAntiDrift(antiDrift);
+	//}
 
-	public void disableAntiDrift() {
-		left.disableAntiDrift();
-		right.disableAntiDrift();
-	}
+	//public void disableAntiDrift() {
+	//	left.disableAntiDrift();
+//		right.disableAntiDrift();
+//	}
 
-	public boolean isAntiDriftEnabled() {
-		return left.isAntiDriftEnabled() && right.isAntiDriftEnabled();
-	}
+	//public boolean isAntiDriftEnabled() {
+	//	return left.isAntiDriftEnabled() && right.isAntiDriftEnabled();
+	//}
 
 	public Gyro getGyro() {
 		return gyro;

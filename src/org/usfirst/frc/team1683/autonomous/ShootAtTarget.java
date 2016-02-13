@@ -50,9 +50,9 @@ public class ShootAtTarget extends Autonomous {
 			break;
 		}
 		case FIND_TARGET:{
-			while(findgoal.isCentered()!=0){
-				tankDrive.turn(2);
-			}
+			//while(findgoal.isCentered()!=0){
+			//	tankDrive.turn(2);
+			//}
 			break;
 		}
 		case FIRE:{

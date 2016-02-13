@@ -6,6 +6,7 @@ import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.pneumatics.Piston;
+import org.usfirst.frc.team1683.sensors.PressureReader;
 import org.usfirst.frc.team1683.shooter.PickerUpper;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.test.AccelSPITester;
@@ -43,6 +44,7 @@ public class TechnoTitan extends IterativeRobot {
 	Talon angleMotor;
 	Shooter shooter;
 	Piston shootPiston;
+	PressureReader pressureReader;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -55,7 +57,7 @@ public class TechnoTitan extends IterativeRobot {
 		// SmartDashboard.putData("Auto choices", chooser);
 //		//FindGoal vision=new FindGoal();
 //		switcher = new AutonomousSwitcher(drive);
-//		vision = new VisionTest();		
+		vision = new VisionTest();		
 		
 		//leftTalon = new TalonSRX(3,false);
 		//rightTalon = new TalonSRX(5, false);
@@ -73,6 +75,7 @@ public class TechnoTitan extends IterativeRobot {
 		
 		pickerUpper = new PickerUpper(shooterGroup);
 		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
+		pressureReader = new PressureReader(3);
 	}
 
 	/**
@@ -128,9 +131,10 @@ public class TechnoTitan extends IterativeRobot {
 //		drive.driveMode();
 		pickerUpper.intake();
 		shooter.shootBall();
+		pressureReader.getPressure();
 		//accel.test();
+        vision.test();
 
-//		vision.test();42
 	}
 	
 	public void testInit() {
@@ -151,8 +155,6 @@ public class TechnoTitan extends IterativeRobot {
 		gyro.test();
 		//pickerUpper.intake();
 		shooter.joystickAngleShooter();
-		
-
 	}
 
 }
