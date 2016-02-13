@@ -2,8 +2,7 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.sensors.Encoder;
-
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+import org.usfirst.frc.team1683.sensors.Gyro;
 
 /**
  * Represents the drive train in tank drive configuration.
@@ -17,9 +16,19 @@ public class TankDrive implements DriveTrain {
 	private MotorGroup right;
 	private Gyro gyro;
 
+	private AntiDrift antiDrift;
+	private final double kp = 0.03;
+
 	public TankDrive(MotorGroup left, MotorGroup right) {
 		this.left = left;
 		this.right = right;
+	}
+
+	public TankDrive(MotorGroup left, MotorGroup right, Gyro gyro) {
+		this.left = left;
+		this.right = right;
+		this.gyro = gyro;
+		antiDrift = new AntiDrift(left, right, gyro, kp);
 	}
 
 	/**
@@ -78,6 +87,9 @@ public class TankDrive implements DriveTrain {
 		right.stop();
 	}
 
+	/**
+	 * Stop without braking.
+	 */
 	public void coast() {
 		left.setBrakeMode(false);
 		right.setBrakeMode(false);
@@ -121,5 +133,19 @@ public class TankDrive implements DriveTrain {
 	@Override
 	public MotorGroup getRightGroup() {
 		return right;
+	}
+
+	public void enableAntiDrift() {
+		left.enableAntiDrift(antiDrift);
+		right.enableAntiDrift(antiDrift);
+	}
+
+	public void disableAntiDrift() {
+		left.disableAntiDrift();
+		right.disableAntiDrift();
+	}
+
+	public boolean isAntiDriftEnabled() {
+		return left.isAntiDriftEnabled() && right.isAntiDriftEnabled();
 	}
 }
