@@ -120,13 +120,25 @@ public class MotorGroup extends ArrayList<Motor> {
 	 * Set collective speed of motors.
 	 * 
 	 * @param speed
-	 *            Speed from 0 to 1.
+	 * 			  Speed from 0 to 1.
 	 */
 	public void set(double speed) {
 		for (Motor motor : this) {
 			motor.set(speed);
 		}
 	}
+	
+	/**
+	 * Gets collective speed of motors
+	 */
+	public double get() {
+		double speed = 0;
+		for(Motor motor : this) {
+			speed += motor.get();
+		}
+		return speed/this.size();
+	}
+	
 
 	/**
 	 * Stops group.

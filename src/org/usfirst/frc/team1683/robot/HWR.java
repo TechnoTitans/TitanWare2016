@@ -16,8 +16,8 @@ public class HWR {
 	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_1;
 
 	// TODO: Get these values
-	public static final int SHOOTER_LEFT = 0;
-	public static final int SHOOTER_RIGHT = 0;
+	public static final int SHOOTER_LEFT = HWP.CAN_3;
+	public static final int SHOOTER_RIGHT = HWP.CAN_5;
 
 	// Encoders
 	// TODO: Get these values
@@ -35,5 +35,12 @@ public class HWR {
 	// Compressor
 	// TODO: Get these values
 	public static final int COMPRESSOR = 0;
+	public static final int DEFAULT_MODULE_CHANNEL = 0;
+	public static final int SHOOTER_PISTON_CHANNEL = 3;
+	
+	// Buttons
+	public static final int START_INTAKE_BALL = HWP.BUTTON_5;
+	public static final int START_SHOOTER = HWP.BUTTON_4;
+	public static final int ACTUATE_PISTON_SHOOTER = HWP.BUTTON_2;
 
 }
