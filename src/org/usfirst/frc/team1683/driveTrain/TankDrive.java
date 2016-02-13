@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
+import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.sensors.Encoder;
 import org.usfirst.frc.team1683.sensors.Gyro;
@@ -15,9 +16,39 @@ public class TankDrive implements DriveTrain {
 	private MotorGroup left;
 	private MotorGroup right;
 	private Gyro gyro;
+	private Thread thread;
 
 	private AntiDrift antiDrift;
 	private final double kp = 0.03;
+
+	private class RobotTurner implements Runnable {
+
+		private double speed;
+		private double angle;
+
+		public RobotTurner(double angle, double speed) {
+			this.angle = angle;
+			if (angle < 0) {
+				this.speed = -speed;
+			} else {
+				this.speed = speed;
+			}
+		}
+
+		@Override
+		public void run() {
+			double initialHeading = gyro.getAngle();
+
+			while (Math.abs(gyro.getAngle() - initialHeading) < angle) {
+				// TODO: make sure these directions are right
+				left.set(-speed);
+				right.set(speed);
+			}
+			left.stop();
+			right.stop();
+		}
+
+	}
 
 	public TankDrive(MotorGroup left, MotorGroup right) {
 		this.left = left;
@@ -61,10 +92,21 @@ public class TankDrive implements DriveTrain {
 	 *            How much to turn the robot.
 	 */
 	@Override
-	public void turn(double degrees) {
-		// TODO Needs encoder/gyro
-		gyro.getAngle();
+	public void turn(double degrees) throws GyroNotFoundException {
+		turn(degrees, Motor.LOW_SPEED);
+	}
 
+	public void turn(double degrees, double speed) throws GyroNotFoundException {
+		if (hasGyro()) {
+			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
+				thread = new Thread(new RobotTurner(degrees, speed));
+			}
+			if (thread.getState().equals(Thread.State.NEW)) {
+				thread.start();
+			}
+		} else {
+			throw new GyroNotFoundException();
+		}
 	}
 
 	/**
@@ -147,5 +189,13 @@ public class TankDrive implements DriveTrain {
 
 	public boolean isAntiDriftEnabled() {
 		return left.isAntiDriftEnabled() && right.isAntiDriftEnabled();
+	}
+
+	public Gyro getGyro() {
+		return gyro;
+	}
+
+	public boolean hasGyro() {
+		return !(gyro == null);
 	}
 }
