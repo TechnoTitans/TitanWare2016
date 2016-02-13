@@ -139,13 +139,20 @@ public class TalonSRX extends CANTalon implements Motor {
 		super.enableControl();
 		super.set(speed);
 	}
-
+	
+	/**
+	 * Gets speed of the TalonSRX
+	 */
+	public double get() {
+		return super.get();
+	}
 	/**
 	 * Stops motor.
 	 */
 	@Override
 	public void stop() {
-		super.disableControl();
+		super.set(0);
+		//super.disableControl();
 		// super.stopMotor();
 
 	}

@@ -2,11 +2,12 @@
 package org.usfirst.frc.team1683.robot;
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
+import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
-import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
-import org.usfirst.frc.team1683.sensors.QuadEncoder;
+import org.usfirst.frc.team1683.pneumatics.Piston;
+import org.usfirst.frc.team1683.shooter.PickerUpper;
+import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.test.AccelSPITester;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
 import org.usfirst.frc.team1683.test.GyroTester;
@@ -36,6 +37,12 @@ public class TechnoTitan extends IterativeRobot {
 	BuiltInAccelTester accel; 
 	AccelSPITester accel2;
 	GyroTester gyro;
+	PickerUpper pickerUpper;
+	TalonSRX leftTalon;
+	TalonSRX rightTalon;
+	Talon angleMotor;
+	Shooter shooter;
+	Piston shootPiston;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -46,36 +53,26 @@ public class TechnoTitan extends IterativeRobot {
 		// chooser.addDefault("Default Auto", defaultAuto);
 		// chooser.addObject("My Auto", customAuto);
 		// SmartDashboard.putData("Auto choices", chooser);
-		//FindGoal vision=new FindGoal();
+//		//FindGoal vision=new FindGoal();
+//		switcher = new AutonomousSwitcher(drive);
+//		vision = new VisionTest();		
 		
-//		DIOEncoder leftEncoder = new DIOEncoder(HWR.LEFT_DRIVE_ENCODER_A, HWR.LEFT_DRIVE_ENCODER_B, LEFT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
-//		DIOEncoder rightEncoder = new DIOEncoder(HWR.RIGHT_DRIVE_ENCODER_A, HWR.RIGHT_DRIVE_ENCODER_B, RIGHT_REVERSE, WHEEL_DISTANCE_PER_PULSE);
-
-//		leftGroup.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE));
-//		leftGroup.add(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
-//		rightGroup.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE));
-//		rightGroup.add(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
-		/*
-		TalonSRX encoderTalon = new TalonSRX(3, false);
-		QuadEncoder encoder = new QuadEncoder(encoderTalon, 1024);
-		MotorGroup leftGroup = new MotorGroup(encoder, encoderTalon);
-		MotorGroup rightGroup = new MotorGroup(encoder, new TalonSRX(5,true));
-//		leftGroup.add(encoderTalon);
-//		rightGroup.add(new TalonSRX(5, true));
-		leftGroup.setBrakeMode(true);
-		rightGroup.setBrakeMode(true);
-		drive = new TankDrive(leftGroup, rightGroup);
-
-		switcher = new AutonomousSwitcher(drive);
-
-		vision = new VisionTest();		
-		*/
+		//leftTalon = new TalonSRX(3,false);
+		//rightTalon = new TalonSRX(5, false);
 		
 		MotorGroup leftGroup = new MotorGroup(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE),
 				new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
 		MotorGroup rightGroup = new MotorGroup(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE),
 				new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
 		drive = new TankDrive(leftGroup, rightGroup);
+		
+		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
+		MotorGroup shooterGroup = new MotorGroup(
+				new TalonSRX(HWR.SHOOTER_LEFT, false),
+				new TalonSRX(HWR.SHOOTER_RIGHT, false));
+		
+		pickerUpper = new PickerUpper(shooterGroup);
+		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
 	}
 
 	/**
@@ -128,8 +125,11 @@ public class TechnoTitan extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		drive.driveMode();
+//		drive.driveMode();
+		pickerUpper.intake();
+		shooter.shootBall();
 		//accel.test();
+
 //		vision.test();42
 	}
 	
@@ -138,6 +138,7 @@ public class TechnoTitan extends IterativeRobot {
 		//accel2 = new AccelSPITester();
 		gyro = new GyroTester();
 		
+		//shooter.joystickAngleShooter();
 		
 	}
 
@@ -147,7 +148,9 @@ public class TechnoTitan extends IterativeRobot {
 	public void testPeriodic() {
 		accel.test();
 		accel2.test();
-		//gyro.test();
+		gyro.test();
+		//pickerUpper.intake();
+		shooter.joystickAngleShooter();
 		
 
 	}

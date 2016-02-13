@@ -128,6 +128,13 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	public void set(double speed) {
 		super.set(speed);
 	}
+	
+	/**
+	 * Gets speed of the Talon
+	 */
+	public double get() {
+		return super.get();
+	}
 
 	/**
 	 * Stops motor.

@@ -15,32 +15,23 @@ public class AccelSPI extends edu.wpi.first.wpilibj.ADXL362{
 		super.initTable(getTable());
 	}
 	
-	/*public double getXaxis() {
-		super.updateTable();
-		return getTable().getNumber("X", 0.0);
-	}*/
-	
-	public double getXaxis() {
-		return super.getAccelerations().XAxis;
+	public double getAngleXZ() {
+		return Math.atan2(getX(),getZ())*180/Math.PI;
 	}
-	
-	public double getYaxis() {
-		return super.getAccelerations().YAxis;
-	}
-	
-	public double getZaxis() {
-		return super.getAccelerations().ZAxis;
+	public double getAngleYZ() {
+		return Math.atan2(getY(),getZ())*180/Math.PI;
 	}
 	
 	public double getX() {
-		return super.getX();
+		return super.getAccelerations().XAxis;
 	}
 	
 	public double getY() {
-		return super.getY();
+		return super.getAccelerations().YAxis;
+	}
+	
+	public double getZ() {
+		return super.getAccelerations().ZAxis;
 	}
 
-	public double getZ() {
-		return super.getZ();
-	}
 }

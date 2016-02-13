@@ -45,6 +45,18 @@ public class HWP {
 	public static final int JOY_0 = 0;
 	public static final int JOY_1 = 1;
 	public static final int JOY_2 = 2;
+	
+	//Buttons
+	public static final int BUTTON_1 = 1;
+	public static final int BUTTON_2 = 2;
+	public static final int BUTTON_3 = 3;
+	public static final int BUTTON_4 = 4;
+	public static final int BUTTON_5 = 5;
+	public static final int BUTTON_6 = 6;
+	public static final int BUTTON_7 = 7;
+	public static final int BUTTON_8 = 8;
+	public static final int BUTTON_9 = 9;
+	public static final int BUTTON_10 = 10;
 
 	// Digital I/O
 	public static final int DIO_0 = 0;
