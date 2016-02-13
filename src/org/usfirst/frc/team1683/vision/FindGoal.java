@@ -63,7 +63,6 @@ public class FindGoal {
 		}
 		return maxarea;
 	}
-	//
 	/*
 	 * checks distance to target not to base of target
 	 */
