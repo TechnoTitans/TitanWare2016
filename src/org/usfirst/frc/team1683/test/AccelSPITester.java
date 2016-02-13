@@ -14,9 +14,6 @@ public class AccelSPITester {
 	}
 
 	public void test() {
-		SmartDashboard.sendData("X static class", accel.getXaxis());
-	 	SmartDashboard.sendData("Y static class", accel.getYaxis());
-		SmartDashboard.sendData("Z static class", accel.getZaxis());
 		SmartDashboard.sendData("X normal", accel.getX());
 		SmartDashboard.sendData("Y normal", accel.getY());
 		SmartDashboard.sendData("Z normal", accel.getZ());
