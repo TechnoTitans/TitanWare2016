@@ -16,5 +16,10 @@ public class VisionTest{
 		contours = vision.getData();
 		//SmartDashboard.sendData("DistanceTarget", vision.FindDistance());
 		SmartDashboard.sendData("DistanceTarget", vision.FindDistance());
+		SmartDashboard.sendData("Centered",vision.isCentered());
+		if(contours.length!=0){
+		SmartDashboard.sendData("YAimPOint",(20*(contours[0].Y_POS+contours[0].HEIGHT/2)/contours[0].WIDTH));
+		}
+		SmartDashboard.sendData("CLosest",vision.ClosestContour(contours));
 	}
 }
