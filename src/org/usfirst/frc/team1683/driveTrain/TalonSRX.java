@@ -46,7 +46,8 @@ public class TalonSRX extends CANTalon implements Motor {
 			// synchronized (this) {
 			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
 				talonSrx.set(speed);
-//				SmartDashboard.sendData("encoder val", encoder.getDistance());
+				// SmartDashboard.sendData("encoder val",
+				// encoder.getDistance());
 				// do nothing
 			}
 			// }
@@ -124,8 +125,8 @@ public class TalonSRX extends CANTalon implements Motor {
 				SmartDashboard.sendData("EncoderNotFound", false);
 			}
 		} else {
-//			throw new EncoderNotFoundException();
 			SmartDashboard.sendData("EncoderNotFound", true);
+			throw new EncoderNotFoundException();
 		}
 	}
 
@@ -139,20 +140,21 @@ public class TalonSRX extends CANTalon implements Motor {
 		super.enableControl();
 		super.set(speed);
 	}
-	
+
 	/**
 	 * Gets speed of the TalonSRX
 	 */
 	public double get() {
 		return super.get();
 	}
+
 	/**
 	 * Stops motor.
 	 */
 	@Override
 	public void stop() {
 		super.set(0);
-		//super.disableControl();
+		// super.disableControl();
 		// super.stopMotor();
 
 	}
