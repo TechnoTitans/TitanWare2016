@@ -33,7 +33,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		public MotorMover(TalonSRX talonSrx, double distance, double speed) {
 			this.talonSrx = talonSrx;
 			this.distance = distance;
-			this.encoder = encoder;
+//			this.encoder = encoder;
 			if (distance < 0)
 				this.speed = -speed;
 			else
@@ -46,7 +46,8 @@ public class TalonSRX extends CANTalon implements Motor {
 			// synchronized (this) {
 			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
 				talonSrx.set(speed);
-//				SmartDashboard.sendData("encoder val", encoder.getDistance());
+				// SmartDashboard.sendData("encoder val",
+				// encoder.getDistance());
 				// do nothing
 			}
 			// }
@@ -124,8 +125,8 @@ public class TalonSRX extends CANTalon implements Motor {
 				SmartDashboard.sendData("EncoderNotFound", false);
 			}
 		} else {
-//			throw new EncoderNotFoundException();
 			SmartDashboard.sendData("EncoderNotFound", true);
+			throw new EncoderNotFoundException();
 		}
 	}
 
@@ -136,23 +137,43 @@ public class TalonSRX extends CANTalon implements Motor {
 	 *            Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-		super.enableControl();
+//		super.changeControlMode(TalonControlMode.Speed);
+//		super.enableControl();
 		super.set(speed);
 	}
-	
+
 	/**
 	 * Gets speed of the TalonSRX
 	 */
 	public double get() {
 		return super.get();
 	}
+
+	public void PIDAngle(double angle) {
+
+	}
+
+	
+	public void PIDInit() {
+		super.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		super.setInverted(false);
+		super.setProfile(0);
+		reset();
+		super.enableControl();
+	}
+	public void PIDPosition(double position) {
+		super.changeControlMode(TalonControlMode.Position);
+		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
+		super.set(position);
+	};
+
 	/**
 	 * Stops motor.
 	 */
 	@Override
 	public void stop() {
-		super.set(0);
-		//super.disableControl();
+		// super.set(0);
+		super.disableControl();
 		// super.stopMotor();
 
 	}

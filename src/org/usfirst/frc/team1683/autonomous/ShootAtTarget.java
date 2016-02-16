@@ -31,10 +31,10 @@ public class ShootAtTarget extends Autonomous {
 			} catch (EncoderNotFoundException e) {
 				System.err.println("Need encoders on tankDrive");
 			}
-			nextState = State.BREACH_DEFENSE;
+			nextState = State.CROSS_DEFENSE;
 			break;
 		}
-		case BREACH_DEFENSE:{
+		case CROSS_DEFENSE:{
 			if(!accel.isFlat()){
 				tankDrive.set(Motor.MID_SPEED);
 			}
@@ -50,9 +50,9 @@ public class ShootAtTarget extends Autonomous {
 			break;
 		}
 		case FIND_TARGET:{
-			while(findgoal.isCentered()!=0){
-				tankDrive.turn(2);
-			}
+//			while(findgoal.isCentered()!=0){
+//				tankDrive.turn(2);
+//			}
 			break;
 		}
 		case FIRE:{
