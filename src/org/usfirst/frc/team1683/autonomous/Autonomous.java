@@ -2,6 +2,7 @@ package org.usfirst.frc.team1683.autonomous;
 
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
@@ -40,7 +41,7 @@ public abstract class Autonomous {
 	public static double reachDistance; // 74 inches
 
 	public void updatePreferences() {
-		reachDistance = DriverStation.getDouble("reachDistance");
+		reachDistance = SmartDashboard.getDouble("reachDistance");
 	}
 
 	 public abstract void run();

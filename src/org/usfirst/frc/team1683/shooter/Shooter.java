@@ -80,10 +80,10 @@ public class Shooter {
 	public boolean spinRollers(double distance, double angle) {
 		boolean isUpToSpeed = false;
 		
-		if (DriverStation.auxStick.getRawButton(HWR.START_SHOOTER)) {
+		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWR.START_SHOOTER)) {
 			group.set(-SHOOT_SPEED);
 		}
-		if (DriverStation.auxStick.getRawButton(HWP.BUTTON_7))
+		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWP.BUTTON_7))
 			group.stop();
 		while(group.get() != SHOOT_SPEED) {
 			isUpToSpeed = false;
@@ -96,7 +96,7 @@ public class Shooter {
 	 * Extends pistons to shoot ball
 	 */
 	public void shootBall() {
-		if (DriverStation.auxStick.getRawButton(HWR.ACTUATE_PISTON_SHOOTER))
+		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWR.ACTUATE_PISTON_SHOOTER))
 			shootPiston.extend();
 	}
 	
