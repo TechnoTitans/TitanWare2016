@@ -18,6 +18,6 @@ public class ShootingPhysics {
 		return(Math.sqrt(Math.pow(2,(findSpeedX()))+Math.pow(2,(findSpeedY())))*powerincrease/(radius*0.10472));//returns in RPM
 	}
 	public double FindAngle(){
-		return(Math.tan(findSpeedX()/findSpeedY()));//radians
+		return(Math.tan(findSpeedX()/findSpeedY()));//returns in radians
 	}
 }
