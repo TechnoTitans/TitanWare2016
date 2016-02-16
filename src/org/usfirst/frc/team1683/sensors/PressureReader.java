@@ -43,7 +43,6 @@ public class PressureReader implements Sensor {
 		}
 		SmartDashboard.putNumber("Pressure", pressure);
 		SmartDashboard.putBoolean("SensorAttached", isAttached);
-		SmartDashboard.putNumber("Voltage", averageVoltage);
 		return pressure;
 		
 	}
