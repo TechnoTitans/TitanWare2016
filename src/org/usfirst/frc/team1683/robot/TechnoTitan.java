@@ -16,6 +16,7 @@ import org.usfirst.frc.team1683.test.AccelSPITester;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
 import org.usfirst.frc.team1683.test.GyroTester;
 import org.usfirst.frc.team1683.test.VisionTest;
+import org.usfirst.frc.team1683.vision.LightRing;
 
 import com.ni.vision.NIVision.SupervisedColorSegmentationReport;
 
@@ -52,6 +53,7 @@ public class TechnoTitan extends IterativeRobot {
 	Shooter shooter;
 	Piston shootPiston;
 	PressureReader pressureReader;
+	//LightRing lightRing;
 
 	MotorGroup testGroup;
 	
@@ -97,6 +99,7 @@ public class TechnoTitan extends IterativeRobot {
 		pickerUpper = new PickerUpper(shooterGroup);
 		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
 		pressureReader = new PressureReader(3);
+		//lightRing = new LightRing();
 	}
 
 	/**
