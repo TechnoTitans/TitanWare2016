@@ -2,6 +2,7 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 import org.usfirst.frc.team1683.sensors.Gyro;
 
@@ -19,7 +20,7 @@ public class TankDrive implements DriveTrain {
 	private Thread thread;
 
 	private AntiDrift antiDrift;
-	private final double kp = 0.03;
+	private final double kp = 0.6;
 
 	private class RobotTurner implements Runnable {
 
@@ -39,8 +40,9 @@ public class TankDrive implements DriveTrain {
 		public void run() {
 			double initialHeading = gyro.getAngle();
 
-			while (Math.abs(gyro.getAngle() - initialHeading) < angle) {
+			while (Math.abs(gyro.getAngle() - initialHeading) < Math.abs(angle)) {
 				// TODO: make sure these directions are right
+				SmartDashboard.sendData("Gyro Angle2", gyro.getAngle());
 				left.set(-speed);
 				right.set(speed);
 			}
@@ -59,6 +61,7 @@ public class TankDrive implements DriveTrain {
 		this.left = left;
 		this.right = right;
 		this.gyro = gyro;
+//		this.gyro.reset();
 		antiDrift = new AntiDrift(left, right, gyro, kp);
 	}
 

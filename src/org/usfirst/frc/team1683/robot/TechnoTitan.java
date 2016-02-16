@@ -5,13 +5,18 @@ import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.Piston;
+import org.usfirst.frc.team1683.sensors.Gyro;
+import org.usfirst.frc.team1683.sensors.QuadEncoder;
 import org.usfirst.frc.team1683.shooter.PickerUpper;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.test.AccelSPITester;
 import org.usfirst.frc.team1683.test.BuiltInAccelTester;
 import org.usfirst.frc.team1683.test.GyroTester;
 import org.usfirst.frc.team1683.test.VisionTest;
+
+import com.ni.vision.NIVision.SupervisedColorSegmentationReport;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 
@@ -30,13 +35,15 @@ public class TechnoTitan extends IterativeRobot {
 	// SendableChooser chooser;
 	public static AutonomousSwitcher switcher;
 	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
-	public static final boolean LEFT_REVERSE = true;
-	public static final boolean RIGHT_REVERSE = false;
+	public static final boolean LEFT_REVERSE = false;
+	public static final boolean RIGHT_REVERSE = true;
+	public static final double WHEEL_RADIUS =3.391/2; 
 	VisionTest vision;
 	TankDrive drive;
 	BuiltInAccelTester accel; 
 	AccelSPITester accel2;
-	GyroTester gyro;
+//	GyroTester gyro;
+	Gyro gyro;
 	PickerUpper pickerUpper;
 	TalonSRX leftTalon;
 	TalonSRX rightTalon;
@@ -44,6 +51,8 @@ public class TechnoTitan extends IterativeRobot {
 	Shooter shooter;
 	Piston shootPiston;
 
+	MotorGroup testGroup;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -60,11 +69,23 @@ public class TechnoTitan extends IterativeRobot {
 		//leftTalon = new TalonSRX(3,false);
 		//rightTalon = new TalonSRX(5, false);
 		
-		MotorGroup leftGroup = new MotorGroup(new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE),
+		gyro = new Gyro(HWR.GYRO);
+		
+		TalonSRX leftETalonSRX = new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT_E, LEFT_REVERSE);
+		TalonSRX rightETalonSRX = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT_E, RIGHT_REVERSE);
+		
+		MotorGroup leftGroup = new MotorGroup(new QuadEncoder(leftETalonSRX, WHEEL_RADIUS),
+//		MotorGroup leftGroup = new MotorGroup(
+				leftETalonSRX,
 				new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
-		MotorGroup rightGroup = new MotorGroup(new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT, RIGHT_REVERSE),
+		
+		MotorGroup rightGroup = new MotorGroup(new QuadEncoder(rightETalonSRX, WHEEL_RADIUS),
+//		MotorGroup rightGroup = new MotorGroup(
+				rightETalonSRX,
 				new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
-		drive = new TankDrive(leftGroup, rightGroup);
+		drive = new TankDrive(leftGroup, rightGroup, gyro);
+		
+		testGroup = rightGroup;
 		
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		MotorGroup shooterGroup = new MotorGroup(
@@ -72,7 +93,7 @@ public class TechnoTitan extends IterativeRobot {
 				new TalonSRX(HWR.SHOOTER_RIGHT, false));
 		
 		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
+		shooter = new Shooter(angleMotor, shooterGroup, shootPiston);
 	}
 
 	/**
@@ -87,6 +108,7 @@ public class TechnoTitan extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
+		
 		// autoSelected = (String) chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
@@ -111,13 +133,26 @@ public class TechnoTitan extends IterativeRobot {
 		// break;
 		// }
 //		
-//		if (!run) {
-//			drive.moveDistance(250, 1);
-//			run = true;
-//		}
+		if (!run) {
+			gyro.reset();
+//			drive.moveDistance(120, 0.3);
+			drive.turn(180, 0.25);
+//			drive.set(.25);
+			run = true;
+		}
 		
-//		SmartDashboard.sendData("getPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
+		SmartDashboard.sendData("getLeftPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
+		SmartDashboard.sendData("getRightPosition", ((QuadEncoder)drive.getRightGroup().getEncoder()).getTalon().getPosition()); 
+		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getDistance()); 
+		SmartDashboard.sendData("getRightDistance", ((QuadEncoder)drive.getRightGroup().getEncoder()).getDistance()); 
 //		SmartDashboard.sendData("getEncPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getEncPosition()); 
+		
+//		testGroup.set(0.25);
+//		drive.set(0.25);
+	}
+	
+	public void disabledPeriodic() {
+		run = false;
 	}
 	
 
@@ -125,9 +160,9 @@ public class TechnoTitan extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-//		drive.driveMode();
-		pickerUpper.intake();
-		shooter.shootBall();
+		drive.driveMode();
+//		pickerUpper.intake();
+//		shooter.shootBall();
 		//accel.test();
 
 //		vision.test();42
@@ -136,7 +171,7 @@ public class TechnoTitan extends IterativeRobot {
 	public void testInit() {
 		accel = new BuiltInAccelTester();
 		//accel2 = new AccelSPITester();
-		gyro = new GyroTester();
+//		gyro = new GyroTester();
 		
 		//shooter.joystickAngleShooter();
 		
@@ -148,7 +183,7 @@ public class TechnoTitan extends IterativeRobot {
 	public void testPeriodic() {
 		accel.test();
 		accel2.test();
-		gyro.test();
+//		gyro.test();
 		//pickerUpper.intake();
 		shooter.joystickAngleShooter();
 		

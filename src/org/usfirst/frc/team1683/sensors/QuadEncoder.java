@@ -4,7 +4,7 @@ import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 
 public class QuadEncoder implements Encoder {
 
-	public static final double PULSES_PER_REVOLUTION = 1024;
+	public static final double PULSES_PER_REVOLUTION = 1024.0;
 	private TalonSRX talonSRX;
 	private double wheelRadius;
 
@@ -26,16 +26,17 @@ public class QuadEncoder implements Encoder {
 	public double getDistance() {
 		// double pos = talonSRX.getEncPosition();
 		// return ;
-		return (talonSRX.getPosition() / (2*Math.PI) * wheelRadius);
+		return (talonSRX.getPosition() * (2*Math.PI)) * wheelRadius;
 	}
 
 	public double getPosition() {
 		double pos = talonSRX.getEncPosition();
-		if (pos > 0) {
-			return (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0;
-		} else {
-			return Math.abs(360.0 - (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0);
-		}
+//		if (pos > 0) {
+//			return (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0;
+//		} else {
+//			return Math.abs(360.0 - (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0);
+//		}
+		return pos / PULSES_PER_REVOLUTION;
 	}
 
 	@Override

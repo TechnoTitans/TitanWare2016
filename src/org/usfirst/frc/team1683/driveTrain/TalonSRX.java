@@ -33,7 +33,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		public MotorMover(TalonSRX talonSrx, double distance, double speed) {
 			this.talonSrx = talonSrx;
 			this.distance = distance;
-			this.encoder = encoder;
+//			this.encoder = encoder;
 			if (distance < 0)
 				this.speed = -speed;
 			else
@@ -137,7 +137,8 @@ public class TalonSRX extends CANTalon implements Motor {
 	 *            Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-		super.enableControl();
+//		super.changeControlMode(TalonControlMode.Speed);
+//		super.enableControl();
 		super.set(speed);
 	}
 
@@ -148,13 +149,31 @@ public class TalonSRX extends CANTalon implements Motor {
 		return super.get();
 	}
 
+	public void PIDAngle(double angle) {
+
+	}
+
+	
+	public void PIDInit() {
+		super.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		super.setInverted(false);
+		super.setProfile(0);
+		reset();
+		super.enableControl();
+	}
+	public void PIDPosition(double position) {
+		super.changeControlMode(TalonControlMode.Position);
+		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
+		super.set(position);
+	};
+
 	/**
 	 * Stops motor.
 	 */
 	@Override
 	public void stop() {
-		super.set(0);
-		// super.disableControl();
+		// super.set(0);
+		super.disableControl();
 		// super.stopMotor();
 
 	}
