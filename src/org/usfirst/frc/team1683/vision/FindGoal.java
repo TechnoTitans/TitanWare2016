@@ -17,16 +17,8 @@ public class FindGoal {
 	private double optic_angle=28.393*Math.PI/180; //M1103 cameras only
 	private double FOVpx=320; //pixels of the grip program
 	private double Targetin=20; //target width
-	private double ShooterAngle=0;//TODO
 	private final double CENTER_WIDTH_PX=5;//The max offset
-	private final double SHOOTER_LENGTH_X=0;//TODO
-	private final double SHOOTER_LENGTH_Y=0;//TODO
 	private final double SHOOTER_HEIGHT=0;//TODO
-	private final double TARGET_HEIGHT=0;//TODO
-	private final double CAMERA_HEIGHT=0;//TODO
-	private final double DISTANCE_BETWEEN=0;//TODO
-	private final double CameraShooterDistance=0;//TODO
-	private double DistanceToTarget=0;//TODO:Find distance between robot shooter and target;
 	/*
 	 * go to https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
 	 */
@@ -80,9 +72,6 @@ public class FindGoal {
 	}
 	public double AngleTriangle(double c,double a){
 		return (Math.sin(a/c));
-	}
-	public void getAngle(double ShooterAngle){
-		this.ShooterAngle=ShooterAngle;
 	}
 	/*
 	 * 	checks if robot is aligned. -1 for too far left. 0 for just right. 1 for too far right. 2 for error
