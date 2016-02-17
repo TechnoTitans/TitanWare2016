@@ -1,15 +1,16 @@
 package org.usfirst.frc.team1683.sensors;
 
 public class AnalogAccel extends edu.wpi.first.wpilibj.AnalogAccelerometer{
+	public static final double SENSITIVITY = 3.3/6;
+	public static final double ZERO_G_IN_VOLTS = 1.65;
 	
 	public AnalogAccel(int channel) {
 		super(channel);
-		// TODO Auto-generated constructor stub
+		super.setSensitivity(SENSITIVITY);
+		super.setZero(ZERO_G_IN_VOLTS);
 	}
 	public double getAcceleration() {
 		return super.getAcceleration();
 	}
-	public void setSensitivity(double sensitivity){
-		super.setSensitivity(sensitivity);
-	}
+
 }
