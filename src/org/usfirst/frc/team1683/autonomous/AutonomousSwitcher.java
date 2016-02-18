@@ -1,12 +1,17 @@
 package org.usfirst.frc.team1683.autonomous;
 
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import org.usfirst.frc.team1683.autonomous.ShootAtTarget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1683.autonomous.Autonomous.AutonomousMode;
 import org.usfirst.frc.team1683.driveTrain.DriveTrain;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
+import org.usfirst.frc.team1683.sensors.BuiltInAccel;
+import org.usfirst.frc.team1683.shooter.Shooter;
+import org.usfirst.frc.team1683.vision.FindGoal;
+import org.usfirst.frc.team1683.vision.ShootingPhysics;
 
 /**
  * 
@@ -34,8 +39,12 @@ public class AutonomousSwitcher {
 	private SendableChooser chooser;
 	
 	private DriveTrain driveTrain;
+	BuiltInAccel accel;
+	FindGoal vision;
+	Shooter shooter;
+	ShootingPhysics physics;
 
-	public AutonomousSwitcher(DriveTrain driveTrain) {
+	public AutonomousSwitcher(DriveTrain driveTrain,BuiltInAccel accel,FindGoal vision,Shooter shooter,ShootingPhysics physics) {
 		chooser = new SendableChooser();
 		chooser.addDefault(DEFAULT_AUTO.name(), DEFAULT_AUTO.name());
 		for (AutonomousMode mode : Autonomous.AutonomousMode.values()) {
@@ -43,7 +52,11 @@ public class AutonomousSwitcher {
 				chooser.addObject(mode.name(), mode.name());
 		}
 		SmartDashboard.putData("Auto to run", chooser);
+
 		this.driveTrain = driveTrain;
+		this.physics = physics;
+		this.accel = accel;
+		this.vision = vision;
 		updateAutoSelected();
 	}
 
@@ -52,6 +65,9 @@ public class AutonomousSwitcher {
 		switch (toMode(SmartDashboard.getString("Auto Selector", DEFAULT_AUTO.name()))) {
 		case REACH_DEFENSE:
 			autoSelected = new ReachDefense((TankDrive) driveTrain);
+			break;
+		case SHOOT_AT_TARGET:
+			autoSelected=new ShootAtTarget((TankDrive) driveTrain,(BuiltInAccel) accel,(FindGoal) vision,(Shooter) shooter,(ShootingPhysics) physics);
 			break;
 		case TEST_AUTO:
 			autoSelected = new TestAuto((TankDrive) driveTrain);

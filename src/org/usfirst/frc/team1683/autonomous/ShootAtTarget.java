@@ -44,7 +44,6 @@ public class ShootAtTarget extends Autonomous {
 		case CROSS_DEFENSE:{
 			if(!accel.isFlat()){
 				tankDrive.set(Motor.MID_SPEED);
-				nextState=State.CROSS_DEFENSE;
 			}
 			else{
 				tankDrive.stop();
@@ -73,6 +72,13 @@ public class ShootAtTarget extends Autonomous {
 		case FIRE:{
 			shooter.angleShooterAccel(physics.FindAngle());
 			shooter.spinRollers(physics.FindSpinSpeed());
+			try{
+			Thread.sleep(3000); 
+			}
+			catch(InterruptedException e){
+				System.out.print("Thread fail");
+			}
+			shooter.shootBall();
 			nextState=State.END_CASE;
 			break;
 		}
