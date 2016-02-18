@@ -1,9 +1,11 @@
 package org.usfirst.frc.team1683.autonomous;
 import org.usfirst.frc.team1683.driveTrain.EncoderNotFoundException;
+import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.vision.FindGoal;
 import org.usfirst.frc.team1683.driveTrain.Motor;
+import org.usfirst.frc.team1683.vision.*;
 
 /**
  * Shoots at target
@@ -12,11 +14,16 @@ import org.usfirst.frc.team1683.driveTrain.Motor;
  *
  */
 public class ShootAtTarget extends Autonomous {
-	FindGoal findgoal=new FindGoal();
 	BuiltInAccel accel;
-	public ShootAtTarget(TankDrive driveTrain,BuiltInAccel accel) {
+	FindGoal vision;
+	Shooter shooter;
+	ShootingPhysics physics;
+	public ShootAtTarget(TankDrive driveTrain,BuiltInAccel accel,FindGoal vision,Shooter shooter,ShootingPhysics physics) {
 		super(driveTrain);
 		this.accel=accel;
+		this.vision=vision;
+		this.shooter=shooter;
+		this.physics=physics;
 	}
 	
 	public void run() {
@@ -37,26 +44,35 @@ public class ShootAtTarget extends Autonomous {
 		case CROSS_DEFENSE:{
 			if(!accel.isFlat()){
 				tankDrive.set(Motor.MID_SPEED);
+				nextState=State.CROSS_DEFENSE;
 			}
 			else{
 				tankDrive.stop();
-			}
-			nextState=State.REACH_DISTANCE;//after breaching defense, arrive at a good point for shooting
+				nextState=State.REACH_DISTANCE;
+			}//after breaching defense, arrive at a good point for shooting
 			break;
 		}
 		case REACH_DISTANCE:{
-			//TODO:Find proper spots for each position we could start in (left side, center, right)
+			try {
+				tankDrive.moveDistance(properDistance);
+			} catch (EncoderNotFoundException e) {
+				System.err.println("Need encoders on tankDrive");
+			}
 			nextState=State.FIND_TARGET;
 			break;
 		}
 		case FIND_TARGET:{
-//			while(findgoal.isCentered()!=0){
-//				tankDrive.turn(2);
-//			}
+			if(vision.isCentered()!=0){
+				tankDrive.turn(2);
+			}
+			else{
+				nextState=State.FIRE;
+			}
 			break;
 		}
 		case FIRE:{
-			//TODO:add shooting code
+			shooter.angleShooter(physics.FindAngle());
+			shooter.spinRollers(physics.FindSpinSpeed());
 			nextState=State.END_CASE;
 			break;
 		}

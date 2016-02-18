@@ -33,15 +33,13 @@ public abstract class Autonomous {
 	public static enum AutonomousMode {
 		DO_NOTHING, REACH_DEFENSE, TEST_AUTO, BRE
 	}
-	protected static enum FinalPosition{
-		LEFT_SIDE,CENTER,RIGHT_SIDE
-	}
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
 	public static double reachDistance; // 74 inches
-
+	public static double properDistance;
 	public void updatePreferences() {
 		reachDistance = SmartDashboard.getDouble("reachDistance");
+		properDistance = SmartDashboard.getDouble("properDistance");
 	}
 
 	 public abstract void run();

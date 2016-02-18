@@ -70,9 +70,6 @@ public class FindGoal {
 		}
 		return this.distance;
 	}
-	public double AngleTriangle(double c,double a){
-		return (Math.sin(a/c));
-	}
 	/*
 	 * 	checks if robot is aligned. -1 for too far left. 0 for just right. 1 for too far right. 2 for error
 	 */
@@ -117,8 +114,4 @@ public class FindGoal {
 			return 2;
 		}
 	}
-	//Assisted aiming
-	//public double FindAngle(double distances){
-		
-	//}
 }

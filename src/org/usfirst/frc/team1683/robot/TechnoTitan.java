@@ -5,10 +5,13 @@ import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
+import org.usfirst.frc.team1683.pneumatics.ClimbingPistons;
 import org.usfirst.frc.team1683.pneumatics.Piston;
 import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.sensors.QuadEncoder;
+import org.usfirst.frc.team1683.sensors.TiltSensor;
 import org.usfirst.frc.team1683.sensors.PressureReader;
 import org.usfirst.frc.team1683.shooter.PickerUpper;
 import org.usfirst.frc.team1683.shooter.Shooter;
@@ -17,6 +20,7 @@ import org.usfirst.frc.team1683.test.BuiltInAccelTester;
 import org.usfirst.frc.team1683.test.GyroTester;
 import org.usfirst.frc.team1683.test.VisionTest;
 import org.usfirst.frc.team1683.vision.LightRing;
+import org.usfirst.frc.team1683.vision.FindGoal;
 
 import com.ni.vision.NIVision.SupervisedColorSegmentationReport;
 
@@ -35,14 +39,17 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean LEFT_REVERSE = false;
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS =3.391/2; 
+	FindGoal findgoal;
 	VisionTest vision;
 	TankDrive drive;
 	Gyro gyro;
+	ClimbingPistons climberPistons;
 	PickerUpper pickerUpper;
 	TalonSRX leftTalon;
 	TalonSRX rightTalon;
 	TalonSRX angleMotor;
 	Shooter shooter;
+	TiltSensor tiltSensor;
 	Piston shootPiston;
 	PressureReader pressureReader;
 	//LightRing lightRing;
@@ -83,7 +90,7 @@ public class TechnoTitan extends IterativeRobot {
 				new TalonSRX(HWR.SHOOTER_RIGHT, false));
 		
 		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
+		shooter = new Shooter(angleMotor, shooterGroup, shootPiston,findgoal);
 		pressureReader = new PressureReader(3);
 		//lightRing = new LightRing();
 	}

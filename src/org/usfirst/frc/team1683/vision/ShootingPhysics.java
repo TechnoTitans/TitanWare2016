@@ -4,7 +4,7 @@ public class ShootingPhysics {
 	double length;//distance between robot and shooter
 	final double radius=0.0492125;
 	final double powerincrease=0;//TODO
-	public ShootingPhysics(double height,double length){
+	public ShootingPhysics(double length){
 		this.length=length;
 	}
 	public double findSpeedY(){

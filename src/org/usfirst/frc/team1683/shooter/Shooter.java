@@ -5,6 +5,7 @@ import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.sensors.AccelSPI;
 import org.usfirst.frc.team1683.sensors.AnalogAccel;
+import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.PIDController;
 
@@ -19,34 +20,29 @@ public class Shooter {
 	public static final double SHOOT_SPEED = SmartDashboard.getDouble("Shooter speed");
 	public static final boolean EXTENDED = true;
 	public static final boolean RETRACTED = false;
+	FindGoal vision;
 	MotorGroup group;
 	AccelSPI accel;
 	Motor angleMotor;
 	Piston shootPiston;
 	AnalogAccel analogAccel;
-
-	public Shooter(MotorGroup group, Motor angleMotor, AccelSPI accel, Piston shootPiston) {
+	Motor shoot;
+	public Shooter(MotorGroup group, Motor angleMotor, AccelSPI accel, Piston shootPiston,FindGoal vision) {
 		this.group = group;
 		this.accel = accel;
 		this.angleMotor = angleMotor;
 		this.shootPiston = shootPiston;
+		this.vision=vision;
+		this.shoot=shoot;
 	}
 
-	public Shooter(Motor angleMotor, MotorGroup group, Piston shootPiston) {
+	public Shooter(Motor angleMotor, MotorGroup group, Piston shootPiston,FindGoal vision) {
 		this.angleMotor = angleMotor;
 		this.group = group;
 		this.shootPiston = shootPiston;
-
+		this.vision=vision;
+		this.shoot=shoot;
 	}
-	/**
-	 * TODO: use distance from vision to find optimum angle 
-	 * @param distance
-	 * 				Distance from vision 
-	 */
-	public void getAngle(double distance) {
-		
-	}
-	
 	/**
 	 * Angles shooter using Accelerometer
 	 * @param angle 
@@ -80,14 +76,13 @@ public class Shooter {
 
 	/**
 	 * Spins wheels up to speed 
-	 * TODO: change speed based off distance and angle
 	 * @param distance
 	 * 				Distance from vision
 	 * @param angle
 	 * 			    Angle based off distance
 	 */
-	public boolean spinRollers(double distance, double angle) {
-		return false;
+	public void spinRollers(double rpm) {
+		group.set(rpm); //change to .PIDSpeed(rpm/6000);
 	}
 	
 	/**
