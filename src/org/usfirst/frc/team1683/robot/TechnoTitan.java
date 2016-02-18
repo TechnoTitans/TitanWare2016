@@ -82,16 +82,18 @@ public class TechnoTitan extends IterativeRobot {
 				new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
 		
-		testGroup = rightGroup;
+		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
 		
+		testGroup = rightGroup;
+		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		MotorGroup shooterGroup = new MotorGroup(
 				new TalonSRX(HWR.SHOOTER_LEFT, false),
 				new TalonSRX(HWR.SHOOTER_RIGHT, false));
 		
 		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(angleMotor, shooterGroup, shootPiston,findgoal);
-		pressureReader = new PressureReader(3);
+		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
+		//pressureReader = new PressureReader(3);
 		//lightRing = new LightRing();
 	}
 
@@ -147,11 +149,15 @@ public class TechnoTitan extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		drive.driveMode();
+		//drive.driveMode();
 		pickerUpper.intake();
-		shooter.joystickAngleShooter();
+		//shooter.joystickAngleShooter();
 		shooter.shootBall();
-
+		//pressureReader.getPressure();
+		climberPistons.test();
+		SmartDashboard.sendData("TiltSensor angle ", tiltSensor.getAngle());
+		SmartDashboard.sendData("X acceleration ", tiltSensor.getX());
+		SmartDashboard.sendData("Y acceleration ", tiltSensor.getY());
 	}
 	
 	public void testInit() {
