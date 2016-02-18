@@ -16,6 +16,7 @@ public class TalonSRX extends CANTalon implements Motor {
 
 	private Encoder encoder;
 	private Thread thread;
+	private boolean calibrated = false;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -148,24 +149,46 @@ public class TalonSRX extends CANTalon implements Motor {
 	public double get() {
 		return super.get();
 	}
-
-	public void PIDAngle(double angle) {
-
-	}
-
 	
-	public void PIDInit() {
-		super.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+	public void calibrate() {
+		super.setPosition(0);
+		calibrated = true;
+	}
+	
+	public void PIDInit() throws EncoderNotFoundException {
+		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)){
+			throw new EncoderNotFoundException();
+		}
+		super.setFeedbackDevice(FeedbackDevice.PulseWidth);
 		super.setInverted(false);
-		super.setProfile(0);
-		reset();
+		calibrate();
+	}
+	
+	public void PIDUpdate() {
+//		super.setCloseLoopRampRate(SmartDashboard.getDouble("RampRate"));
+		super.setVoltageRampRate(SmartDashboard.getDouble("RampRate"));
+		super.enableBrakeMode(SmartDashboard.getBoolean("Brake Mode", false));
+		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
 		super.enableControl();
 	}
+	
+	public void PIDAngle(double angle) {
+		PIDPosition(angle/360.0);
+	}
+	
 	public void PIDPosition(double position) {
+		PIDUpdate();
 		super.changeControlMode(TalonControlMode.Position);
-		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
 		super.set(position);
-	};
+		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
+	}
+	
+	public void PIDSpeed(double RPM) {
+		PIDUpdate();
+		super.changeControlMode(TalonControlMode.Speed);
+		super.setPosition(RPM);
+		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getSpeed());
+	}
 
 	/**
 	 * Stops motor.
