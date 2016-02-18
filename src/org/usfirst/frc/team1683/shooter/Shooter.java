@@ -2,9 +2,11 @@ package org.usfirst.frc.team1683.shooter;
 
 import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
+import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.sensors.AccelSPI;
 import org.usfirst.frc.team1683.sensors.AnalogAccel;
+import org.usfirst.frc.team1683.sensors.LimitSwitch;
 
 import edu.wpi.first.wpilibj.PIDController;
 
@@ -21,46 +23,44 @@ public class Shooter {
 	public static final boolean RETRACTED = false;
 	MotorGroup group;
 	AccelSPI accel;
-	Motor angleMotor;
+	TalonSRX angleMotor;
 	Piston shootPiston;
 	AnalogAccel analogAccel;
+	LimitSwitch bottomLimit;
+	LimitSwitch upperLimit;
 
-	public Shooter(MotorGroup group, Motor angleMotor, AccelSPI accel, Piston shootPiston) {
+	public Shooter(MotorGroup group, TalonSRX angleMotor, AccelSPI accel, Piston shootPiston, int bottomDIOPort, int upperDIOPort) {
 		this.group = group;
 		this.accel = accel;
 		this.angleMotor = angleMotor;
 		this.shootPiston = shootPiston;
+		bottomLimit = new LimitSwitch(bottomDIOPort);
+		upperLimit = new LimitSwitch(upperDIOPort);
 	}
 
-	public Shooter(Motor angleMotor, MotorGroup group, Piston shootPiston) {
+	public Shooter(TalonSRX angleMotor, MotorGroup group, Piston shootPiston) {
 		this.angleMotor = angleMotor;
 		this.group = group;
 		this.shootPiston = shootPiston;
 
 	}
-	/**
-	 * TODO: use distance from vision to find optimum angle 
-	 * @param distance
-	 * 				Distance from vision 
-	 */
-	public void getAngle(double distance) {
-		
-	}
+	
 	
 	/**
 	 * Angles shooter using Accelerometer
 	 * @param angle 
 	 * 			  Angle from getAngle
 	 */
-	public void angleShooter(double angle) {
+	public void angleShooterAccel(double angle) {
 		double speed = 0.3; // find steady speed
 		while (accel.getAngleXZ() >= angle + TOLERANCE && accel.getAngleXZ() <= angle - TOLERANCE) {
 			if (accel.getAngleXZ() >= angle + TOLERANCE)
 				angleMotor.set(-speed);// turn negative speed
 			else if (accel.getAngleXZ() <= angle - TOLERANCE)
 				angleMotor.set(speed);
-			; // turn positive speed
 		}
+		
+		if(bottomLimit.isPressed() || upperLimit.isPressed()) angleMotor.PIDPosition(angleMotor.getPosition());
 	}
 	
 
@@ -68,9 +68,9 @@ public class Shooter {
 	 * PID controls for the angleMotor
 	 */
 	public void enablePIDControl() {
-		double p = SmartDashboard.getDouble("PIDValueP");
-		double i = SmartDashboard.getDouble("PIDValueI");
-		double d = SmartDashboard.getDouble("PIDValueD");
+		double p = SmartDashboard.getDouble("P");
+		double i = SmartDashboard.getDouble("I");
+		double d = SmartDashboard.getDouble("D");
 		double tolerance = SmartDashboard.getDouble("PIDTolerance");
 		PIDController pidControl = new PIDController(p,i,d, analogAccel, angleMotor);
 		pidControl.setOutputRange(0, 1);
@@ -94,10 +94,14 @@ public class Shooter {
 	 * Extends pistons to shoot ball
 	 */
 	public void shootBall() {
-		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWR.ACTUATE_PISTON_SHOOTER))
+		if (DriverStation.auxStick.getRawButton(HWR.ACTUATE_PISTON_SHOOTER))
 			shootPiston.extend();
+		else shootPiston.retract();
 		
-		if(DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWR.SHOOTER_TOGGLE)) group.set(SHOOT_SPEED);
+		if(DriverStation.auxStick.getRawButton(HWR.SHOOTER_TOGGLE)) {
+			group.set(SHOOT_SPEED);
+		}
+		
 		else group.stop();
 		
 	}
@@ -113,10 +117,5 @@ public class Shooter {
 			angleMotor.set(DriverStation.scaleToMin(DriverStation.auxStick));
 	}
 
-	public Shooter(MotorGroup group, Motor angleMotor, AccelSPI accel) {
-		this.group = group;
-		this.accel = accel;
-		this.angleMotor = angleMotor;
-	}
 
 }

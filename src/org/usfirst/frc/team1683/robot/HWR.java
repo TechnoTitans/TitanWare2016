@@ -15,8 +15,8 @@ public class HWR {
 	public static final int RIGHT_DRIVE_TRAIN_FRONT_E = HWP.CAN_3;
 	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_2;
 	public static final int ANGLE_MOTOR = HWP.CAN_1;
-	public static final int SHOOTER_LEFT = HWP.CAN_6;
-	public static final int SHOOTER_RIGHT = HWP.CAN_7;
+	public static final int SHOOTER_LEFT = HWP.CAN_3;
+	public static final int SHOOTER_RIGHT = HWP.CAN_5;
 
 	// Encoders
 	// TODO: Get these values
@@ -30,17 +30,18 @@ public class HWR {
 
 	//Sensors
 	public static final int GYRO = HWP.ANALOG_0;
-	public static final int ACCEL_CHANNEL_X = HWP.ANALOG_1;
-	public static final int ACCEL_CHANNEL_Y = HWP.ANALOG_2;
+	public static final int ACCEL_CHANNEL_X = HWP.ANALOG_2;
+	public static final int ACCEL_CHANNEL_Y = HWP.ANALOG_3;
 	public static final int PRESSURE_SENSOR = HWP.ANALOG_3;
 	
 	// Compressor
 	// TODO: Get these values
 	public static final int COMPRESSOR = 0;
-	public static final int DEFAULT_MODULE_CHANNEL = 0;
-	public static final int SHOOTER_PISTON_CHANNEL = 1;
-	public static final int LEFT_PISTON_CHANNEL = 2;
-	public static final int RIGHT_PISTON_CHANNEL = 3;
+	public static final int DEFAULT_MODULE_CHANNEL = 1;
+	public static final int SHOOTER_PISTON_CHANNEL = 4;
+	public static final int ClIMB_DEPLOY_CHANNEL = 2;
+	public static final int ANGLE_PISTON_CHANNEL = 1;
+	public static final int CLIMB_RETRACT_CHANNEL = 3;
 	
 	
 	// Buttons

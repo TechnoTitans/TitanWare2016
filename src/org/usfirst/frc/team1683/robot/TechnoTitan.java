@@ -5,10 +5,13 @@ import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
+import org.usfirst.frc.team1683.pneumatics.ClimbingPistons;
 import org.usfirst.frc.team1683.pneumatics.Piston;
 import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.sensors.QuadEncoder;
+import org.usfirst.frc.team1683.sensors.TiltSensor;
 import org.usfirst.frc.team1683.sensors.PressureReader;
 import org.usfirst.frc.team1683.shooter.PickerUpper;
 import org.usfirst.frc.team1683.shooter.Shooter;
@@ -38,11 +41,13 @@ public class TechnoTitan extends IterativeRobot {
 	VisionTest vision;
 	TankDrive drive;
 	Gyro gyro;
+	ClimbingPistons climberPistons;
 	PickerUpper pickerUpper;
 	TalonSRX leftTalon;
 	TalonSRX rightTalon;
 	TalonSRX angleMotor;
 	Shooter shooter;
+	TiltSensor tiltSensor;
 	Piston shootPiston;
 	PressureReader pressureReader;
 	//LightRing lightRing;
@@ -75,8 +80,10 @@ public class TechnoTitan extends IterativeRobot {
 				new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
 		
-		testGroup = rightGroup;
+		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
 		
+		testGroup = rightGroup;
+		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		MotorGroup shooterGroup = new MotorGroup(
 				new TalonSRX(HWR.SHOOTER_LEFT, false),
@@ -84,7 +91,7 @@ public class TechnoTitan extends IterativeRobot {
 		
 		pickerUpper = new PickerUpper(shooterGroup);
 		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
-		pressureReader = new PressureReader(3);
+		//pressureReader = new PressureReader(3);
 		//lightRing = new LightRing();
 	}
 
@@ -140,11 +147,15 @@ public class TechnoTitan extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		drive.driveMode();
+		//drive.driveMode();
 		pickerUpper.intake();
-		shooter.joystickAngleShooter();
+		//shooter.joystickAngleShooter();
 		shooter.shootBall();
-
+		//pressureReader.getPressure();
+		climberPistons.test();
+		SmartDashboard.sendData("TiltSensor angle ", tiltSensor.getAngle());
+		SmartDashboard.sendData("X acceleration ", tiltSensor.getX());
+		SmartDashboard.sendData("Y acceleration ", tiltSensor.getY());
 	}
 	
 	public void testInit() {

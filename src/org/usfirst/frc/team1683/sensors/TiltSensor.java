@@ -9,6 +9,13 @@ public class TiltSensor {
 		accelY = new AnalogAccel(channelY);
 	}
 	
+	public double getX() {
+		return accelX.getAcceleration();
+	}
+	public double getY() {
+		return accelY.getAcceleration();
+	}
+	
 	public double getAngle() {
 		return Math.atan2(accelY.getAcceleration(), accelX.getAcceleration())*180/Math.PI;
 	}

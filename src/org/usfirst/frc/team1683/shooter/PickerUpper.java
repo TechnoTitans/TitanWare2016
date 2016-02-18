@@ -21,9 +21,10 @@ public class PickerUpper {
 
 	public void intake() {
 		
-		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWR.INTAKE_TOGGLE)) {
+		if (DriverStation.auxStick.getRawButton(HWR.INTAKE_TOGGLE)) {
 			group.set(INTAKE_SPEED);
-		} else group.stop();
+		} 
+		else group.stop();
 		
 	}
 
