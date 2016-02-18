@@ -71,7 +71,7 @@ public class ShootAtTarget extends Autonomous {
 			break;
 		}
 		case FIRE:{
-			shooter.angleShooter(physics.FindAngle());
+			shooter.angleShooterAccel(physics.FindAngle());
 			shooter.spinRollers(physics.FindSpinSpeed());
 			nextState=State.END_CASE;
 			break;
