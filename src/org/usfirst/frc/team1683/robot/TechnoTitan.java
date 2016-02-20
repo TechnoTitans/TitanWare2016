@@ -84,7 +84,7 @@ public class TechnoTitan extends IterativeRobot {
 		
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
 		
-		testGroup = rightGroup;
+//		testGroup = rightGroup;
 		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		MotorGroup shooterGroup = new MotorGroup(
@@ -92,7 +92,8 @@ public class TechnoTitan extends IterativeRobot {
 				new TalonSRX(HWR.SHOOTER_RIGHT, false));
 		
 		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(angleMotor, shooterGroup, shootPiston );
+		shooter = new Shooter(shooterGroup, 
+				angleMotor, shootPiston);
 		//pressureReader = new PressureReader(3);
 		//lightRing = new LightRing();
 	}
@@ -124,11 +125,11 @@ public class TechnoTitan extends IterativeRobot {
 	boolean run = false;
 	public void autonomousPeriodic() {
 		if (!run) {
-			gyro.reset();
-//			drive.moveDistance(120, 0.3);
-			drive.turn(180, 0.25);
-//			drive.set(.25);
-			run = true;
+//			gyro.reset();
+////			drive.moveDistance(120, 0.3);
+//			drive.turn(180, 0.25);
+////			drive.set(.25);
+//			run = true;
 		}
 		SmartDashboard.sendData("getLeftPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
 		SmartDashboard.sendData("getRightPosition", ((QuadEncoder)drive.getRightGroup().getEncoder()).getTalon().getPosition()); 
@@ -145,16 +146,21 @@ public class TechnoTitan extends IterativeRobot {
 	}
 	
 
+	public void teleopInit() {
+		shooter.reset();
+	}
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
 		//drive.driveMode();
-		pickerUpper.intake();
-		//shooter.joystickAngleShooter();
-		shooter.shootBall();
+		//pickerUpper.intake();
 		//pressureReader.getPressure();
-		climberPistons.test();
+		//climberPistons.test();
+//		shooter.shootBall();
+//		shooter.joystickAngleShooter();
+//		shooter.angleShooter(SmartDashboard.getDouble("Shooter Angle"));
+		shooter.joystickAngleShooter();
 		SmartDashboard.sendData("TiltSensor angle ", tiltSensor.getAngle());
 		SmartDashboard.sendData("X acceleration ", tiltSensor.getX());
 		SmartDashboard.sendData("Y acceleration ", tiltSensor.getY());

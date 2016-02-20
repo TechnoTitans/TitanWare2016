@@ -138,7 +138,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	 *            Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-//		super.changeControlMode(TalonControlMode.Speed);
+		super.changeControlMode(TalonControlMode.PercentVbus);
 //		super.enableControl();
 		super.set(speed);
 	}
@@ -157,17 +157,21 @@ public class TalonSRX extends CANTalon implements Motor {
 	
 	public void PIDInit() throws EncoderNotFoundException {
 		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)){
-			throw new EncoderNotFoundException();
-		}
-		super.setFeedbackDevice(FeedbackDevice.PulseWidth);
+//			throw new EncoderNotFoundException();
+			SmartDashboard.sendData("Encoder on Talon " + getChannel() + " not found", true);
+		} else
+			SmartDashboard.sendData("Encoder on Talon " + getChannel() + " not found", false);
+		super.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		super.setInverted(false);
+//		super.configEncoderCodesPerRev(4096);
 		calibrate();
 	}
 	
-	public void PIDUpdate() {
+	private void PIDUpdate() {
 //		super.setCloseLoopRampRate(SmartDashboard.getDouble("RampRate"));
-		super.setVoltageRampRate(SmartDashboard.getDouble("RampRate"));
-		super.enableBrakeMode(SmartDashboard.getBoolean("Brake Mode", false));
+//		super.setVoltageRampRate(SmartDashboard.getDouble("RampRate"));
+//		super.enableBrakeMode(SmartDashboard.getBoolean("Brake Mode", false));
+		super.setAllowableClosedLoopErr(SmartDashboard.getInt("Allowable CL Error"));
 		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
 		super.enableControl();
 	}
@@ -187,7 +191,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		PIDUpdate();
 		super.changeControlMode(TalonControlMode.Speed);
 		super.setPosition(RPM);
-		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getSpeed());
+		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", super.getSpeed());
 	}
 
 	/**
@@ -195,10 +199,8 @@ public class TalonSRX extends CANTalon implements Motor {
 	 */
 	@Override
 	public void stop() {
-		// super.set(0);
+//		super.enableBrakeMode(true);
 		super.disableControl();
-		// super.stopMotor();
-
 	}
 
 	/**

@@ -70,16 +70,16 @@ public class ShootAtTarget extends Autonomous {
 			break;
 		}
 		case FIRE:{
-			shooter.angleShooterAccel(physics.FindAngle());
-			shooter.spinRollers(physics.FindSpinSpeed());
-			try{
-			Thread.sleep(3000); 
-			}
-			catch(InterruptedException e){
-				System.out.print("Thread fail");
-			}
-			shooter.shootBall();
-			nextState=State.END_CASE;
+//			shooter.angleShooterAccel(physics.FindAngle());
+//			shooter.spinRollers(physics.FindSpinSpeed());
+//			try{
+//			Thread.sleep(3000); 
+//			}
+//			catch(InterruptedException e){
+//				System.out.print("Thread fail");
+//			}
+//			shooter.shootBall();
+//			nextState=State.END_CASE;
 			break;
 		}
 		case END_CASE: {

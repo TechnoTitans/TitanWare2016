@@ -2,8 +2,14 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import java.util.ArrayList;
 
+import javax.swing.text.Position;
+
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
+
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDeviceStatus;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
 /**
  * Represents a group of motors that move together, tied to the same gearsbox
@@ -18,7 +24,7 @@ public class MotorGroup extends ArrayList<Motor> {
 	private static final long serialVersionUID = 1L;
 	private Encoder encoder;
 	private Thread thread;
-	//private AntiDrift antiDrift;
+	// private AntiDrift antiDrift;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -44,13 +50,13 @@ public class MotorGroup extends ArrayList<Motor> {
 			encoder.reset();
 			// synchronized (this) {
 			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
-				////if(isAntiDriftEnabled()) {
-			//		speed = AntiDrift.antiDrift(speed, motors);
-				//	motors.set(speed);
-				//}
-				//else {
-		//			motors.set(speed);
-			//	}
+				//// if(isAntiDriftEnabled()) {
+				// speed = AntiDrift.antiDrift(speed, motors);
+				// motors.set(speed);
+				// }
+				// else {
+				// motors.set(speed);
+				// }
 
 				SmartDashboard.sendData("EncoderDistance", encoder.getDistance());
 				SmartDashboard.sendData("TargetDistance", distance);
@@ -127,25 +133,62 @@ public class MotorGroup extends ArrayList<Motor> {
 	 * Set collective speed of motors.
 	 * 
 	 * @param speed
-	 * 			  Speed from 0 to 1.
+	 *            Speed from 0 to 1.
 	 */
 	public void set(double speed) {
 		for (Motor motor : this) {
 			motor.set(speed);
 		}
 	}
-	
+
 	/**
 	 * Gets collective speed of motors
 	 */
 	public double get() {
 		double speed = 0;
-		for(Motor motor : this) {
+		for (Motor motor : this) {
 			speed += motor.get();
 		}
-		return speed/this.size();
+		return speed / this.size();
 	}
-	
+
+	// BEGIN SHOOTER ONLY METHODS!!! #BADCODE
+	public void PIDInit() {
+		for (Motor m : this) {
+			if (m instanceof TalonSRX) {
+				if (((TalonSRX) m).isSensorPresent(FeedbackDevice.PulseWidth)
+						.equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
+					((TalonSRX) m).enableBrakeMode(false);
+					((TalonSRX) m).setPosition(0);
+				}
+			}
+		}
+	}
+
+	private void PIDUpdate() {
+		for (Motor m : this) {
+			if (m instanceof TalonSRX) {
+				((TalonSRX) m).setVoltageRampRate(SmartDashboard.getDouble("RampRate"));
+				((TalonSRX) m).setPID(SmartDashboard.getDouble("Shooter P"), SmartDashboard.getDouble("Shooter I"),
+						SmartDashboard.getDouble("Shooter D"));
+				((TalonSRX) m).setF(SmartDashboard.getDouble("Shooter F"));
+				((TalonSRX) m).enableControl();
+
+			}
+		}
+	}
+
+	public void PIDSpeed(double RPM) {
+		PIDUpdate();
+		for (Motor m : this) {
+			if (m instanceof TalonSRX) {
+				((TalonSRX) m).changeControlMode(TalonControlMode.Speed);
+				m.set(RPM);
+				SmartDashboard.sendData("Shooter Talon " + m.getChannel() + " Speed", ((TalonSRX) m).getSpeed());
+			}
+		}
+	}
+	// END BAD CODE
 
 	/**
 	 * Stops group.
@@ -170,7 +213,7 @@ public class MotorGroup extends ArrayList<Motor> {
 		return encoder;
 	}
 
-	public void setBrakeMode(boolean enabled) {
+	public void enableBrakeMode(boolean enabled) {
 		for (Motor motor : this) {
 			if (motor instanceof TalonSRX) {
 				((TalonSRX) motor).enableBrakeMode(enabled);
@@ -184,8 +227,8 @@ public class MotorGroup extends ArrayList<Motor> {
 	// public Motor getMotors() {
 	// return motors;
 	// }
-	
-	//probably want to find a better way to use antidrift than this way.
+
+	// probably want to find a better way to use antidrift than this way.
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -196,16 +239,16 @@ public class MotorGroup extends ArrayList<Motor> {
 			return false;
 		return true;
 	}
-	
-	//public void enableAntiDrift(AntiDrift antiDrift) {
-	//	this.antiDrift = antiDrift;
-	//}
-	
-	//public void disableAntiDrift() {
-	//	this.antiDrift = null;
-	//}
-	
-	//public boolean isAntiDriftEnabled() {
-	//	return !(antiDrift == null);
-	//}
+
+	// public void enableAntiDrift(AntiDrift antiDrift) {
+	// this.antiDrift = antiDrift;
+	// }
+
+	// public void disableAntiDrift() {
+	// this.antiDrift = null;
+	// }
+
+	// public boolean isAntiDriftEnabled() {
+	// return !(antiDrift == null);
+	// }
 }

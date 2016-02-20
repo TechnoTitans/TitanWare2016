@@ -127,8 +127,8 @@ public class TankDrive implements DriveTrain {
 	 */
 	@Override
 	public void stop() {
-		left.setBrakeMode(true);
-		right.setBrakeMode(true);
+		left.enableBrakeMode(true);
+		right.enableBrakeMode(true);
 		left.stop();
 		right.stop();
 	}
@@ -137,8 +137,8 @@ public class TankDrive implements DriveTrain {
 	 * Stop without braking.
 	 */
 	public void coast() {
-		left.setBrakeMode(false);
-		right.setBrakeMode(false);
+		left.enableBrakeMode(false);
+		right.enableBrakeMode(false);
 		left.stop();
 		right.stop();
 	}
@@ -148,8 +148,8 @@ public class TankDrive implements DriveTrain {
 	 */
 	@Override
 	public void driveMode() {
-		left.setBrakeMode(false);
-		right.setBrakeMode(false);
+		left.enableBrakeMode(false);
+		right.enableBrakeMode(false);
 
 		double lSpeed = DriverStation.leftStick.getRawAxis(DriverStation.YAxis);
 		double rSpeed = DriverStation.rightStick.getRawAxis(DriverStation.YAxis);
