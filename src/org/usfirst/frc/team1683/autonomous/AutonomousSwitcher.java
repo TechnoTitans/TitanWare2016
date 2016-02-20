@@ -1,6 +1,8 @@
 package org.usfirst.frc.team1683.autonomous;
 
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+
+
 import org.usfirst.frc.team1683.autonomous.ShootAtTarget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,6 +11,7 @@ import org.usfirst.frc.team1683.driveTrain.DriveTrain;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.BuiltInAccel;
+import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
 import org.usfirst.frc.team1683.vision.ShootingPhysics;
@@ -42,6 +45,7 @@ public class AutonomousSwitcher {
 	BuiltInAccel accel;
 	FindGoal vision;
 	Shooter shooter;
+	Gyro gyro;
 	ShootingPhysics physics;
 
 	public AutonomousSwitcher(DriveTrain driveTrain,BuiltInAccel accel,FindGoal vision,Shooter shooter,ShootingPhysics physics) {
@@ -67,7 +71,7 @@ public class AutonomousSwitcher {
 			autoSelected = new ReachDefense((TankDrive) driveTrain);
 			break;
 		case SHOOT_AT_TARGET:
-			autoSelected=new ShootAtTarget((TankDrive) driveTrain,(BuiltInAccel) accel,(FindGoal) vision,(Shooter) shooter,(ShootingPhysics) physics);
+			autoSelected=new ShootAtTarget((TankDrive) driveTrain,(BuiltInAccel) accel,(FindGoal) vision,(Shooter) shooter,(Gyro) gyro);
 			break;
 		case TEST_AUTO:
 			autoSelected = new TestAuto((TankDrive) driveTrain);

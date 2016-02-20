@@ -87,10 +87,6 @@ public class FindGoal {
 		}
 		return (cameratarget-SHOOTER_HEIGHT);
 	}
-	public double FindDistanceToTarget(){
-		double CameraTargetDistance=Math.sqrt(Math.pow(2,(FindDistance()))-Math.pow(2,(FindHeight())));
-		return CameraTargetDistance;
-	}
 	public int isCentered() {
 		Contour[] contours = getData();
 		double offset;
