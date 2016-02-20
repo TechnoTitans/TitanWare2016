@@ -144,7 +144,7 @@ public class MotorGroup extends ArrayList<Motor> {
 	/**
 	 * Gets collective speed of motors
 	 */
-	public double get() {
+	public double getSpeed() {
 		double speed = 0;
 		for (Motor motor : this) {
 			speed += motor.get();

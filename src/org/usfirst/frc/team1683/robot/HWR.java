@@ -47,6 +47,6 @@ public class HWR {
 	
 	// Buttons
 	public static final int INTAKE_TOGGLE = HWP.BUTTON_4;
-	public static final int SHOOTER_BUTTON = HWP.BUTTON_5;
-	public static final int ACTUATE_PISTON_SHOOTER = HWP.BUTTON_2;
+	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_5;
+	public static final int SHOOT_BALL = HWP.BUTTON_2;
 }

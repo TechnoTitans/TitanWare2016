@@ -154,16 +154,7 @@ public class TechnoTitan extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		//drive.driveMode();
-		//pickerUpper.intake();
-		//pressureReader.getPressure();
-		//climberPistons.test();
-//		shooter.shootBall();
-//		shooter.joystickAngleShooter();
-//		shooter.angleShooter(SmartDashboard.getDouble("Shooter Angle"));
-		shooter.joystickAngleShooter();
-		SmartDashboard.sendData("TiltSensor angle ", tiltSensor.getAngle());
-		SmartDashboard.sendData("X acceleration ", tiltSensor.getX());
-		SmartDashboard.sendData("Y acceleration ", tiltSensor.getY());
+		shooter.shootMode();
 	}
 	
 	public void testInit() {

@@ -23,9 +23,9 @@ public class Shooter {
 	public static final double SHOOT_SPEED = SmartDashboard.getDouble("Shooter speed");
 	public static final boolean EXTENDED = true;
 	public static final boolean RETRACTED = false;
-	
+
 	private double targetPos;
-	
+
 	FindGoal vision;
 	TiltSensor accel;
 
@@ -44,89 +44,35 @@ public class Shooter {
 		this.angleMotor = angleMotor;
 		this.shootPiston = shootPiston;
 		this.shooterMotors = group;
-		this.accel = accel;
 
 		this.angleMotor.calibrate();
 		this.angleMotor.enableLimitSwitch(true, true);
 		this.angleMotor.PIDInit();
 		this.shooterMotors.PIDInit();
-		
+
 	}
-
-	/**
-	 * 
-	 * 
-	 * /** Angles shooter using Accelerometer
-	 * 
-	 * @param angle
-	 *            Angle from getAngle
-	 */
-	// public void angleShooterAccel(double angle) {
-	// double speed = 0.3; // find steady speed
-	// while (accel.getAngleXZ() >= angle + TOLERANCE && accel.getAngleXZ() <=
-	// angle - TOLERANCE) {
-	// if (accel.getAngleXZ() >= angle + TOLERANCE)
-	// angleMotor.set(-speed);// turn negative speed
-	// else if (accel.getAngleXZ() <= angle - TOLERANCE)
-	// angleMotor.set(speed);
-	// ; // turn positive speed
-	// }
-	//
-	// if (bottomLimit.isPressed() || upperLimit.isPressed())
-	// angleMotor.PIDPosition(angleMotor.getPosition());
-	// }
-
-	/**
-	 * PID controls for the angleMotor
-	 */
-	// public void enablePIDControl() {
-	// double p = SmartDashboard.getDouble("P");
-	// double i = SmartDashboard.getDouble("I");
-	// double d = SmartDashboard.getDouble("D");
-	// double tolerance = SmartDashboard.getDouble("PIDTolerance");
-	// PIDController pidControl = new PIDController(p, i, d, analogAccel,
-	// angleMotor);
-	// pidControl.setOutputRange(0, 1);
-	// pidControl.setPercentTolerance(tolerance);
-	// }
 
 	/**
 	 * Extends pistons to shoot ball
 	 */
 	public void shootBall() {
-		if (DriverStation.auxStick.getRawButton(HWR.ACTUATE_PISTON_SHOOTER))
+		if (!shootPiston.isExtended())
 			shootPiston.extend();
-		else
-			shootPiston.retract();
-
-		if (DriverStation.auxStick.getRawButton(HWR.SHOOTER_BUTTON)) {
-			shooterMotors.PIDSpeed(SmartDashboard.getDouble("Shooter Target Speed"));
-			// shooterMotors.PIDSpeed(SHOOT_SPEED);
-		} else {
-			shooterMotors.enableBrakeMode(false);
-			shooterMotors.stop();
-		}
-
 	}
 
 	/**
-	 * Angles shooter using Joy Sticks
+	 * Retracts Pistons
 	 */
-	public void joystickAngleShooter() {
-		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
-			// angleMotor.set(DriverStation.scaleToMax(DriverStation.auxStick));
-			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
-			angleMotor.PIDPosition(targetPos);
-		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
-			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
-			angleMotor.PIDPosition(targetPos);
-			// angleMotor.set(DriverStation.scaleToMin(DriverStation.auxStick));
-		} else {
-			angleMotor.PIDPosition(targetPos);
+	public void resetShootPistons() {
+		if (shootPiston.isExtended()) {
+			shootPiston.retract();
 		}
-		SmartDashboard.sendData("angle motor target position", targetPos);
 	}
 
+	/**
+	 * Set shooter to absolute position angle
+	 * @param angle
+	 */
 	public void angleShooter(double angle) {
 		if (angle < -10) {
 			angle = -10;
@@ -136,9 +82,46 @@ public class Shooter {
 		angleMotor.PIDPosition(angle);
 	}
 
+	/**
+	 * Set shooter to speed {@param rpm}
+	 * @param rpm
+	 */
+	public void spinShooter(double rpm) {
+		shooterMotors.PIDSpeed(rpm);
+	}
+
+	/**
+	 * TeleOp
+	 */
 	public void shootMode() {
-		shootBall();
-		joystickAngleShooter();
+		if (DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
+			shootBall();
+		else
+			resetShootPistons();
+
+		if (DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
+			shooterMotors.PIDSpeed(SmartDashboard.getDouble("TeleOp Shooter Target Speed"));
+//			shooterMotors.PIDSpeed(SHOOT_SPEED);
+		} else {
+			shooterMotors.enableBrakeMode(false);
+			shooterMotors.stop();
+		}
+		
+		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
+			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
+//			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
+			angleMotor.PIDPosition(targetPos);
+		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
+			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
+//			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
+			angleMotor.PIDPosition(targetPos);
+		} else {
+			angleMotor.PIDPosition(targetPos);
+		}
+		
+		SmartDashboard.sendData("Shooter Left Spin Speed", ((TalonSRX) shooterMotors.get(0)).getSpeed());
+		SmartDashboard.sendData("Shooter Right Spin Speed", ((TalonSRX) shooterMotors.get(1)).getSpeed());
+		SmartDashboard.sendData("Shooter Target Angle", targetPos);
 	}
 
 	public void reset() {
