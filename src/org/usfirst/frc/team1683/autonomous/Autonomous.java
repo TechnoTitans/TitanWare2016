@@ -31,7 +31,7 @@ public abstract class Autonomous {
 	}
 
 	public static enum AutonomousMode {
-		DO_NOTHING, REACH_DEFENSE, TEST_AUTO, SHOOT_AT_TARGET
+		DO_NOTHING, REACH_DEFENSE, BREACH_DEFENSE, TEST_AUTO, SHOOT_AT_TARGET
 	}
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
