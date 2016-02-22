@@ -25,6 +25,7 @@ public class Gyro extends AnalogGyro implements Sensor{
 		return super.getAngle()%360;
 	}
 
+
 	@Override
 	public double getRate() {
 		// TODO Auto-generated method stub

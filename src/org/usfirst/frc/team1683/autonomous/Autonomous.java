@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer.StaticInterface;
  */
 public abstract class Autonomous {
 	// TODO: make autonomous
+	public static final double GYRO_ANGLE_TOLERANCE = 15.0;
 	protected TankDrive tankDrive;
 	protected Encoder leftEncoder;
 	protected Encoder rightEncoder;
@@ -27,7 +28,7 @@ public abstract class Autonomous {
 	}
 
 	protected static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE,REACH_DISTANCE,FIND_TARGET,FIRE,
+		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE,REACH_DISTANCE,FIND_TARGET,FIRE, ANGLE_CORRECT
 	}
 
 	public static enum AutonomousMode {
@@ -38,7 +39,7 @@ public abstract class Autonomous {
 	public static double reachDistance; // 74 inches
 	public static double properDistance;
 	public void updatePreferences() {
-		reachDistance = SmartDashboard.getDouble("reachDistance");
+		reachDistance = 74;// SmartDashboard.getDouble("reachDistance");
 		properDistance = SmartDashboard.getDouble("properDistance");
 	}
 
