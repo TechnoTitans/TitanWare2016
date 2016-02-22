@@ -22,7 +22,7 @@ public class PickerUpper {
 	public void intakeMode() {
 		
 		if (DriverStation.auxStick.getRawButton(HWR.INTAKE_TOGGLE)) {
-			group.PIDSpeed(-100);
+			group.PIDSpeed(SmartDashboard.getNumber("Intake Speed"));
 		} 
 		else group.stop();
 		
