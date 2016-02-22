@@ -4,6 +4,7 @@ import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.vision.FindGoal;
+
 import org.usfirst.frc.team1683.sensors.TiltSensor;
 
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
@@ -18,7 +19,7 @@ public class Shooter {
 	public static final boolean RETRACTED = false;
 
 	private double targetPos;
-
+	JoystickFilter auxFilter;
 	FindGoal vision;
 	TiltSensor accel;
 
@@ -31,6 +32,7 @@ public class Shooter {
 		this(group, angleMotor, shootPiston);
 		// this.accel = accel;
 		this.vision = vision;
+		auxFilter = new JoystickFilter(DriverStation.auxStick);
 	}
 
 	public Shooter(MotorGroup group, TalonSRX angleMotor, Piston shootPiston) {
@@ -101,15 +103,13 @@ public class Shooter {
 		}
 		
 		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
-//			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
-//			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
 			SmartDashboard.sendData("Joystick target position", DriverStation.scaleToMax(DriverStation.auxStick));
-			angleMotor.PIDPosition(DriverStation.scaleToMax(DriverStation.auxStick));
+			angleMotor.PIDPosition(auxFilter.filterInput(DriverStation.scaleToMax(DriverStation.auxStick)));
+			
 		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
-//			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
-//			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
 			SmartDashboard.sendData("Joystick target position", DriverStation.scaleToMin(DriverStation.auxStick));
-			angleMotor.PIDPosition(DriverStation.scaleToMin(DriverStation.auxStick));
+			angleMotor.PIDPosition(auxFilter.filterInput(DriverStation.scaleToMin(DriverStation.auxStick)));
+			
 		} else {
 //			angleMotor.PIDPosition(0);
 		}
