@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.Timer.StaticInterface;
 public abstract class Autonomous {
 	// TODO: make autonomous
 	public static final double GYRO_ANGLE_TOLERANCE = 15.0;
+	public static final double RAMP_LENGTH = 18;
+
 	protected TankDrive tankDrive;
 	protected Encoder leftEncoder;
 	protected Encoder rightEncoder;

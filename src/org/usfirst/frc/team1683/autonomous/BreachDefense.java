@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.Timer;
 public class BreachDefense extends Autonomous {
 
 	BuiltInAccel accel;
-	private final double RAMP_LENGTH = 18;
-	Timer timer;
 
 	public BreachDefense(TankDrive tankDrive, BuiltInAccel accel) {
 		super(tankDrive);
@@ -19,32 +17,32 @@ public class BreachDefense extends Autonomous {
 
 	public void run() {
 		switch (presentState) {
-		case INIT_CASE: {
+		case INIT_CASE:
 			nextState = State.DRIVE_FORWARD;
 			break;
-		}
-		case DRIVE_FORWARD: {
+			
+		case DRIVE_FORWARD:
 			tankDrive.moveDistance(reachDistance);
 			nextState = State.CROSS_DEFENSE;
 			break;
-		}
-			// uses accel to tell if on defense or not
-		case CROSS_DEFENSE: {
+			
+		// Uses accelerometer to tell if on defense or not
+		// TODO: Need to add timeout to moveDistance
+		case CROSS_DEFENSE:
 			tankDrive.moveDistance(RAMP_LENGTH);
 			if (!accel.isFlat()) {
 				tankDrive.set(Motor.MID_SPEED);
-			} else
+			} else {
 				tankDrive.stop();
-
+			}
 			nextState = State.END_CASE;
 			break;
-		}
-		case END_CASE: {
+			
+		case END_CASE:
 			break;
-		}
+			
 		default:
 			break;
-
 		}
 		presentState = nextState;
 	}
