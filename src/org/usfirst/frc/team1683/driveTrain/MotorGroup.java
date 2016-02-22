@@ -137,7 +137,10 @@ public class MotorGroup extends ArrayList<Motor> {
 	 */
 	public void set(double speed) {
 		for (Motor motor : this) {
-			motor.set(speed);
+			if (motor instanceof TalonSRX) {
+				((TalonSRX) motor).changeControlMode(TalonControlMode.PercentVbus);
+				((TalonSRX) motor).set(speed);
+			}
 		}
 	}
 

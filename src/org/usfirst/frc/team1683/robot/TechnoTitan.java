@@ -24,6 +24,7 @@ import org.usfirst.frc.team1683.vision.FindGoal;
 
 import com.ni.vision.NIVision.SupervisedColorSegmentationReport;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -55,6 +56,8 @@ public class TechnoTitan extends IterativeRobot {
 	//LightRing lightRing;
 
 	MotorGroup testGroup;
+	
+	Compressor compressor;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -96,6 +99,8 @@ public class TechnoTitan extends IterativeRobot {
 				angleMotor, shootPiston);
 		//pressureReader = new PressureReader(3);
 		//lightRing = new LightRing();
+		
+		compressor = new Compressor(1);
 	}
 
 	/**
@@ -147,13 +152,15 @@ public class TechnoTitan extends IterativeRobot {
 	
 
 	public void teleopInit() {
+		compressor.stop();
 		shooter.reset();
 	}
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		//drive.driveMode();
+		drive.driveMode();
+		pickerUpper.intakeMode();
 		shooter.shootMode();
 	}
 	

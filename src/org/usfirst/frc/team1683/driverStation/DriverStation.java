@@ -18,19 +18,18 @@ public class DriverStation {
 	public static Joystick rightStick = new Joystick(HWR.RIGHT_JOYSTICK);
 	public static Joystick auxStick = new Joystick(HWR.AUX_JOYSTICK);
 
-
 	public static double scaleToMax(Joystick joy) {
-	     return 0.4*joy.getRawAxis(YAxis);
+		return 450 * joy.getRawAxis(YAxis);
 	}
-	
+
 	public static double scaleToMin(Joystick joy) {
-		return 0.1*joy.getRawAxis(YAxis);
+		return 10 * joy.getRawAxis(YAxis);
 	}
 
 	// TODO
 	public static boolean antiBounce(int joystick, int button) {
 		boolean pressed = false;
-		
+
 		switch (joystick) {
 		case HWR.AUX_JOYSTICK:
 			pressed = DriverStation.auxStick.getRawButton(button);

@@ -1,20 +1,13 @@
 package org.usfirst.frc.team1683.shooter;
 
-import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
-import org.usfirst.frc.team1683.sensors.AccelSPI;
-import org.usfirst.frc.team1683.sensors.AnalogAccel;
 import org.usfirst.frc.team1683.vision.FindGoal;
-import org.usfirst.frc.team1683.sensors.LimitSwitch;
 import org.usfirst.frc.team1683.sensors.TiltSensor;
-
-import edu.wpi.first.wpilibj.PIDController;
 
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.Piston;
-import org.usfirst.frc.team1683.robot.HWP;
 import org.usfirst.frc.team1683.robot.HWR;
 
 public class Shooter {
@@ -108,16 +101,19 @@ public class Shooter {
 		}
 		
 		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
-			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
+//			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
 //			targetPos += SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
-			angleMotor.PIDPosition(targetPos);
+			SmartDashboard.sendData("Joystick target position", DriverStation.scaleToMax(DriverStation.auxStick));
+			angleMotor.PIDPosition(DriverStation.scaleToMax(DriverStation.auxStick));
 		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
-			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
+//			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity")*DriverStation.auxStick.getRawAxis(DriverStation.YAxis);
 //			targetPos -= SmartDashboard.getDouble("TeleOp Angle Motor Sensitivity");
-			angleMotor.PIDPosition(targetPos);
+			SmartDashboard.sendData("Joystick target position", DriverStation.scaleToMin(DriverStation.auxStick));
+			angleMotor.PIDPosition(DriverStation.scaleToMin(DriverStation.auxStick));
 		} else {
-			angleMotor.PIDPosition(targetPos);
+//			angleMotor.PIDPosition(0);
 		}
+//		angleMotor.PIDPosition(SmartDashboard.getDouble("shooter angle position"));
 		
 		SmartDashboard.sendData("Shooter Left Spin Speed", ((TalonSRX) shooterMotors.get(0)).getSpeed());
 		SmartDashboard.sendData("Shooter Right Spin Speed", ((TalonSRX) shooterMotors.get(1)).getSpeed());

@@ -19,13 +19,17 @@ public class PickerUpper {
 		
 	}
 
-	public void intake() {
+	public void intakeMode() {
 		
 		if (DriverStation.auxStick.getRawButton(HWR.INTAKE_TOGGLE)) {
-			group.set(INTAKE_SPEED);
+			group.PIDSpeed(-100);
 		} 
 		else group.stop();
 		
+	}
+	
+	public void intake() {
+		group.moveDistance(-10, INTAKE_SPEED);
 	}
 
 }
