@@ -19,11 +19,11 @@ public class DriverStation {
 	public static Joystick auxStick = new Joystick(HWR.AUX_JOYSTICK);
 
 	public static double scaleToMax(Joystick joy) {
-		return 450 * joy.getRawAxis(YAxis);
+		return 50 * joy.getRawAxis(YAxis);
 	}
 
 	public static double scaleToMin(Joystick joy) {
-		return 10 * joy.getRawAxis(YAxis);
+		return -4 * joy.getRawAxis(YAxis);
 	}
 
 	// TODO

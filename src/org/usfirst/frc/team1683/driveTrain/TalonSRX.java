@@ -187,10 +187,10 @@ public class TalonSRX extends CANTalon implements Motor {
 		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
 	}
 	
-	public void PIDSpeed(double RPM) {
+	public void PIDSpeed(double rpm) {
 		PIDUpdate();
 		super.changeControlMode(TalonControlMode.Speed);
-		super.setPosition(RPM);
+		super.setPosition(rpm);
 		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", super.getSpeed());
 	}
 
