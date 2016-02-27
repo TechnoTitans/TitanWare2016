@@ -241,7 +241,7 @@ public class MotorGroup {
 	
 	public double getError() {
 		double error = 0;
-		for(Motor motor : this) {
+		for(Motor motor : this.motors) {
 			error += ((TalonSRX)motor).getError();
 		}
 		error /= 2;

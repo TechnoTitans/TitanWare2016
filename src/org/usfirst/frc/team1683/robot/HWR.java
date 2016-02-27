@@ -14,7 +14,7 @@ public class HWR {
 	public static final int LEFT_DRIVE_TRAIN_BACK = HWP.CAN_4;
 	public static final int RIGHT_DRIVE_TRAIN_FRONT_E = HWP.CAN_3;
 	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_2;
-	
+	public static final int LIGHT_RING = HWP.CAN_4;
 	public static final int ANGLE_MOTOR = HWP.CAN_1;
 	public static final int SHOOTER_LEFT = HWP.CAN_6;
 	public static final int SHOOTER_RIGHT = HWP.CAN_7;
@@ -47,13 +47,13 @@ public class HWR {
 	// TODO: Get these values
 	public static final int DEFAULT_MODULE_CHANNEL = 1;
 	public static final int SHOOTER_PISTON_CHANNEL = 4;
-	public static final int ANGLE_PISTON_CHANNEL = 1;
-	public static final int ClIMB_DEPLOY_CHANNEL = 2;
+	public static final int ANGLE_PISTON_CHANNEL = 2;
+	public static final int ClIMB_DEPLOY_CHANNEL = 1;
 	public static final int CLIMB_RETRACT_CHANNEL = 3;
 	
 	
 	// Buttons
-	public static final int INTAKE_TOGGLE = HWP.BUTTON_4;
+	public static final int SPIN_UP_INTAKE = HWP.BUTTON_4;
 	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_5;
 	public static final int SHOOT_BALL = HWP.BUTTON_2;
 }

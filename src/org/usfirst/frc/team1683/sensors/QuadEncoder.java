@@ -2,6 +2,8 @@ package org.usfirst.frc.team1683.sensors;
 
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+
 public class QuadEncoder implements Encoder {
 
 	public static final double PULSES_PER_REVOLUTION = 1024.0;
@@ -16,6 +18,7 @@ public class QuadEncoder implements Encoder {
 		// throw new EncoderNotFoundException();
 		// this.talonSRX = null;
 		// }
+		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 
 		this.wheelRadius = wheelRadius;
 
@@ -26,10 +29,12 @@ public class QuadEncoder implements Encoder {
 	public double getDistance() {
 		// double pos = talonSRX.getEncPosition();
 		// return ;
-		return (talonSRX.getPosition() * (2*Math.PI)) * wheelRadius;
+//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		return talonSRX.getPosition() * 2 * Math.PI * wheelRadius;
 	}
 
 	public double getPosition() {
+//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		double pos = talonSRX.getEncPosition();
 //		if (pos > 0) {
 //			return (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0;
@@ -42,10 +47,12 @@ public class QuadEncoder implements Encoder {
 	@Override
 	public double getSpeed() {
 		// TODO Auto-generated method stub
+//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		return talonSRX.getSpeed();
 	}
 
 	public void reset() {
+//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		talonSRX.setPosition(0);
 		// talonSRX.setpos
 	}
