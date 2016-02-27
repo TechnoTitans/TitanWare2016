@@ -26,8 +26,8 @@ public class Shooter {
 	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
 			/ (MAX_ANGLE - MIN_ANGLE);
 	
-	private final double FORWARD_LIMIT_ANGLE = 19;
-	private final double BACK_LIMIT_ANGLE = 46;
+	public final static double FORWARD_LIMIT_ANGLE = 19;
+	public final static double BACK_LIMIT_ANGLE = 46;
 
 	private InputFilter inputFilter;
 
