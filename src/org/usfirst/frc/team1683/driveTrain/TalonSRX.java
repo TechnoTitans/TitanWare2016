@@ -29,7 +29,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		private double distance;
 		private double speed;
 		private TalonSRX talonSrx;
-		private Encoder encoder;
+//		private Encoder encoder;
 
 		public MotorMover(TalonSRX talonSrx, double distance, double speed) {
 			this.talonSrx = talonSrx;
@@ -139,8 +139,8 @@ public class TalonSRX extends CANTalon implements Motor {
 	 */
 	public void set(double speed) {
 		super.changeControlMode(TalonControlMode.PercentVbus);
-//		super.enableControl();
 		super.set(speed);
+		super.enableControl();
 	}
 
 	/**
@@ -217,6 +217,10 @@ public class TalonSRX extends CANTalon implements Motor {
 	@Override
 	public Encoder getEncoder() {
 		return encoder;
+	}
+	
+	public void setEncoder(Encoder encoder) {
+		this.encoder = encoder;
 	}
 
 	// TODO: make sure this works.
