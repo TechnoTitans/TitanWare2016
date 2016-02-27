@@ -238,6 +238,15 @@ public class MotorGroup {
 	public boolean hasEncoder() {
 		return !(encoder == null);
 	}
+	
+	public double getError() {
+		double error = 0;
+		for(Motor motor : this) {
+			error += ((TalonSRX)motor).getError();
+		}
+		error /= 2;
+		return error;
+	}
 
 	/**
 	 * @return The encoder associated with the group.
