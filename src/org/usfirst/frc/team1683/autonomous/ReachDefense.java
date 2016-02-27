@@ -21,11 +21,12 @@ public class ReachDefense extends Autonomous {
 			break;
 			
 		case DRIVE_FORWARD:
-			tankDrive.moveDistance(reachDistance);
+			tankDrive.moveDistance(REACH_DISTANCE);
 			nextState = State.END_CASE;
 			break;
 			
 		case END_CASE:
+			nextState = State.END_CASE;
 			break;
 			
 		default:
