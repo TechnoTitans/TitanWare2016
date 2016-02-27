@@ -1,10 +1,11 @@
 
 package org.usfirst.frc.team1683.robot;
-
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
+import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.ClimbingPistons;
 import org.usfirst.frc.team1683.pneumatics.Piston;
@@ -33,6 +34,8 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean LEFT_REVERSE = false;
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS = 3.391 / 2;
+	//LightRing ring;
+	//JoystickFilter auxFilter;
 	FindGoal findgoal;
 	TankDrive drive;
 	Gyro gyro;
@@ -76,22 +79,25 @@ public class TechnoTitan extends IterativeRobot {
 				rightETalonSRX, new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
 		
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
-
+		
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
-
-		// testGroup = rightGroup;
-		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL,
-				HWR.CLIMB_RETRACT_CHANNEL);
+		
+//		testGroup = rightGroup;
+		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
-		MotorGroup shooterGroup = new MotorGroup(new TalonSRX(HWR.SHOOTER_LEFT, true),
+		MotorGroup shooterGroup = new MotorGroup(
+				new TalonSRX(HWR.SHOOTER_LEFT, true),
 				new TalonSRX(HWR.SHOOTER_RIGHT, true));
-
+		
 		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(shooterGroup, angleMotor, shootPiston);
-//		 pressureReader = new PressureReader(HWR.PRESSURE_SENSOR);
-		// lightRing = new LightRing();
-
+		shooter = new Shooter(shooterGroup, 
+				angleMotor, shootPiston);
+		//pressureReader = new PressureReader(3);
+		//ring = new LightRing(HWR.LIGHT_RING);
+	 //ring = new TalonSRX(HWR.LIGHT_RING, false);
 		compressor = new Compressor(1);
+		//auxFilter = new JoystickFilter(DriverStation.auxStick);
+		
 	}
 
 	/**
@@ -106,61 +112,58 @@ public class TechnoTitan extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
-
+		
 		// autoSelected = (String) chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
-		// System.out.println("Auto selected: " + autoSelected);
-		// switcher.updateAutoSelected();
+//		System.out.println("Auto selected: " + autoSelected);
+//		switcher.updateAutoSelected();
 	}
+	
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	boolean run = false;
-
 	public void autonomousPeriodic() {
 		if (!run) {
-			// gyro.reset();
-			//// drive.moveDistance(120, 0.3);
-			// drive.turn(180, 0.25);
-			//// drive.set(.25);
-			// run = true;
+//			gyro.reset();
+////			drive.moveDistance(120, 0.3);
+//			drive.turn(180, 0.25);
+////			drive.set(.25);
+//			run = true;
 		}
-		SmartDashboard.sendData("getLeftPosition",
-				((QuadEncoder) drive.getLeftGroup().getEncoder()).getTalon().getPosition());
-		SmartDashboard.sendData("getRightPosition",
-				((QuadEncoder) drive.getRightGroup().getEncoder()).getTalon().getPosition());
-		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder) drive.getLeftGroup().getEncoder()).getDistance());
-		SmartDashboard.sendData("getRightDistance", ((QuadEncoder) drive.getRightGroup().getEncoder()).getDistance());
-		// SmartDashboard.sendData("getEncPosition",
-		// ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getEncPosition());
-
-		// testGroup.set(0.25);
-		// drive.set(0.25);
+		SmartDashboard.sendData("getLeftPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
+		SmartDashboard.sendData("getRightPosition", ((QuadEncoder)drive.getRightGroup().getEncoder()).getTalon().getPosition()); 
+		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getDistance()); 
+		SmartDashboard.sendData("getRightDistance", ((QuadEncoder)drive.getRightGroup().getEncoder()).getDistance()); 
+//		SmartDashboard.sendData("getEncPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getEncPosition()); 
+		
+//		testGroup.set(0.25);
+//		drive.set(0.25);
 	}
-
+	
 	public void disabledPeriodic() {
 		run = false;
 	}
+	
 
 	public void teleopInit() {
-//		compressor.stop();
+		compressor.stop();
 		shooter.reset();
 	}
-
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-//		drive.driveMode();
-		pickerUpper.intakeMode();
+		//drive.driveMode();
+		//pickerUpper.intakeMode();
 		shooter.shootMode();
-//		pressureReader.getPressure();
-		shooter.report();
+	
+		
 		
 	}
-
+	
 	public void testInit() {
 	}
 
@@ -171,3 +174,4 @@ public class TechnoTitan extends IterativeRobot {
 	}
 
 }
+
