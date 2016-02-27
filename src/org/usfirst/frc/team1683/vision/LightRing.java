@@ -1,6 +1,6 @@
 package org.usfirst.frc.team1683.vision;
 
-import edu.wpi.first.wpilibj.TalonSRX;
+import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 
 /**
  * Represents the Light Ring
@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.TalonSRX;
  */
 public class LightRing extends TalonSRX {
 
-	public LightRing(int channel) {
-		super(channel);
+	public LightRing(int TalonSRX) {
+		super(TalonSRX, false);
 	}
 
 	@Override

@@ -7,7 +7,7 @@ package org.usfirst.frc.team1683.robot;
  * @author David Luo
  *
  */
-public class HWR {
+public class HWR {   
 
 	// Motors
 	public static final int LEFT_DRIVE_TRAIN_FRONT_E = HWP.CAN_5;

@@ -58,6 +58,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		}
 	}
 
+	
 	/**
 	 * Constructor
 	 * 
@@ -85,6 +86,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		super(channel);
 		super.setInverted(reversed);
 		this.encoder = encoder;
+		
 	}
 
 	/**
@@ -225,6 +227,9 @@ public class TalonSRX extends CANTalon implements Motor {
 		return super.getDeviceID();
 	}
 
+	public double getError() {
+		return super.getError();
+	}
 	/**
 	 * @return If the Talon is reversed.
 	 */
