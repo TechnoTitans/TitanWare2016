@@ -2,10 +2,8 @@
 package org.usfirst.frc.team1683.robot;
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
-import org.usfirst.frc.team1683.driveTrain.Talon;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
-import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.ClimbingPistons;
 import org.usfirst.frc.team1683.pneumatics.Piston;
@@ -15,7 +13,6 @@ import org.usfirst.frc.team1683.sensors.TiltSensor;
 import org.usfirst.frc.team1683.sensors.PressureReader;
 import org.usfirst.frc.team1683.shooter.PickerUpper;
 import org.usfirst.frc.team1683.shooter.Shooter;
-import org.usfirst.frc.team1683.test.VisionTest;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -34,7 +31,6 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean LEFT_REVERSE = false;
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS = 3.391 / 2;
-	//LightRing ring;
 	//JoystickFilter auxFilter;
 	FindGoal findgoal;
 	TankDrive drive;
@@ -50,8 +46,6 @@ public class TechnoTitan extends IterativeRobot {
 	
 	Shooter shooter;
 	PickerUpper pickerUpper;
-
-	MotorGroup testGroup;
 
 	Compressor compressor;
 
@@ -69,7 +63,6 @@ public class TechnoTitan extends IterativeRobot {
 		TalonSRX leftETalonSRX = new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT_E, LEFT_REVERSE);
 		TalonSRX rightETalonSRX = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT_E, RIGHT_REVERSE);
 
-
 		MotorGroup leftGroup = new MotorGroup(new QuadEncoder(leftETalonSRX, WHEEL_RADIUS),
 				// MotorGroup leftGroup = new MotorGroup(
 				leftETalonSRX, new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
@@ -82,7 +75,6 @@ public class TechnoTitan extends IterativeRobot {
 		
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
 		
-//		testGroup = rightGroup;
 		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		MotorGroup shooterGroup = new MotorGroup(
@@ -92,11 +84,8 @@ public class TechnoTitan extends IterativeRobot {
 		pickerUpper = new PickerUpper(shooterGroup);
 		shooter = new Shooter(shooterGroup, 
 				angleMotor, shootPiston);
-		//pressureReader = new PressureReader(3);
-		//ring = new LightRing(HWR.LIGHT_RING);
-	 //ring = new TalonSRX(HWR.LIGHT_RING, false);
+
 		compressor = new Compressor(1);
-		//auxFilter = new JoystickFilter(DriverStation.auxStick);
 		
 	}
 
@@ -113,40 +102,18 @@ public class TechnoTitan extends IterativeRobot {
 	 */
 	public void autonomousInit() {
 		
-		// autoSelected = (String) chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
-//		System.out.println("Auto selected: " + autoSelected);
-//		switcher.updateAutoSelected();
 	}
 	
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
-	boolean run = false;
 	public void autonomousPeriodic() {
-		if (!run) {
-//			gyro.reset();
-////			drive.moveDistance(120, 0.3);
-//			drive.turn(180, 0.25);
-////			drive.set(.25);
-//			run = true;
-		}
 		SmartDashboard.sendData("getLeftPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
 		SmartDashboard.sendData("getRightPosition", ((QuadEncoder)drive.getRightGroup().getEncoder()).getTalon().getPosition()); 
 		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getDistance()); 
 		SmartDashboard.sendData("getRightDistance", ((QuadEncoder)drive.getRightGroup().getEncoder()).getDistance()); 
-//		SmartDashboard.sendData("getEncPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getEncPosition()); 
-		
-//		testGroup.set(0.25);
-//		drive.set(0.25);
-	}
-	
-	public void disabledPeriodic() {
-		run = false;
-	}
-	
+	}	
 
 	public void teleopInit() {
 		compressor.stop();
@@ -159,8 +126,6 @@ public class TechnoTitan extends IterativeRobot {
 		//drive.driveMode();
 		//pickerUpper.intakeMode();
 		shooter.shootMode();
-	
-		
 		
 	}
 	
