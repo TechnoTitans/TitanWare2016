@@ -204,8 +204,7 @@ public class MotorGroup {
 		PIDUpdate();
 		for (Motor m : this.motors) {
 			if (m instanceof TalonSRX) {
-				((TalonSRX) m).changeControlMode(TalonControlMode.Speed);
-				m.set(RPM);
+				((TalonSRX) m).PIDSpeed(RPM);
 				SmartDashboard.sendData("Shooter Talon " + m.getChannel() + " Speed", ((TalonSRX) m).getSpeed());
 			}
 		}
