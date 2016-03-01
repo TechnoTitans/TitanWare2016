@@ -17,58 +17,13 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
  * @author David Luo
  *
  */
-public class MotorGroup extends ArrayList<Motor>{
+public class MotorGroup extends ArrayList<Motor> {
 
 	// This variable was required for some reason.
-//	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	private Encoder encoder;
-//	private Thread thread;
 
 	private AntiDrift antiDrift;
-
-	/**
-	 * Private class to move motor in separate thread.
-	 */
-	/*
-	private class MotorMover implements Runnable {
-
-		private double distance;
-		private double speed;
-		private MotorGroup motors;
-
-		public MotorMover(MotorGroup group, double distance, double speed) {
-			this.motors = group;
-			this.distance = distance;
-			if (distance < 0) {
-				this.speed = -speed;
-			} else {
-				this.speed = speed;
-			}
-		}
-
-		@Override
-		public void run() {
-			encoder.reset();
-			// synchronized (this) {
-			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
-				if (isAntiDriftEnabled()) {
-					speed = antiDrift.antiDrift(speed, motors);
-					motors.set(speed);
-				} else {
-					motors.set(speed);
-				}
-
-				SmartDashboard.sendData("EncoderDistance", encoder.getDistance());
-				SmartDashboard.sendData("TargetDistance", distance);
-			}
-			// }
-			motors.stop();
-			// thread.notifyAll();
-			// thread.destroy();
-		}
-
-	}
-	*/
 
 	/**
 	 * Constructor
@@ -123,24 +78,6 @@ public class MotorGroup extends ArrayList<Motor>{
 	 */
 	// TODO: make this linear instead of rotations
 	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
-//		if (hasEncoder()) {
-//			// for (Motor motor : this) {
-//			// motor.moveDistance(distance, speed);++
-//			// }
-//			// if (thread == null ||
-//			// thread.getState().equals(Thread.State.TERMINATED)) {
-//			SmartDashboard.sendData("Thread State", thread.getState().name());
-//			thread = new Thread(new MotorMover(this, distance, speed));
-//			SmartDashboard.sendData("Thread State", thread.getState().name());
-//			thread.start();
-//			// }
-//			SmartDashboard.sendData("Thread State", thread.getState().name());
-//			// if (thread.getState().equals(Thread.State.NEW)) {
-//			// thread.start();
-//			// }
-//		} else {
-//			throw new EncoderNotFoundException();
-//		}
 		for (Motor motor : this) {
 			motor.moveDistance(distance, speed);
 		}
@@ -156,7 +93,6 @@ public class MotorGroup extends ArrayList<Motor>{
 	public void set(double speed) {
 		for (Motor motor : this) {
 			((TalonSRX) motor).set(speed);
-			// }
 		}
 	}
 
@@ -188,8 +124,7 @@ public class MotorGroup extends ArrayList<Motor>{
 		Settings.updateSettings();
 		for (Motor m : this) {
 			if (m instanceof TalonSRX) {
-				((TalonSRX) m).setPID(Settings.shooterMotorP, Settings.shooterMotorI,
-						Settings.shooterMotorD);
+				((TalonSRX) m).setPID(Settings.shooterMotorP, Settings.shooterMotorI, Settings.shooterMotorD);
 				((TalonSRX) m).setF(Settings.shooterMotorF);
 				((TalonSRX) m).enableControl();
 
@@ -223,11 +158,11 @@ public class MotorGroup extends ArrayList<Motor>{
 	public boolean hasEncoder() {
 		return !(encoder == null);
 	}
-	
+
 	public double getError() {
 		double error = 0;
-		for(Motor motor : this) {
-			error += ((TalonSRX)motor).getError();
+		for (Motor motor : this) {
+			error += ((TalonSRX) motor).getError();
 		}
 		error /= this.size();
 		return error;
@@ -248,7 +183,7 @@ public class MotorGroup extends ArrayList<Motor>{
 		}
 	}
 
-	// probably want to find a better way to use antidrift than this way.
+	// TODO: probably want to find a better way to use antidrift than this way.
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
