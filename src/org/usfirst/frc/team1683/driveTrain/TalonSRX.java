@@ -146,10 +146,22 @@ public class TalonSRX extends CANTalon implements Motor {
 	}
 
 	/**
-	 * Gets speed of the TalonSRX
+	 * Gets speed of the TalonSRX in RPM
 	 */
 	public double get() {
-		return super.get();
+//		speed = enc counts / 100 ms
+//		           (speed * 60 secs)
+//		--------------------------------------
+//		4096 encoder counts * 100 milliseconds
+		return (super.getSpeed()*60)/(4096*0.1);
+	}
+	
+	public double getSpeed() {
+		return this.get();
+	}
+	
+	public double getRPM() {
+		return this.get();
 	}
 	
 	public void calibrate() {
