@@ -31,7 +31,7 @@ public class Settings {
 		shooterMotorF = SmartDashboard.getDouble("Shooter Motor F");
 		
 		shooterFilterSensitivity = SmartDashboard.getDouble("Shooter Filter Sensitivity");
-		shooterTargetSpeed = SmartDashboard.getDouble("Shooter Target Speed");
+		shooterTargetSpeed = SmartDashboard.getDouble("TeleOp Shooter Target Speed");
 		
 		properDistance = SmartDashboard.getDouble("Proper Distance");
 		
