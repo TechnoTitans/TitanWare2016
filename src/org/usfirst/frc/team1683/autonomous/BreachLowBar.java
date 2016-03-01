@@ -2,18 +2,13 @@ package org.usfirst.frc.team1683.autonomous;
 
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 
-/**
- * Reaches base of defense
- * 
- * @author Sneha Kadiyala
- *
- */
-public class ReachDefense extends Autonomous {
+public class BreachLowBar extends Autonomous {
 
-	public ReachDefense(TankDrive driveTrain) {
-		super(driveTrain);
+	public BreachLowBar(TankDrive tankDrive) {
+		super(tankDrive);
 	}
 
+	@Override
 	public void run() {
 		switch (presentState) {
 		case INIT_CASE:
@@ -21,7 +16,13 @@ public class ReachDefense extends Autonomous {
 			break;
 			
 		case DRIVE_FORWARD:
-			tankDrive.moveDistance(REACH_DISTANCE);
+			// TODO: Need to add timeout to moveDistance?
+			tankDrive.moveDistance(REACH_DISTANCE+RAMP_LENGTH+LOW_BAR_DISTANCE);
+			nextState = State.STOP;
+			break;
+			
+		case STOP:			
+			tankDrive.stop();
 			nextState = State.END_CASE;
 			break;
 			
@@ -34,4 +35,5 @@ public class ReachDefense extends Autonomous {
 		}
 		presentState = nextState;
 	}
+
 }

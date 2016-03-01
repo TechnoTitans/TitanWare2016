@@ -2,7 +2,6 @@ package org.usfirst.frc.team1683.autonomous;
 
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
-
 import org.usfirst.frc.team1683.autonomous.ShootAtTarget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,15 +39,16 @@ public class AutonomousSwitcher {
 	public Autonomous autoSelected;
 
 	private SendableChooser chooser;
-	
+
 	private DriveTrain driveTrain;
 	BuiltInAccel accel;
 	FindGoal vision;
 	Shooter shooter;
 	Gyro gyro;
-	ShootingPhysics physics;
+//	ShootingPhysics physics;
 
-	public AutonomousSwitcher(DriveTrain driveTrain,BuiltInAccel accel,FindGoal vision,Shooter shooter,ShootingPhysics physics) {
+	public AutonomousSwitcher(DriveTrain driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter) {
+//			ShootingPhysics physics) {
 		chooser = new SendableChooser();
 		chooser.addDefault(DEFAULT_AUTO.name(), DEFAULT_AUTO.name());
 		for (AutonomousMode mode : Autonomous.AutonomousMode.values()) {
@@ -58,31 +58,42 @@ public class AutonomousSwitcher {
 		SmartDashboard.putData("Auto to run", chooser);
 
 		this.driveTrain = driveTrain;
-		this.physics = physics;
+//		this.physics = physics;
 		this.accel = accel;
 		this.vision = vision;
 		updateAutoSelected();
 	}
 
 	public void updateAutoSelected() {
-		SmartDashboard.sendData("AUTO SELECTED", SmartDashboard.getString("Auto Selector"));
-		switch (toMode(SmartDashboard.getString("Auto Selector", DEFAULT_AUTO.name()))) {
-		case REACH_DEFENSE:
+//		SmartDashboard.sendData("AUTO SELECTED", SmartDashboard.getString("Auto Selector"));
+		int autoMode = SmartDashboard.getInt("Auto Mode");
+//		switch (toMode(SmartDashboard.getString("Auto Selector"))) {
+		switch (autoMode) {
+		case 1:
+//		case REACH_DEFENSE:
 			autoSelected = new ReachDefense((TankDrive) driveTrain);
 			break;
-		case SHOOT_AT_TARGET:
-			autoSelected=new ShootAtTarget((TankDrive) driveTrain,(BuiltInAccel) accel,(FindGoal) vision,(Shooter) shooter,(Gyro) gyro);
+		case 2:
+//		case BREACH_DEFENSE:
+			autoSelected = new BreachDefense((TankDrive) driveTrain, (BuiltInAccel) accel);
 			break;
-		case TEST_AUTO:
+		case 3:
+//		case SHOOT_AT_TARGET:
+			autoSelected = new ShootAtTarget((TankDrive) driveTrain, (BuiltInAccel) accel, (FindGoal) vision,
+					(Shooter) shooter, (Gyro) gyro);
+			break;
+		case -1:
+//		case TEST_AUTO:
 			autoSelected = new TestAuto((TankDrive) driveTrain);
 			break;
-		case DO_NOTHING:
+		case 0:
+//		case DO_NOTHING:
 		default:
 			autoSelected = new DoNothing((TankDrive) driveTrain);
 			break;
 		}
 	}
-	
+
 	private AutonomousMode toMode(String mode) {
 		return AutonomousMode.valueOf(mode);
 	}

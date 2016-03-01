@@ -7,6 +7,7 @@ public class Gyro extends AnalogGyro implements Sensor{
 		super(channel);
 		super.initGyro();
 		super.reset();
+		super.setSensitivity(0.00656693);
 	}
 	@Override
 	public double getRaw() {

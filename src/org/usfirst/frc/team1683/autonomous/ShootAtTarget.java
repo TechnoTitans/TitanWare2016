@@ -1,11 +1,14 @@
 package org.usfirst.frc.team1683.autonomous;
 
-import org.usfirst.frc.team1683.driveTrain.EncoderNotFoundException;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.vision.FindGoal;
+
+import edu.wpi.first.wpilibj.Timer;
+
+import org.usfirst.frc.team1683.autonomous.Autonomous.State;
 import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.vision.*;
 
@@ -30,6 +33,8 @@ public class ShootAtTarget extends Autonomous {
 		this.shooter = shooter;
 		this.gyro = gyro;
 
+		timer = new Timer();
+		timeout = new Timer();
 		// this.physics=physics;
 	}
 
@@ -41,30 +46,37 @@ public class ShootAtTarget extends Autonomous {
 
 		case DRIVE_FORWARD:
 			// originalAngle = gyro.getAngle();
-			tankDrive.moveDistance(reachDistance);
+			tankDrive.moveDistance(REACH_DISTANCE);
 			nextState = State.CROSS_DEFENSE;
+			timer.start();
+			timeout.start();
 			break;
 
 		// TODO: Need to add timeout to moveDistance
 		case CROSS_DEFENSE:
-			tankDrive.moveDistance(RAMP_LENGTH);
+			if(timeout.get() > CROSS_DEFENSE_TIMEOUT) {
+				nextState = State.REALIGN;
+				break;
+			}
 			if (!accel.isFlat()) {
 				tankDrive.set(Motor.MID_SPEED);
+				timer.reset();
+				nextState = State.CROSS_DEFENSE;
 			} else {
-				tankDrive.stop();
+				if (timer.get() < CROSS_TIME)
+					nextState = State.CROSS_DEFENSE;
+				else
+					nextState = State.REALIGN;
 			}
-			// after breaching defense, arrive at a good point for shooting
-			nextState = State.ANGLE_CORRECT;
 			break;
 
-		case ANGLE_CORRECT:
+		case REALIGN:
 			if (Math.abs(gyro.getAngle() - originalAngle) >= GYRO_ANGLE_TOLERANCE)
 				tankDrive.turn(gyro.getAngle() - originalAngle);
 			nextState = State.REACH_DISTANCE;
 			break;
 
 		case REACH_DISTANCE:
-			// TODO: WTF does this variable do?
 			tankDrive.moveDistance(properDistance);
 			nextState = State.FIND_TARGET;
 			break;
@@ -81,10 +93,14 @@ public class ShootAtTarget extends Autonomous {
 			}
 			break;
 
-		case FIRE:
-			shooter.angleShooter(physics.FindAngle());
+		case SPINUP:
+			 shooter.angleShooter(physics.FindAngle());
 			// TODO: Get correct units for spinShooter
 			 shooter.spinShooter(physics.FindSpinSpeed());
+			 nextState=State.FIRE;
+			 break;
+		case FIRE:
+//			if()
 			// try{
 			// Thread.sleep(3000);
 			// }

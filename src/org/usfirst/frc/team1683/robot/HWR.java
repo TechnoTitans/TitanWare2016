@@ -19,11 +19,18 @@ public class HWR {
 	public static final int SHOOTER_LEFT = HWP.CAN_3; //change to can_6
 	public static final int SHOOTER_RIGHT = HWP.CAN_5; //change to can_7
 	public static final int LINEAR_ACTUATOR = HWP.CAN_8;
+	
+	// Test
+	public static final int TEST_TALON_1 = HWP.CAN_5;
+	public static final int TEST_TALON_2 = HWP.CAN_3;
+	public static final int TEST_ENCODER_1 = HWR.TEST_TALON_1;
+	public static final int TEST_ENCODER_2 = HWR.TEST_TALON_2;
+	public static final int TEST_GYRO = HWP.ANALOG_1;
 
 	// Encoders
 	// TODO: Get these values
-	public static final int LEFT_DRIVE_ENCODER = HWP.CAN_5;
-	public static final int RIGHT_DRIVE_ENCODER = HWP.CAN_3;
+	public static final int LEFT_DRIVE_ENCODER = HWP.CAN_4;
+	public static final int RIGHT_DRIVE_ENCODER = HWP.CAN_2;
 
 	// Joysticks
 	public static final int LEFT_JOYSTICK = HWP.JOY_0;
@@ -37,12 +44,12 @@ public class HWR {
 	public static final int PRESSURE_SENSOR = HWP.ANALOG_3;
 	
 	// Compressor
-	// TODO: Get these values
 	public static final int COMPRESSOR = 0;
+	// TODO: Get these values
 	public static final int DEFAULT_MODULE_CHANNEL = 1;
 	public static final int SHOOTER_PISTON_CHANNEL = 4;
-	public static final int ClIMB_DEPLOY_CHANNEL = 2;
-	public static final int ANGLE_PISTON_CHANNEL = 1;
+	public static final int ANGLE_PISTON_CHANNEL = 2;
+	public static final int ClIMB_DEPLOY_CHANNEL = 1;
 	public static final int CLIMB_RETRACT_CHANNEL = 3;
 	
 	

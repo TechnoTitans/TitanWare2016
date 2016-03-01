@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1683.autonomous;
 
-import org.usfirst.frc.team1683.driveTrain.EncoderNotFoundException;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 
 public class TestAuto extends Autonomous {
@@ -18,7 +17,7 @@ public class TestAuto extends Autonomous {
 			break;
 		case DRIVE_FORWARD:
 //			tankDrive.set(0.1);
-			tankDrive.moveDistance(100, 0.5);
+			tankDrive.moveDistance(2*Math.PI*2*5, 0.5);
 			
 //			try {
 //				tankDrive.moveDistance(100, 0.05);

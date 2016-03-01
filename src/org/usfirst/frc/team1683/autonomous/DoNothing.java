@@ -15,6 +15,7 @@ public class DoNothing extends Autonomous {
 			break;
 		
 		case END_CASE:
+			nextState = State.END_CASE;
 			break;
 			
 		default:
