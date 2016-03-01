@@ -17,14 +17,13 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
  * @author David Luo
  *
  */
-public class MotorGroup {
+public class MotorGroup extends ArrayList<Motor>{
 
 	// This variable was required for some reason.
 //	private static final long serialVersionUID = 1L;
 	private Encoder encoder;
 //	private Thread thread;
 
-	private ArrayList<Motor> motors;
 	private AntiDrift antiDrift;
 
 	/**
@@ -81,12 +80,11 @@ public class MotorGroup {
 	 */
 	public MotorGroup(Encoder encoder, Motor... motors) {
 		this.encoder = encoder;
-		this.motors = new ArrayList<>();
 		for (Motor motor : motors) {
 			if (motor instanceof TalonSRX) {
 				((TalonSRX) motor).setEncoder(encoder);
 			}
-			this.motors.add(motor);
+			super.add(motor);
 		}
 	}
 
@@ -97,9 +95,8 @@ public class MotorGroup {
 	 *            The motors.
 	 */
 	public MotorGroup(Motor... motors) {
-		this.motors = new ArrayList<>();
 		for (Motor motor : motors) {
-			this.motors.add(motor);
+			super.add(motor);
 		}
 	}
 
@@ -144,7 +141,7 @@ public class MotorGroup {
 //		} else {
 //			throw new EncoderNotFoundException();
 //		}
-		for (Motor motor : motors) {
+		for (Motor motor : this) {
 			motor.moveDistance(distance, speed);
 		}
 
@@ -157,7 +154,7 @@ public class MotorGroup {
 	 *            Speed from 0 to 1.
 	 */
 	public void set(double speed) {
-		for (Motor motor : this.motors) {
+		for (Motor motor : this) {
 			((TalonSRX) motor).set(speed);
 			// }
 		}
@@ -168,15 +165,15 @@ public class MotorGroup {
 	 */
 	public double getSpeed() {
 		double speed = 0;
-		for (Motor motor : this.motors) {
+		for (Motor motor : this) {
 			speed += motor.get();
 		}
-		return speed / this.motors.size();
+		return speed / this.size();
 	}
 
 	// BEGIN SHOOTER ONLY METHODS!!! #BADCODE
 	public void PIDInit() {
-		for (Motor m : this.motors) {
+		for (Motor m : this) {
 			if (m instanceof TalonSRX) {
 				if (((TalonSRX) m).isSensorPresent(FeedbackDevice.PulseWidth)
 						.equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
@@ -189,7 +186,7 @@ public class MotorGroup {
 
 	private void PIDUpdate() {
 		Settings.updateSettings();
-		for (Motor m : this.motors) {
+		for (Motor m : this) {
 			if (m instanceof TalonSRX) {
 				((TalonSRX) m).setPID(Settings.shooterMotorP, Settings.shooterMotorI,
 						Settings.shooterMotorD);
@@ -202,7 +199,7 @@ public class MotorGroup {
 
 	public void PIDSpeed(double RPM) {
 		PIDUpdate();
-		for (Motor m : this.motors) {
+		for (Motor m : this) {
 			if (m instanceof TalonSRX) {
 				((TalonSRX) m).PIDSpeed(RPM);
 				SmartDashboard.sendData("Shooter Talon " + m.getChannel() + " Speed", ((TalonSRX) m).getSpeed());
@@ -215,7 +212,7 @@ public class MotorGroup {
 	 * Stops group.
 	 */
 	public void stop() {
-		for (Motor motor : this.motors) {
+		for (Motor motor : this) {
 			motor.stop();
 		}
 	}
@@ -229,10 +226,10 @@ public class MotorGroup {
 	
 	public double getError() {
 		double error = 0;
-		for(Motor motor : this.motors) {
+		for(Motor motor : this) {
 			error += ((TalonSRX)motor).getError();
 		}
-		error /= this.motors.size();
+		error /= this.size();
 		return error;
 	}
 
@@ -244,19 +241,12 @@ public class MotorGroup {
 	}
 
 	public void enableBrakeMode(boolean enabled) {
-		for (Motor motor : this.motors) {
+		for (Motor motor : this) {
 			if (motor instanceof TalonSRX) {
 				((TalonSRX) motor).enableBrakeMode(enabled);
 			}
 		}
 	}
-
-	// /**
-	// * @return The motors in the group.
-	// */
-	// public Motor getMotors() {
-	// return motors;
-	// }
 
 	// probably want to find a better way to use antidrift than this way.
 	@Override
@@ -282,7 +272,4 @@ public class MotorGroup {
 		return !(antiDrift == null);
 	}
 
-	public Motor get(int index) {
-		return this.motors.get(index);
-	}
 }
