@@ -25,7 +25,7 @@ public class Shooter {
 			/ (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
 	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
 			/ (MAX_ANGLE - MIN_ANGLE);
-	
+
 	public final static double FORWARD_LIMIT_ANGLE = 19;
 	public final static double BACK_LIMIT_ANGLE = 46;
 
@@ -33,23 +33,21 @@ public class Shooter {
 
 	private double targetPos;
 	FindGoal vision;
-	
+
 	MotorGroup shooterMotors;
 	TalonSRX angleMotor;
 
 	Piston shootPiston;
-	
 
 	private boolean isCreated = false;
 	private State presentTeleOpState;
-	public static final double INTAKE_SPEED = -0.2;
-	private static final double INTAKE_ANGLE = 0; //Pick better angle
-	private static final double HOLD_SPEED = -0.01;
-	
+	public static final double INTAKE_SPEED = -50;
+	private static final double INTAKE_ANGLE = 0; // Pick better angle
+	private static final double HOLD_SPEED = 0;
+
 	public enum State {
 		INTAKE, HOLD, SHOOT;
 	}
-
 
 	public Shooter(MotorGroup group, TalonSRX angleMotor, Piston shootPiston, FindGoal vision) {
 		this(group, angleMotor, shootPiston);
@@ -69,25 +67,25 @@ public class Shooter {
 		this.angleMotor.PIDInit();
 		this.shooterMotors.PIDInit();
 
-		this.shooterMotors.enableBrakeMode(false); //coast mode
+		this.shooterMotors.enableBrakeMode(false); // coast mode
 
 		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"));
 
 	}
-	
+
 	public double getJoystickAngle() {
-		double angle; 
+		double angle;
 		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
-			 angle = DriverStation.scaleToMax(DriverStation.auxStick);
-		 } else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
-			 angle = DriverStation.scaleToMin(DriverStation.auxStick);		
-		 } else {
-			 angle = 0;
-		 }
-		 
-		 SmartDashboard.sendData("Joystick position", angle);
-//		 SmartDashboard.sendData("Joystick filtered position", angle);
-		 return angle;
+			angle = DriverStation.scaleToMax(DriverStation.auxStick);
+		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
+			angle = DriverStation.scaleToMin(DriverStation.auxStick);
+		} else {
+			angle = 0;
+		}
+
+		SmartDashboard.sendData("Joystick position", angle);
+		// SmartDashboard.sendData("Joystick filtered position", angle);
+		return angle;
 	}
 
 	public void setShooterSensitivity(double sensitivity) {
@@ -122,20 +120,19 @@ public class Shooter {
 		} else if (angle > BACK_LIMIT_ANGLE) {
 			angle = BACK_LIMIT_ANGLE;
 		}
-		
+
 		updatePrefs();
-		
+
 		SmartDashboard.sendData("Shooter Set Angle", angle);
-		
+
 		angle = inputFilter.filterInput(angle);
-		
+
 		SmartDashboard.sendData("Shooter Filtered Angle", angle);
-		
+
 		angle = angle * ANGLE_TO_POSITION_COEFFICENT;
-		
+
 		angleMotor.PIDPosition(angle);
 	}
-
 
 	/**
 	 * TeleOp
@@ -143,82 +140,74 @@ public class Shooter {
 	public void shootMode() {
 
 		stateSwitcher(isCreated);
-		
+
 		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
 			shootBall();
 		else
 			resetShootPistons();
 
-
-
 		updatePrefs();
 	}
-	
+
 	public void intake(double angle) {
 		shooterMotors.PIDSpeed(INTAKE_SPEED);
 		angleMotor.PIDPosition(angle);
 	}
-	
+
 	public void hold(double angle) {
 		shooterMotors.PIDSpeed(HOLD_SPEED);
 		angleMotor.PIDPosition(angle);
 	}
-	
+
 	public void shoot(double speed, double angle) {
 		shooterMotors.PIDSpeed(speed);
 		angleMotor.PIDPosition(angle);
 	}
-	
-	
+
 	public void stateSwitcher(boolean isCreated) {
 		String state = "out";
 		State nextState;
-		
+
 		if (!isCreated) {
 			presentTeleOpState = State.HOLD;
 			this.isCreated = true;
 		}
-		switch(presentTeleOpState) {
-		case HOLD: 
-		{
+		switch (presentTeleOpState) {
+		case HOLD: {
 			state = "HOLD";
 			hold(getJoystickAngle());
 			nextState = State.HOLD;
-			if(DriverStation.auxStick.getRawButton(HWR.SPIN_UP_INTAKE) && DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
+			if (DriverStation.auxStick.getRawButton(HWR.SPIN_UP_INTAKE)
+					&& DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
 				nextState = State.HOLD;
-			}
-			else if (DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
+			} else if (DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
 				nextState = State.SHOOT;
-			}
-			else if(DriverStation.auxStick.getRawButton(HWR.SPIN_UP_INTAKE)) {
+			} else if (DriverStation.auxStick.getRawButton(HWR.SPIN_UP_INTAKE)) {
 				nextState = State.INTAKE;
 			}
 			break;
-		}		
-		case INTAKE: 
-		{
+		}
+		case INTAKE: {
 			state = "INTAKE";
 			intake(getJoystickAngle());
 			nextState = State.INTAKE;
-			if(!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_INTAKE)) {
+			if (!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_INTAKE)) {
 				nextState = State.HOLD;
 			}
-			
+
 			break;
 		}
-		case SHOOT:
-		{
+		case SHOOT: {
 			state = "SHOOT";
 			shoot(SmartDashboard.getDouble("TeleOp Shooter Target Speed"), getJoystickAngle());
 			nextState = State.SHOOT;
-			if(!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
+			if (!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
 				nextState = State.HOLD;
 			}
 			break;
-			
+
 		}
-		default:
-		{
+		default: {
 			nextState = State.HOLD;
 			SmartDashboard.sendData("Shooter state machine error", true);
 			break;
@@ -228,7 +217,6 @@ public class Shooter {
 		presentTeleOpState = nextState;
 		SmartDashboard.sendData("Shooter state", state);
 	}
-
 
 	public void reset() {
 		targetPos = angleMotor.getPosition();
@@ -240,10 +228,11 @@ public class Shooter {
 		SmartDashboard.sendData("Shooter Position", angleMotor.getPosition());
 		SmartDashboard.sendData("Shooter Angle", angleMotor.getPosition() * POSITION_TO_ANGLE_COEFFICENT);
 	}
-	
+
 	public void updatePrefs() {
 		inputFilter.setFilterK(SmartDashboard.getDouble("Shooter K"));
 	}
+
 	/**
 	 * Set shooter to speed {@param rpm}
 	 * 
