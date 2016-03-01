@@ -4,26 +4,32 @@ import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.robot.HWP;
 import org.usfirst.frc.team1683.robot.HWR;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 
 public class ClimbingPistons {
-	Piston anglePiston;
+	LinearActuator actuator;
 	Piston chinUpDeploy;
 	Piston chinUpRetract;
 	public static State presentState;
 	public static State nextState;
+	
+	public static final double LIFT_ANGLE =  45;
+	public static final double RETRACT_ANGLE = 0;
+	
 	public static enum State{
 		INIT_CASE, END_CASE, STOWED, DEPLOY, LIFT_HOOK, ROBOT_CHINUP, STOP,
 	}
-	public ClimbingPistons(int angleChannel, int chinUpDeployChannel, int chinUpRetractChannel) {
+	public ClimbingPistons(int chinUpDeployChannel, int chinUpRetractChannel) {
 		presentState = State.INIT_CASE;
-		anglePiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, angleChannel);
+		actuator = new LinearActuator(HWR.LINEAR_ACTUATOR);
 		chinUpDeploy = new Piston(HWR.DEFAULT_MODULE_CHANNEL, chinUpDeployChannel);
 		chinUpRetract = new Piston(HWR.DEFAULT_MODULE_CHANNEL, chinUpRetractChannel);
+		actuator.PIDinit();
 		
 	}
 	
-	public void deployAnglePiston() {
-		anglePiston.extend();
+	public void deployAngle() {
+		actuator.PIDupdate(actuator.convertAngle(LIFT_ANGLE));
 	}
 	
 	public void deployChinUp() {
@@ -32,7 +38,7 @@ public class ClimbingPistons {
 	}
 	
 	public void retractAngle() {
-		anglePiston.retract();
+		actuator.PIDupdate(actuator.convertAngle(RETRACT_ANGLE));
 	}
 	
 	public void retractChinUp() {
@@ -61,7 +67,7 @@ public class ClimbingPistons {
 		
 		case DEPLOY: 
 		{
-			this.deployAnglePiston();
+			this.deployAngle();
 			this.retractChinUp();
 			SmartDashboard.sendData("State", "deploy");
 			nextState = State.DEPLOY;
@@ -70,7 +76,7 @@ public class ClimbingPistons {
 		}
 		case LIFT_HOOK: 
 		{
-			this.deployAnglePiston();
+			this.deployAngle();
 			this.deployChinUp();
 			SmartDashboard.sendData("State", "lift_hook");
 			nextState = State.LIFT_HOOK;
@@ -79,7 +85,7 @@ public class ClimbingPistons {
 		}
 		case ROBOT_CHINUP:
 		{
-			this.deployAnglePiston();
+			this.deployAngle();
 			this.retractChinUp();
 			SmartDashboard.sendData("State", "chinUp");
 			nextState = State.ROBOT_CHINUP;
