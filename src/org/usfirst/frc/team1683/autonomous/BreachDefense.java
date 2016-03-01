@@ -7,7 +7,7 @@ import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import edu.wpi.first.wpilibj.Timer;
 
 public class BreachDefense extends Autonomous {
-	
+
 	BuiltInAccel accel;
 
 	public BreachDefense(TankDrive tankDrive, BuiltInAccel accel) {
@@ -23,18 +23,18 @@ public class BreachDefense extends Autonomous {
 		case INIT_CASE:
 			nextState = State.DRIVE_FORWARD;
 			break;
-			
+
 		case DRIVE_FORWARD:
 			// TODO: Need to add timeout to moveDistance?
-			tankDrive.moveDistance(REACH_DISTANCE+RAMP_LENGTH);
+			tankDrive.moveDistance(REACH_DISTANCE + RAMP_LENGTH);
 			nextState = State.CROSS_DEFENSE;
 			timer.start();
 			timeout.start();
 			break;
-			
+
 		// Uses accelerometer to tell if on defense or not
 		case CROSS_DEFENSE:
-			if(timeout.get() > CROSS_DEFENSE_TIMEOUT) {
+			if (timeout.get() > CROSS_DEFENSE_TIMEOUT) {
 				nextState = State.STOP;
 				break;
 			}
@@ -49,16 +49,16 @@ public class BreachDefense extends Autonomous {
 					nextState = State.STOP;
 			}
 			break;
-			
-		case STOP:			
+
+		case STOP:
 			tankDrive.stop();
 			nextState = State.END_CASE;
 			break;
-			
+
 		case END_CASE:
 			nextState = State.END_CASE;
 			break;
-			
+
 		default:
 			break;
 		}

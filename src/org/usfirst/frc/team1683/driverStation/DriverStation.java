@@ -4,7 +4,6 @@ import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.shooter.Shooter;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 
 public class DriverStation {
 

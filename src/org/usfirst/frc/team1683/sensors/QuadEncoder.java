@@ -29,30 +29,32 @@ public class QuadEncoder implements Encoder {
 	public double getDistance() {
 		// double pos = talonSRX.getEncPosition();
 		// return ;
-//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		return talonSRX.getPosition() * 2 * Math.PI * wheelRadius;
 	}
 
 	public double getPosition() {
-//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		double pos = talonSRX.getEncPosition();
-//		if (pos > 0) {
-//			return (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0;
-//		} else {
-//			return Math.abs(360.0 - (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0);
-//		}
+		// if (pos > 0) {
+		// return (pos % PULSES_PER_REVOLUTION) / PULSES_PER_REVOLUTION * 360.0;
+		// } else {
+		// return Math.abs(360.0 - (pos % PULSES_PER_REVOLUTION) /
+		// PULSES_PER_REVOLUTION * 360.0);
+		// }
 		return pos / PULSES_PER_REVOLUTION;
 	}
 
 	@Override
 	public double getSpeed() {
 		// TODO Auto-generated method stub
-//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		return talonSRX.getSpeed();
 	}
 
+	@Override
 	public void reset() {
-//		this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// this.talonSRX.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		talonSRX.setPosition(0);
 		// talonSRX.setpos
 	}

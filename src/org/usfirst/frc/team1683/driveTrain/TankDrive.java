@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1683.driveTrain;
 
-import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
@@ -136,6 +135,7 @@ public class TankDrive implements DriveTrain {
 	/**
 	 * Stop without braking.
 	 */
+	@Override
 	public void coast() {
 		left.enableBrakeMode(false);
 		right.enableBrakeMode(false);
@@ -158,14 +158,17 @@ public class TankDrive implements DriveTrain {
 		right.set(rSpeed);
 	}
 
+	@Override
 	public Encoder getLeftEncoder() {
 		return left.getEncoder();
 	}
 
+	@Override
 	public Encoder getRightEncoder() {
 		return right.getEncoder();
 	}
 
+	@Override
 	public void resetEncoders() {
 		left.getEncoder().reset();
 		right.getEncoder().reset();

@@ -14,22 +14,22 @@ public class BreachLowBar extends Autonomous {
 		case INIT_CASE:
 			nextState = State.DRIVE_FORWARD;
 			break;
-			
+
 		case DRIVE_FORWARD:
 			// TODO: Need to add timeout to moveDistance?
-			tankDrive.moveDistance(REACH_DISTANCE+RAMP_LENGTH+LOW_BAR_DISTANCE);
+			tankDrive.moveDistance(REACH_DISTANCE + RAMP_LENGTH + LOW_BAR_DISTANCE);
 			nextState = State.STOP;
 			break;
-			
-		case STOP:			
+
+		case STOP:
 			tankDrive.stop();
 			nextState = State.END_CASE;
 			break;
-			
+
 		case END_CASE:
 			nextState = State.END_CASE;
 			break;
-			
+
 		default:
 			break;
 		}

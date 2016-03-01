@@ -16,15 +16,15 @@ public class TestAuto extends Autonomous {
 			nextState = State.DRIVE_FORWARD;
 			break;
 		case DRIVE_FORWARD:
-//			tankDrive.set(0.1);
-			tankDrive.moveDistance(2*Math.PI*2*5, 0.5);
-			
-//			try {
-//				tankDrive.moveDistance(100, 0.05);
-//			} catch (EncoderNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			// tankDrive.set(0.1);
+			tankDrive.moveDistance(2 * Math.PI * 2 * 5, 0.5);
+
+			// try {
+			// tankDrive.moveDistance(100, 0.05);
+			// } catch (EncoderNotFoundException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
 			nextState = State.END_CASE;
 			break;
 		case END_CASE:

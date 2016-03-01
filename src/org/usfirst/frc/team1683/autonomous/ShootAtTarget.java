@@ -8,7 +8,6 @@ import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.Timer;
 
-import org.usfirst.frc.team1683.autonomous.Autonomous.State;
 import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.vision.*;
 
@@ -38,6 +37,7 @@ public class ShootAtTarget extends Autonomous {
 		// this.physics=physics;
 	}
 
+	@Override
 	public void run() {
 		switch (presentState) {
 		case INIT_CASE:
@@ -54,7 +54,7 @@ public class ShootAtTarget extends Autonomous {
 
 		// TODO: Need to add timeout to moveDistance
 		case CROSS_DEFENSE:
-			if(timeout.get() > CROSS_DEFENSE_TIMEOUT) {
+			if (timeout.get() > CROSS_DEFENSE_TIMEOUT) {
 				nextState = State.REALIGN;
 				break;
 			}
@@ -84,31 +84,29 @@ public class ShootAtTarget extends Autonomous {
 		case FIND_TARGET:
 			if (vision.isCentered() == 1) {
 				tankDrive.turn(-1);
-			} 
-			else if (vision.isCentered() == -1) {
+			} else if (vision.isCentered() == -1) {
 				tankDrive.turn(1);
-			}
-			else {
+			} else {
 				nextState = State.FIRE;
 			}
 			break;
 
 		case SPINUP:
-			 shooter.angleShooter(physics.FindAngle());
+			shooter.angleShooter(physics.FindAngle());
 			// TODO: Get correct units for spinShooter
-			 shooter.spinShooter(physics.FindSpinSpeed());
-			 nextState=State.FIRE;
-			 break;
+			shooter.spinShooter(physics.FindSpinSpeed());
+			nextState = State.FIRE;
+			break;
 		case FIRE:
-//			if()
+			// if()
 			// try{
 			// Thread.sleep(3000);
 			// }
 			// catch(InterruptedException e){
 			// System.out.print("Thread fail");
 			// }
-			 shooter.shootBall();
-			 nextState=State.END_CASE;
+			shooter.shootBall();
+			nextState = State.END_CASE;
 			break;
 
 		case END_CASE:

@@ -28,12 +28,12 @@ public class TalonSRX extends CANTalon implements Motor {
 		private double distance;
 		private double speed;
 		private TalonSRX talonSrx;
-//		private Encoder encoder;
+		// private Encoder encoder;
 
 		public MotorMover(TalonSRX talonSrx, double distance, double speed) {
 			this.talonSrx = talonSrx;
 			this.distance = distance;
-//			this.encoder = encoder;
+			// this.encoder = encoder;
 			if (distance < 0)
 				this.speed = -speed;
 			else
@@ -57,7 +57,6 @@ public class TalonSRX extends CANTalon implements Motor {
 		}
 	}
 
-	
 	/**
 	 * Constructor
 	 * 
@@ -85,7 +84,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		super(channel);
 		super.setInverted(reversed);
 		this.encoder = encoder;
-		
+
 	}
 
 	/**
@@ -138,6 +137,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	 * @param speed
 	 *            Speed from 0 to 1.
 	 */
+	@Override
 	public void set(double speed) {
 		super.changeControlMode(TalonControlMode.PercentVbus);
 		super.set(speed);
@@ -147,60 +147,63 @@ public class TalonSRX extends CANTalon implements Motor {
 	/**
 	 * Gets speed of the TalonSRX in RPM
 	 */
+	@Override
 	public double get() {
-//		speed = enc counts / 100 ms
-//		           (speed * 60 secs)
-//		--------------------------------------
-//		4096 encoder counts * 100 milliseconds
-		return (super.getSpeed()*60)/(4096*0.1);
+		// speed = enc counts / 100 ms
+		// (speed * 60 secs)
+		// --------------------------------------
+		// 4096 encoder counts * 100 milliseconds
+		return (super.getSpeed() * 60) / (4096 * 0.1);
 	}
-	
+
+	@Override
 	public double getSpeed() {
 		return this.get();
 	}
-	
+
 	public double getRPM() {
 		return this.get();
 	}
-	
+
 	public void calibrate() {
 		super.setPosition(0);
 		calibrated = true;
 	}
-	
+
 	public void PIDInit() throws EncoderNotFoundException {
-		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)){
-//			throw new EncoderNotFoundException();
+		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
+			// throw new EncoderNotFoundException();
 			SmartDashboard.sendData("Encoder on Talon " + getChannel() + " not found", true);
 		} else
 			SmartDashboard.sendData("Encoder on Talon " + getChannel() + " not found", false);
 		super.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		super.setInverted(false);
-//		super.configEncoderCodesPerRev(4096);
+		// super.configEncoderCodesPerRev(4096);
 		calibrate();
 	}
-	
+
 	private void PIDUpdate() {
 		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
 		super.enableControl();
 	}
-	
+
 	public void PIDAngle(double angle) {
-		PIDPosition(angle/360.0);
+		PIDPosition(angle / 360.0);
 	}
-	
+
 	public void PIDPosition(double position) {
 		PIDUpdate();
 		super.changeControlMode(TalonControlMode.Position);
 		super.set(position);
 		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
 	}
-	
+
 	public void PIDSpeed(double rpm) {
-//		PIDUpdate();
-//		speed = RPM * 1 min/(6000 (10 milliseconds)) * 4096 encoder counts / revolution
-		double speed = rpm * (4096.0/6000.0);
-		
+		// PIDUpdate();
+		// speed = RPM * 1 min/(6000 (10 milliseconds)) * 4096 encoder counts /
+		// revolution
+		double speed = rpm * (4096.0 / 6000.0);
+
 		SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
 		SmartDashboard.sendData(this.getChannel() + "Speed", speed);
 		super.changeControlMode(TalonControlMode.Speed);
@@ -213,7 +216,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	 */
 	@Override
 	public void stop() {
-//		super.enableBrakeMode(true);
+		// super.enableBrakeMode(true);
 		super.disableControl();
 	}
 
@@ -232,7 +235,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	public Encoder getEncoder() {
 		return encoder;
 	}
-	
+
 	public void setEncoder(Encoder encoder) {
 		this.encoder = encoder;
 	}
@@ -243,9 +246,11 @@ public class TalonSRX extends CANTalon implements Motor {
 		return super.getDeviceID();
 	}
 
+	@Override
 	public double getError() {
 		return super.getError();
 	}
+
 	/**
 	 * @return If the Talon is reversed.
 	 */

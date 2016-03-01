@@ -6,7 +6,7 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  * Class to represent the Talons attached to motors.
  * 
  * @author David Luo
- * @deprecated Talons are now discontinued. Use TalonSRX instead.
+ * @deprecated Talons are now discontinued.
  *
  */
 @Deprecated
@@ -127,13 +127,15 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	 * @param Speed
 	 *            from 0 to 1.
 	 */
+	@Override
 	public void set(double speed) {
 		super.set(speed);
 	}
-	
+
 	/**
 	 * Gets speed of the Talon
 	 */
+	@Override
 	public double get() {
 		return super.get();
 	}
@@ -141,6 +143,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	/**
 	 * Stops motor.
 	 */
+	@Override
 	public void stop() {
 		super.stopMotor();
 	}
@@ -164,6 +167,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	/**
 	 * @return The channel this Talon is attatched to.
 	 */
+	@Override
 	public int getChannel() {
 		return super.getChannel();
 	}
@@ -171,6 +175,7 @@ public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 	/**
 	 * @return If the Talon is reversed.
 	 */
+	@Override
 	public boolean isReversed() {
 		return super.getInverted();
 	}

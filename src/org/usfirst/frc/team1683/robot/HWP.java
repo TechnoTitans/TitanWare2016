@@ -32,7 +32,7 @@ public class HWP {
 	public static final int CAN_6 = 6;
 	public static final int CAN_7 = 7;
 	public static final int CAN_8 = 8;
-	
+
 	// Analog
 	public static final int ANALOG_0 = 0;
 	public static final int ANALOG_1 = 1;
@@ -49,8 +49,8 @@ public class HWP {
 	public static final int JOY_0 = 0;
 	public static final int JOY_1 = 1;
 	public static final int JOY_2 = 2;
-	
-	//Buttons
+
+	// Buttons
 	public static final int BUTTON_1 = 1;
 	public static final int BUTTON_2 = 2;
 	public static final int BUTTON_3 = 3;

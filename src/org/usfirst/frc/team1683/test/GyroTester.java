@@ -6,11 +6,11 @@ import org.usfirst.frc.team1683.sensors.Gyro;
 
 public class GyroTester {
 	Gyro gyro;
-	
+
 	public GyroTester() {
 		gyro = new Gyro(HWR.GYRO);
 	}
-	
+
 	public void test() {
 		SmartDashboard.sendData("Gyro Angle", gyro.getRaw());
 	}

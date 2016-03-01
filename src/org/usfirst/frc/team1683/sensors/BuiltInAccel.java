@@ -15,14 +15,17 @@ public class BuiltInAccel extends BuiltInAccelerometer {
 		filter = new InputFilter(FILTER_K);
 	}
 
+	@Override
 	public double getX() {
 		return super.getX();
 	}
 
+	@Override
 	public double getY() {
 		return super.getY();
 	}
 
+	@Override
 	public double getZ() {
 		return super.getZ();
 	}

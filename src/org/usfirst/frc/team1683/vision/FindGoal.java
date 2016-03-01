@@ -1,4 +1,5 @@
 package org.usfirst.frc.team1683.vision;
+
 import org.usfirst.frc.team1683.vision.Contour;
 /**
  * Vision methods
@@ -9,89 +10,96 @@ import org.usfirst.frc.team1683.vision.Contour;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
+
 public class FindGoal {
 	public static NetworkTable tableContour;
 	private double[] GOAL_X, GOAL_Y, HEIGHT, WIDTH, AREA;
-	private double distance=0;
+	private double distance = 0;
 	private double[] defaultvalue = new double[0];
-	private double optic_angle=28.393*Math.PI/180; //M1103 cameras only
-	private double FOVpx=320; //pixels of the grip program
-	private double Targetin=20; //target width
-	private final double CENTER_WIDTH_PX=5;//The max offset
-	private final double SHOOTER_HEIGHT=0;//TODO
+	private double optic_angle = 28.393 * Math.PI / 180; // M1103 cameras only
+	private double FOVpx = 320; // pixels of the grip program
+	private double Targetin = 20; // target width
+	private final double CENTER_WIDTH_PX = 5;// The max offset
+	private final double SHOOTER_HEIGHT = 0;// TODO
 	/*
-	 * go to https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
+	 * go to
+	 * https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-
+	 * and-processing-the-targets
 	 */
-	public FindGoal(){
-		tableContour=NetworkTable.getTable("GRIP/myContoursReport");
+
+	public FindGoal() {
+		tableContour = NetworkTable.getTable("GRIP/myContoursReport");
 	}
+
 	public Contour[] getData() {
 		Contour[] contours;
 		try {
-			AREA =FindGoal.tableContour.getNumberArray("area", defaultvalue);
+			AREA = FindGoal.tableContour.getNumberArray("area", defaultvalue);
 			GOAL_X = FindGoal.tableContour.getNumberArray("centerX", defaultvalue);
 			GOAL_Y = FindGoal.tableContour.getNumberArray("centerY", defaultvalue);
 			WIDTH = FindGoal.tableContour.getNumberArray("width", defaultvalue);
 			HEIGHT = FindGoal.tableContour.getNumberArray("height", defaultvalue);
 			contours = new Contour[AREA.length];
-		}
-		catch(TableKeyNotDefinedException exp) {
+		} catch (TableKeyNotDefinedException exp) {
 			System.out.println("TableKeyNotDefinedExceptionFix");
 			contours = null;
 		}
-		if(AREA.length!=0){
+		if (AREA.length != 0) {
 			for (int i = 0; i < contours.length; i++) {
-				contours[i] = new Contour(i,HEIGHT[i], WIDTH[i],GOAL_X[i], GOAL_Y[i],AREA[i]);
+				contours[i] = new Contour(i, HEIGHT[i], WIDTH[i], GOAL_X[i], GOAL_Y[i], AREA[i]);
 			}
-		}
-		else contours[0]=new Contour(0,0,0,0,0,0);
+		} else
+			contours[0] = new Contour(0, 0, 0, 0, 0, 0);
 		return contours;
 	}
-	public int ClosestContour(Contour[] contours){
-		int maxarea=0;
-		for(int i=0;i<contours.length;i++){
-			if(contours[maxarea].AREA>contours[i].AREA){
-				maxarea=i;
+
+	public int ClosestContour(Contour[] contours) {
+		int maxarea = 0;
+		for (int i = 0; i < contours.length; i++) {
+			if (contours[maxarea].AREA > contours[i].AREA) {
+				maxarea = i;
 			}
 		}
 		return maxarea;
 	}
+
 	/*
 	 * checks distance to target not to base of target
 	 */
-	public double FindDistance(){
+	public double FindDistance() {
 		Contour[] contours = getData();
-		this.distance=Targetin*FOVpx/(2*contours[ClosestContour(contours)].WIDTH*Math.tan(optic_angle));
-		SmartDashboard.sendData("DistanceTarget",this.distance);
+		this.distance = Targetin * FOVpx / (2 * contours[ClosestContour(contours)].WIDTH * Math.tan(optic_angle));
+		SmartDashboard.sendData("DistanceTarget", this.distance);
 		return this.distance;
 	}
+
 	/*
-	 * 	checks if robot is aligned. -1 for too far left. 0 for just right. 1 for too far right. 2 for error
+	 * checks if robot is aligned. -1 for too far left. 0 for just right. 1 for
+	 * too far right. 2 for error
 	 */
-	//public double ShooterSpeed(){
-		//TODO:Test values for shooter. Plot points on graphical analysis and take derivative.
-	//}
-	public double FindHeight(){
-		Contour[] contours=getData();
+	// public double ShooterSpeed(){
+	// TODO:Test values for shooter. Plot points on graphical analysis and take
+	// derivative.
+	// }
+	public double FindHeight() {
+		Contour[] contours = getData();
 		double cameratarget;
-		cameratarget=20*(contours[ClosestContour(contours)].Y_POS-160)/contours[ClosestContour(contours)].WIDTH;
-		return (cameratarget-SHOOTER_HEIGHT);
+		cameratarget = 20 * (contours[ClosestContour(contours)].Y_POS - 160) / contours[ClosestContour(contours)].WIDTH;
+		return (cameratarget - SHOOTER_HEIGHT);
 	}
+
 	public int isCentered() {
 		Contour[] contours = getData();
 		double offset;
-		offset=FOVpx/2-contours[ClosestContour(contours)].X_POS;
-		SmartDashboard.sendData("Offset",offset);
-		if(offset<-CENTER_WIDTH_PX){
+		offset = FOVpx / 2 - contours[ClosestContour(contours)].X_POS;
+		SmartDashboard.sendData("Offset", offset);
+		if (offset < -CENTER_WIDTH_PX) {
 			return 1;
-		}
-		else if(offset>CENTER_WIDTH_PX){
+		} else if (offset > CENTER_WIDTH_PX) {
 			return -1;
-		}
-		else if((offset>-CENTER_WIDTH_PX)&&(offset<CENTER_WIDTH_PX)){
+		} else if ((offset > -CENTER_WIDTH_PX) && (offset < CENTER_WIDTH_PX)) {
 			return 0;
-		}
-		else{
+		} else {
 			return 2;
 		}
 	}

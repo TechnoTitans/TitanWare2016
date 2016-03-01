@@ -34,6 +34,7 @@ public class Contour {
 	/**
 	 * @return String representation of Blob object. For testing purposes.
 	 */
+	@Override
 	public String toString() {
 		return "Index: " + INDEX + " Height: " + HEIGHT + " Width: " + WIDTH + " X_POS: " + X_POS + " Y_POS: " + Y_POS;
 	}

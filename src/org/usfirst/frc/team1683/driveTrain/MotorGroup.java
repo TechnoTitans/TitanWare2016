@@ -8,7 +8,6 @@ import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDeviceStatus;
-import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
 /**
  * Represents a group of motors that move together, tied to the same gearsbox

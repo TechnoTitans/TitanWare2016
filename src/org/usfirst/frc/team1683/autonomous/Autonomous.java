@@ -1,13 +1,10 @@
 package org.usfirst.frc.team1683.autonomous;
 
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
-import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Timer.StaticInterface;
 
 /**
  * Class to be inherited by all auto classes.
@@ -20,14 +17,14 @@ public abstract class Autonomous {
 	public static final double GYRO_ANGLE_TOLERANCE = 15.0;
 	public static final double RAMP_LENGTH = 18;
 	public static final double LOW_BAR_DISTANCE = 0;
-	
+
 	public static final double CROSS_TIME = 2;
 	public static final double CROSS_DEFENSE_TIMEOUT = 5;
 
 	protected TankDrive tankDrive;
 	protected Encoder leftEncoder;
 	protected Encoder rightEncoder;
-	
+
 	protected Timer timer;
 	protected Timer timeout;
 
@@ -38,24 +35,25 @@ public abstract class Autonomous {
 	}
 
 	public static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE,REACH_DISTANCE,FIND_TARGET,SPINUP, FIRE, REALIGN, STOP
+		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE, REACH_DISTANCE, FIND_TARGET, SPINUP, FIRE, REALIGN, STOP
 	}
 
 	public static enum AutonomousMode {
 		DO_NOTHING, REACH_DEFENSE, BREACH_DEFENSE, TEST_AUTO, SHOOT_AT_TARGET
 	}
+
 	public static final double REACH_DISTANCE = 74; // 74 inches
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
 	public static double properDistance;
-	
+
 	public void updatePreferences() {
 		properDistance = SmartDashboard.getDouble("properDistance");
 	}
-	
+
 	public static void resetAuto() {
 		presentState = State.INIT_CASE;
 	}
 
-	 public abstract void run();
+	public abstract void run();
 }

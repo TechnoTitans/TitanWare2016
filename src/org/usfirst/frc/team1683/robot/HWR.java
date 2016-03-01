@@ -7,7 +7,7 @@ package org.usfirst.frc.team1683.robot;
  * @author David Luo
  *
  */
-public class HWR {   
+public class HWR {
 
 	// Motors
 	public static final int LEFT_DRIVE_TRAIN_FRONT_E = HWP.CAN_5;
@@ -16,10 +16,10 @@ public class HWR {
 	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_2;
 	public static final int LIGHT_RING = HWP.CAN_4;
 	public static final int ANGLE_MOTOR = HWP.CAN_1;
-	public static final int SHOOTER_LEFT = HWP.CAN_3; //change to can_6
-	public static final int SHOOTER_RIGHT = HWP.CAN_5; //change to can_7
+	public static final int SHOOTER_LEFT = HWP.CAN_3; // change to can_6
+	public static final int SHOOTER_RIGHT = HWP.CAN_5; // change to can_7
 	public static final int LINEAR_ACTUATOR = HWP.CAN_8;
-	
+
 	// Test
 	public static final int TEST_TALON_1 = HWP.CAN_5;
 	public static final int TEST_TALON_2 = HWP.CAN_3;
@@ -37,12 +37,12 @@ public class HWR {
 	public static final int RIGHT_JOYSTICK = HWP.JOY_1;
 	public static final int AUX_JOYSTICK = HWP.JOY_2;
 
-	//Sensors
+	// Sensors
 	public static final int GYRO = HWP.ANALOG_0;
 	public static final int ACCEL_CHANNEL_X = HWP.ANALOG_2;
 	public static final int ACCEL_CHANNEL_Y = HWP.ANALOG_3;
 	public static final int PRESSURE_SENSOR = HWP.ANALOG_3;
-	
+
 	// Compressor
 	public static final int COMPRESSOR = 0;
 	// TODO: Get these values
@@ -51,8 +51,7 @@ public class HWR {
 	public static final int ANGLE_PISTON_CHANNEL = 2;
 	public static final int ClIMB_DEPLOY_CHANNEL = 1;
 	public static final int CLIMB_RETRACT_CHANNEL = 3;
-	
-	
+
 	// Buttons
 	public static final int SPIN_UP_INTAKE = HWP.BUTTON_4;
 	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_5;

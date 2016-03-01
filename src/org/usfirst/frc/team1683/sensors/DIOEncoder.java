@@ -1,6 +1,6 @@
 package org.usfirst.frc.team1683.sensors;
 
-public class DIOEncoder extends edu.wpi.first.wpilibj.Encoder implements Encoder{
+public class DIOEncoder extends edu.wpi.first.wpilibj.Encoder implements Encoder {
 
 	// Pulses per inch(?) from encoder
 	private double wheelDistancePerPulse;
@@ -10,10 +10,11 @@ public class DIOEncoder extends edu.wpi.first.wpilibj.Encoder implements Encoder
 		this.wheelDistancePerPulse = wheelDistancePerPulse;
 		super.setDistancePerPulse(wheelDistancePerPulse);
 	}
-	
+
 	/**
 	 * @return distance in inches
 	 */
+	@Override
 	public double getDistance() {
 		return super.getDistance();
 	}
@@ -21,10 +22,12 @@ public class DIOEncoder extends edu.wpi.first.wpilibj.Encoder implements Encoder
 	/**
 	 * @return speed in inches/sec
 	 */
+	@Override
 	public double getSpeed() {
 		return super.getRate();
 	}
-	
+
+	@Override
 	public void reset() {
 		super.reset();
 	}

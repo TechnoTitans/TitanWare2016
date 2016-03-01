@@ -1,5 +1,6 @@
 
 package org.usfirst.frc.team1683.robot;
+
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
@@ -31,19 +32,14 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean LEFT_REVERSE = false;
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS = 3.391 / 2;
-	//JoystickFilter auxFilter;
 	FindGoal findgoal;
 	TankDrive drive;
-	Gyro gyro;
 	ClimbingPistons climberPistons;
-	TalonSRX leftTalon;
-	TalonSRX rightTalon;
-	TalonSRX angleMotor;
 	TiltSensor tiltSensor;
 	Piston shootPiston;
 	PressureReader pressureReader;
 	// LightRing lightRing;
-	
+
 	Shooter shooter;
 	PickerUpper pickerUpper;
 
@@ -53,13 +49,14 @@ public class TechnoTitan extends IterativeRobot {
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
+	@Override
 	public void robotInit() {
 		// switcher = new AutonomousSwitcher(drive);
 
-		angleMotor = new TalonSRX(HWR.ANGLE_MOTOR, false);
-		
-		gyro = new Gyro(HWR.GYRO);
+		// GYRO
+		Gyro gyro = new Gyro(HWR.GYRO);
 
+		// DRIVE TRAIN
 		TalonSRX leftETalonSRX = new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT_E, LEFT_REVERSE);
 		TalonSRX rightETalonSRX = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT_E, RIGHT_REVERSE);
 
@@ -70,73 +67,60 @@ public class TechnoTitan extends IterativeRobot {
 		MotorGroup rightGroup = new MotorGroup(new QuadEncoder(rightETalonSRX, WHEEL_RADIUS),
 				// MotorGroup rightGroup = new MotorGroup(
 				rightETalonSRX, new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
-		
+
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
-		
+		// END DRIVE TRAIN
+
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
-		
+
 		climberPistons = new ClimbingPistons(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
+
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
-		MotorGroup shooterGroup = new MotorGroup(
-				new TalonSRX(HWR.SHOOTER_LEFT, true),
+		MotorGroup shooterGroup = new MotorGroup(new TalonSRX(HWR.SHOOTER_LEFT, true),
 				new TalonSRX(HWR.SHOOTER_RIGHT, true));
-		
+		TalonSRX angleMotor = new TalonSRX(HWR.ANGLE_MOTOR, false);
+
 		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(shooterGroup, 
-				angleMotor, shootPiston);
+		shooter = new Shooter(shooterGroup, angleMotor, shootPiston);
 
 		compressor = new Compressor(1);
-		
+
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString line to get the auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the
-	 * switch structure below with additional strings. If using the
-	 * SendableChooser make sure to add them to the chooser code above as well.
-	 */
+	@Override
 	public void autonomousInit() {
-		
+
 	}
-	
 
-	/**
-	 * This function is called periodically during autonomous
-	 */
+	@Override
 	public void autonomousPeriodic() {
-		SmartDashboard.sendData("getLeftPosition", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getTalon().getPosition()); 
-		SmartDashboard.sendData("getRightPosition", ((QuadEncoder)drive.getRightGroup().getEncoder()).getTalon().getPosition()); 
-		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder)drive.getLeftGroup().getEncoder()).getDistance()); 
-		SmartDashboard.sendData("getRightDistance", ((QuadEncoder)drive.getRightGroup().getEncoder()).getDistance()); 
-	}	
+		SmartDashboard.sendData("getLeftPosition",
+				((QuadEncoder) drive.getLeftGroup().getEncoder()).getTalon().getPosition());
+		SmartDashboard.sendData("getRightPosition",
+				((QuadEncoder) drive.getRightGroup().getEncoder()).getTalon().getPosition());
+		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder) drive.getLeftGroup().getEncoder()).getDistance());
+		SmartDashboard.sendData("getRightDistance", ((QuadEncoder) drive.getRightGroup().getEncoder()).getDistance());
+	}
 
+	@Override
 	public void teleopInit() {
-//		compressor.stop();
 		shooter.reset();
 	}
-	/**
-	 * This function is called periodically during operator control
-	 */
+
+	@Override
 	public void teleopPeriodic() {
-		//drive.driveMode();
-		//pickerUpper.intakeMode();
+		// drive.driveMode();
+		// pickerUpper.intakeMode();
 		shooter.shootMode();
-		
+
 	}
-	
+
+	@Override
 	public void testInit() {
 	}
 
-	/**
-	 * This function is called periodically during test mode
-	 */
+	@Override
 	public void testPeriodic() {
 	}
 
 }
-

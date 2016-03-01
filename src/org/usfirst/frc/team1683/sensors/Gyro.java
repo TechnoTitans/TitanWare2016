@@ -1,14 +1,16 @@
 package org.usfirst.frc.team1683.sensors;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-public class Gyro extends AnalogGyro implements Sensor{
-	
+
+public class Gyro extends AnalogGyro implements Sensor {
+
 	public Gyro(int channel) {
 		super(channel);
 		super.initGyro();
 		super.reset();
 		super.setSensitivity(0.00656693);
 	}
+
 	@Override
 	public double getRaw() {
 		// TODO Auto-generated method stub
@@ -23,9 +25,8 @@ public class Gyro extends AnalogGyro implements Sensor{
 
 	@Override
 	public double getAngle() {
-		return super.getAngle()%360;
+		return super.getAngle() % 360;
 	}
-
 
 	@Override
 	public double getRate() {
@@ -36,7 +37,7 @@ public class Gyro extends AnalogGyro implements Sensor{
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

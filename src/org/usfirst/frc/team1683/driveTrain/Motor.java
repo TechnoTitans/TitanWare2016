@@ -22,7 +22,7 @@ public interface Motor extends PIDOutput {
 
 	// public void moveDegrees();
 	public void set(double speed);
-	
+
 	public double get();
 
 	public void stop();
@@ -31,7 +31,7 @@ public interface Motor extends PIDOutput {
 
 	public Encoder getEncoder();
 
-//	public void setBrakeMode(boolean enable);
+	// public void setBrakeMode(boolean enable);
 
 	public int getChannel();
 

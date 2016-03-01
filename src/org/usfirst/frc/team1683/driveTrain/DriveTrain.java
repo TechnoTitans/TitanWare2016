@@ -1,7 +1,5 @@
 package org.usfirst.frc.team1683.driveTrain;
 
-import java.util.ArrayList;
-
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 /**
