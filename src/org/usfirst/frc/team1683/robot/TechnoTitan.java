@@ -75,7 +75,7 @@ public class TechnoTitan extends IterativeRobot {
 		
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
 		
-		climberPistons = new ClimbingPistons(HWR.ANGLE_PISTON_CHANNEL, HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
+		climberPistons = new ClimbingPistons(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		MotorGroup shooterGroup = new MotorGroup(
 				new TalonSRX(HWR.SHOOTER_LEFT, true),
