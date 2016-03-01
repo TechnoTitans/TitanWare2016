@@ -31,6 +31,7 @@ public class HWP {
 	public static final int CAN_5 = 5;
 	public static final int CAN_6 = 6;
 	public static final int CAN_7 = 7;
+	public static final int CAN_8 = 8;
 	
 	// Analog
 	public static final int ANALOG_0 = 0;
