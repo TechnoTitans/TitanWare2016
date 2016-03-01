@@ -6,8 +6,10 @@ import org.usfirst.frc.team1683.sensors.Encoder;
  * Class to represent the Talons attached to motors.
  * 
  * @author David Luo
+ * @deprecated Talons are now discontinued. Use TalonSRX instead.
  *
  */
+@Deprecated
 public class Talon extends edu.wpi.first.wpilibj.Talon implements Motor {
 
 	private Encoder encoder;
