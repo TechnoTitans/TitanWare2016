@@ -116,7 +116,7 @@ public class TechnoTitan extends IterativeRobot {
 	}	
 
 	public void teleopInit() {
-		compressor.stop();
+//		compressor.stop();
 		shooter.reset();
 	}
 	/**
