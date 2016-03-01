@@ -2,8 +2,7 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import java.util.ArrayList;
 
-import javax.swing.text.Position;
-
+import org.usfirst.frc.team1683.driverStation.Settings;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
@@ -21,9 +20,9 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 public class MotorGroup {
 
 	// This variable was required for some reason.
-	private static final long serialVersionUID = 1L;
+//	private static final long serialVersionUID = 1L;
 	private Encoder encoder;
-	private Thread thread;
+//	private Thread thread;
 
 	private ArrayList<Motor> motors;
 	private AntiDrift antiDrift;
@@ -31,6 +30,7 @@ public class MotorGroup {
 	/**
 	 * Private class to move motor in separate thread.
 	 */
+	/*
 	private class MotorMover implements Runnable {
 
 		private double distance;
@@ -69,6 +69,7 @@ public class MotorGroup {
 		}
 
 	}
+	*/
 
 	/**
 	 * Constructor
@@ -149,13 +150,6 @@ public class MotorGroup {
 
 	}
 
-	// public void moveDistancePeriodic(double distance, double speed) throws
-	// EncoderNotFoundException {
-	// if (hasEncoder()) {
-	// if
-	// }
-	// }
-
 	/**
 	 * Set collective speed of motors.
 	 * 
@@ -164,10 +158,6 @@ public class MotorGroup {
 	 */
 	public void set(double speed) {
 		for (Motor motor : this.motors) {
-			// TODO
-			// if (motor instanceof TalonSRX) {
-			// ((TalonSRX)
-			// motor).changeControlMode(TalonControlMode.PercentVbus);
 			((TalonSRX) motor).set(speed);
 			// }
 		}
@@ -198,13 +188,12 @@ public class MotorGroup {
 	}
 
 	private void PIDUpdate() {
+		Settings.updateSettings();
 		for (Motor m : this.motors) {
 			if (m instanceof TalonSRX) {
-				// ((TalonSRX)
-				// m).setVoltageRampRate(SmartDashboard.getDouble("RampRate"));
-				((TalonSRX) m).setPID(SmartDashboard.getDouble("Shooter P"), SmartDashboard.getDouble("Shooter I"),
-						SmartDashboard.getDouble("Shooter D"));
-				((TalonSRX) m).setF(SmartDashboard.getDouble("Shooter F"));
+				((TalonSRX) m).setPID(Settings.shooterMotorP, Settings.shooterMotorI,
+						Settings.shooterMotorD);
+				((TalonSRX) m).setF(Settings.shooterMotorF);
 				((TalonSRX) m).enableControl();
 
 			}
@@ -244,7 +233,7 @@ public class MotorGroup {
 		for(Motor motor : this.motors) {
 			error += ((TalonSRX)motor).getError();
 		}
-		error /= 2;
+		error /= this.motors.size();
 		return error;
 	}
 
