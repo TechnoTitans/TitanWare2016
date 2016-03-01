@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.sensors.DIOEncoder;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -182,10 +181,6 @@ public class TalonSRX extends CANTalon implements Motor {
 	}
 	
 	private void PIDUpdate() {
-//		super.setCloseLoopRampRate(SmartDashboard.getDouble("RampRate"));
-//		super.setVoltageRampRate(SmartDashboard.getDouble("RampRate"));
-//		super.enableBrakeMode(SmartDashboard.getBoolean("Brake Mode", false));
-		super.setAllowableClosedLoopErr(SmartDashboard.getInt("Allowable CL Error"));
 		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
 		super.enableControl();
 	}
@@ -202,10 +197,15 @@ public class TalonSRX extends CANTalon implements Motor {
 	}
 	
 	public void PIDSpeed(double rpm) {
-		PIDUpdate();
+//		PIDUpdate();
+//		speed = RPM * 1 min/(6000 (10 milliseconds)) * 4096 encoder counts / revolution
+		double speed = rpm * (4096.0/6000.0);
+		
+		SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
+		SmartDashboard.sendData(this.getChannel() + "Speed", speed);
 		super.changeControlMode(TalonControlMode.Speed);
-		super.setPosition(rpm);
-		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", super.getSpeed());
+		super.set(speed);
+		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", getSpeed());
 	}
 
 	/**
