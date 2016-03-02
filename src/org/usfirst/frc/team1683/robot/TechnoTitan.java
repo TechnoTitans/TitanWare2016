@@ -17,6 +17,7 @@ import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -44,6 +45,8 @@ public class TechnoTitan extends IterativeRobot {
 	PickerUpper pickerUpper;
 
 	Compressor compressor;
+	
+	DigitalInput hallEffect;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -57,6 +60,7 @@ public class TechnoTitan extends IterativeRobot {
 		Gyro gyro = new Gyro(HWR.GYRO);
 
 		// DRIVE TRAIN
+		/*
 		TalonSRX leftETalonSRX = new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT_E, LEFT_REVERSE);
 		TalonSRX rightETalonSRX = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT_E, RIGHT_REVERSE);
 
@@ -69,6 +73,7 @@ public class TechnoTitan extends IterativeRobot {
 				rightETalonSRX, new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
 
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
+		*/
 		// END DRIVE TRAIN
 
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
@@ -76,14 +81,16 @@ public class TechnoTitan extends IterativeRobot {
 		climberPistons = new ClimbingPistons(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
-		MotorGroup shooterGroup = new MotorGroup(new TalonSRX(HWR.SHOOTER_LEFT, true),
-				new TalonSRX(HWR.SHOOTER_RIGHT, true));
+//		MotorGroup shooterGroup = new MotorGroup(new TalonSRX(HWR.SHOOTER_LEFT, true),
+//				new TalonSRX(HWR.SHOOTER_RIGHT, true));
+		TalonSRX leftShooter = new TalonSRX(HWR.SHOOTER_LEFT, true);
+		TalonSRX rightShooter = new TalonSRX(HWR.SHOOTER_RIGHT, true);
 		TalonSRX angleMotor = new TalonSRX(HWR.ANGLE_MOTOR, false);
 
-		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(shooterGroup, angleMotor, shootPiston);
-
-		compressor = new Compressor(1);
+//		pickerUpper = new PickerUpper(shooterGroup);
+		shooter = new Shooter(leftShooter, rightShooter, angleMotor, shootPiston);
+		
+		hallEffect = new DigitalInput(0);
 
 	}
 
@@ -112,6 +119,7 @@ public class TechnoTitan extends IterativeRobot {
 		// drive.driveMode();
 		// pickerUpper.intakeMode();
 		shooter.shootMode();
+		SmartDashboard.sendData("Hall Effect", hallEffect.get());
 
 	}
 

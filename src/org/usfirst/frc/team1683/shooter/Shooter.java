@@ -1,14 +1,13 @@
 package org.usfirst.frc.team1683.shooter;
 
-import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
-import org.usfirst.frc.team1683.vision.FindGoal;
-
+import org.usfirst.frc.team1683.driverStation.Settings;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.Piston;
 import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.robot.InputFilter;
+import org.usfirst.frc.team1683.vision.FindGoal;
 
 public class Shooter {
 	public static final double TOLERANCE = 1.0;
@@ -34,7 +33,9 @@ public class Shooter {
 	private double targetPos;
 	FindGoal vision;
 
-	MotorGroup shooterMotors;
+//	MotorGroup shooterMotors;
+	TalonSRX leftMotor;
+	TalonSRX rightMotor;
 	TalonSRX angleMotor;
 
 	Piston shootPiston;
@@ -49,25 +50,31 @@ public class Shooter {
 		INTAKE, HOLD, SHOOT;
 	}
 
-	public Shooter(MotorGroup group, TalonSRX angleMotor, Piston shootPiston, FindGoal vision) {
-		this(group, angleMotor, shootPiston);
+	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston, FindGoal vision) {
+		this(leftMotor, rightMotor, angleMotor, shootPiston);
 		// this.accel = accel;
 		this.vision = vision;
 	}
 
-	public Shooter(MotorGroup group, TalonSRX angleMotor, Piston shootPiston) {
+	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston) {
 		this.angleMotor = angleMotor;
 		this.shootPiston = shootPiston;
-		this.shooterMotors = group;
+		this.leftMotor = leftMotor;
+		this.rightMotor = rightMotor;
 
 		// this.angleMotor.configEncoderCodesPerRev(4096);
 
 		this.angleMotor.calibrate();
 		this.angleMotor.enableLimitSwitch(true, true);
 		this.angleMotor.PIDInit();
-		this.shooterMotors.PIDInit();
+		
+		this.leftMotor.PIDInit();
+		this.rightMotor.PIDInit();
 
-		this.shooterMotors.enableBrakeMode(false); // coast mode
+		this.leftMotor.enableBrakeMode(false); // coast mode
+		this.rightMotor.enableBrakeMode(false); // coast mode
+		leftMotor.reverseSensor(true);
+		rightMotor.reverseSensor(false);
 
 		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"));
 
@@ -150,23 +157,44 @@ public class Shooter {
 	}
 
 	public void intake(double angle) {
-		shooterMotors.PIDSpeed(INTAKE_SPEED);
+		leftMotor.PIDSpeed(INTAKE_SPEED);
+		rightMotor.PIDSpeed(INTAKE_SPEED);
 		angleMotor.PIDPosition(angle);
 	}
 
 	public void hold(double angle) {
-		shooterMotors.PIDSpeed(HOLD_SPEED);
+		leftMotor.stop();
+		rightMotor.stop();
+//		leftMotor.PIDSpeed(0);
+//		rightMotor.PIDSpeed(0);
 		angleMotor.PIDPosition(angle);
 	}
 
 	public void shoot(double speed, double angle) {
-		shooterMotors.PIDSpeed(speed);
+		leftMotor.PIDSpeed(speed);
+		rightMotor.PIDSpeed(speed);
 		angleMotor.PIDPosition(angle);
+	}
+	
+	public void updatePIDF() {
+		Settings.updateSettings();
+		
+		leftMotor.setP(Settings.shooterMotorP);
+		leftMotor.setI(Settings.shooterMotorI);
+		leftMotor.setD(Settings.shooterMotorD);
+		leftMotor.setF(Settings.shooterMotorF);
+		
+		rightMotor.setP(Settings.shooterMotorP);
+		rightMotor.setI(Settings.shooterMotorI);
+		rightMotor.setD(Settings.shooterMotorD);
+		rightMotor.setF(Settings.shooterMotorF);
 	}
 
 	public void stateSwitcher(boolean isCreated) {
 		String state = "out";
 		State nextState;
+		
+		updatePIDF();
 
 		if (!isCreated) {
 			presentTeleOpState = State.HOLD;
@@ -239,6 +267,7 @@ public class Shooter {
 	 * @param rpm
 	 */
 	public void spinShooter(double rpm) {
-		shooterMotors.PIDSpeed(rpm);
+		leftMotor.PIDSpeed(rpm);
+		rightMotor.PIDSpeed(rpm);
 	}
 }

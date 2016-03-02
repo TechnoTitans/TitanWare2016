@@ -171,20 +171,29 @@ public class TalonSRX extends CANTalon implements Motor {
 	}
 
 	public void PIDInit() throws EncoderNotFoundException {
-		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
-			// throw new EncoderNotFoundException();
-			SmartDashboard.sendData("Encoder on Talon " + getChannel() + " not found", true);
-		} else
-			SmartDashboard.sendData("Encoder on Talon " + getChannel() + " not found", false);
-		super.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		super.setInverted(false);
+//		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
+			// SmartDashboard.sendData("Encoder on Talon " + getChannel() + "
+			// not found", true);
+//			throw new EncoderNotFoundException();
+//		} else
+			// SmartDashboard.sendData("Encoder on Talon " + getChannel() + "
+			// not found", false);
+//			super.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+
+//		super.setInverted(false);
 		// super.configEncoderCodesPerRev(4096);
-		calibrate();
+//		calibrate();
+		super.setPosition(0);
 	}
 
-	private void PIDUpdate() {
-		super.setPID(SmartDashboard.getDouble("P"), SmartDashboard.getDouble("I"), SmartDashboard.getDouble("D"));
+	public void PIDUpdate(double P, double I, double D) {
+		PIDUpdate(P, I, D, 0);
+	}
+
+	public void PIDUpdate(double P, double I, double D, double F) {
+		super.setPID(P, I, D);
 		super.enableControl();
+
 	}
 
 	public void PIDAngle(double angle) {
@@ -192,16 +201,18 @@ public class TalonSRX extends CANTalon implements Motor {
 	}
 
 	public void PIDPosition(double position) {
-		PIDUpdate();
+		// PIDUpdate();
 		super.changeControlMode(TalonControlMode.Position);
 		super.set(position);
 		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
+		SmartDashboard.sendData("Talon " + this.getChannel() + " Error", super.getClosedLoopError());
 	}
 
 	public void PIDSpeed(double rpm) {
 		// PIDUpdate();
 		// speed = RPM * 1 min/(6000 (10 milliseconds)) * 4096 encoder counts /
 		// revolution
+		super.enableControl();
 		double speed = rpm * (4096.0 / 6000.0);
 
 		SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
@@ -209,6 +220,7 @@ public class TalonSRX extends CANTalon implements Motor {
 		super.changeControlMode(TalonControlMode.Speed);
 		super.set(speed);
 		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", getSpeed());
+		SmartDashboard.sendData("Talon " + this.getChannel() + " Error", super.getClosedLoopError());
 	}
 
 	/**
