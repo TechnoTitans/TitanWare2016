@@ -12,7 +12,6 @@ import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.sensors.QuadEncoder;
 import org.usfirst.frc.team1683.sensors.TiltSensor;
 import org.usfirst.frc.team1683.sensors.PressureReader;
-import org.usfirst.frc.team1683.shooter.PickerUpper;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
@@ -42,7 +41,6 @@ public class TechnoTitan extends IterativeRobot {
 	// LightRing lightRing;
 
 	Shooter shooter;
-	PickerUpper pickerUpper;
 
 	Compressor compressor;
 	
