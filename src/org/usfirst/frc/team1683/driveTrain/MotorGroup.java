@@ -106,42 +106,6 @@ public class MotorGroup extends ArrayList<Motor> {
 		return speed / this.size();
 	}
 
-	// BEGIN SHOOTER ONLY METHODS!!! #BADCODE
-	public void PIDInit() {
-		for (Motor m : this) {
-			if (m instanceof TalonSRX) {
-				if (((TalonSRX) m).isSensorPresent(FeedbackDevice.PulseWidth)
-						.equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
-					((TalonSRX) m).enableBrakeMode(false);
-					((TalonSRX) m).setPosition(0);
-				}
-			}
-		}
-	}
-
-	private void PIDUpdate() {
-		Settings.updateSettings();
-		for (Motor m : this) {
-			if (m instanceof TalonSRX) {
-				((TalonSRX) m).setPID(Settings.shooterMotorP, Settings.shooterMotorI, Settings.shooterMotorD);
-				((TalonSRX) m).setF(Settings.shooterMotorF);
-				((TalonSRX) m).enableControl();
-
-			}
-		}
-	}
-
-	public void PIDSpeed(double RPM) {
-		PIDUpdate();
-		for (Motor m : this) {
-			if (m instanceof TalonSRX) {
-				((TalonSRX) m).PIDSpeed(RPM);
-				SmartDashboard.sendData("Shooter Talon " + m.getChannel() + " Speed", ((TalonSRX) m).getSpeed());
-			}
-		}
-	}
-	// END BAD CODE
-
 	/**
 	 * Stops group.
 	 */
