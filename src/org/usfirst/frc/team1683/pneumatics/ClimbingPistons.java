@@ -6,7 +6,10 @@ import org.usfirst.frc.team1683.robot.HWP;
 import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class ClimbingPistons {
+	Timer chinUpTimer;
 	LinearActuator actuator;
 	Piston chinUpDeploy;
 	Piston chinUpRetract;
@@ -15,9 +18,10 @@ public class ClimbingPistons {
 
 	public static final double LIFT_ANGLE = 45;
 	public static final double RETRACT_ANGLE = 0;
+	public static final double CHINUP_TIME = 1;
 
 	public static enum State {
-		INIT_CASE, END_CASE, STOWED, DEPLOY, LIFT_HOOK, ROBOT_CHINUP, STOP,
+		INIT_CASE, END_CASE, LIFT_HOOK, ROBOT_CHINUP, LOWER_HOOK
 	}
 
 	public ClimbingPistons(int chinUpDeployChannel, int chinUpRetractChannel) {
@@ -29,17 +33,9 @@ public class ClimbingPistons {
 
 	}
 
-	public void deployAngle() {
-		actuator.PIDupdate(actuator.convertAngle(LIFT_ANGLE));
-	}
-
 	public void deployChinUp() {
 		chinUpDeploy.extend();
 		chinUpRetract.retract();
-	}
-
-	public void retractAngle() {
-		actuator.PIDupdate(actuator.convertAngle(RETRACT_ANGLE));
 	}
 
 	public void retractChinUp() {
@@ -51,45 +47,38 @@ public class ClimbingPistons {
 
 		switch (presentState) {
 		case INIT_CASE: {
-			nextState = State.STOWED;
+			nextState = State.LOWER_HOOK;
 			break;
 		}
-
-		case STOWED: {
-			this.retractAngle();
+		case LOWER_HOOK: {
 			this.retractChinUp();
-			SmartDashboard.sendData("State", "stowed");
-			nextState = State.STOWED;
-			if (DriverStation.auxStick.getRawButton(HWP.BUTTON_6))
-				nextState = State.DEPLOY;
-			break;
-		}
-
-		case DEPLOY: {
-			this.deployAngle();
-			this.retractChinUp();
-			SmartDashboard.sendData("State", "deploy");
-			nextState = State.DEPLOY;
-			if (DriverStation.auxStick.getRawButton(HWP.BUTTON_7))
+			SmartDashboard.sendData("State", "lower hook");
+			nextState = State.LOWER_HOOK;
+			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_4)
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_4)) {
 				nextState = State.LIFT_HOOK;
-			break;
+			}
 		}
 		case LIFT_HOOK: {
-			this.deployAngle();
 			this.deployChinUp();
 			SmartDashboard.sendData("State", "lift_hook");
 			nextState = State.LIFT_HOOK;
-			if (DriverStation.auxStick.getRawButton(HWP.BUTTON_8))
+
+			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_5)
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_5))
+				nextState = State.LOWER_HOOK;
+
+			else if (DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1))
+				chinUpTimer.reset();
+			if (chinUpTimer.hasPeriodPassed(CHINUP_TIME))
 				nextState = State.ROBOT_CHINUP;
 			break;
 		}
 		case ROBOT_CHINUP: {
-			this.deployAngle();
 			this.retractChinUp();
 			SmartDashboard.sendData("State", "chinUp");
 			nextState = State.ROBOT_CHINUP;
-			if (DriverStation.auxStick.getRawButton(HWP.BUTTON_9))
-				nextState = State.END_CASE;
 			break;
 		}
 		case END_CASE: {

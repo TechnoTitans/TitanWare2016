@@ -12,9 +12,9 @@ public class LinearActuator extends CANTalon {
 	public static final double MIN_ANGLE = 0;
 	public static final double L_ACT_MAX = 12; // fix number
 	public static final double L_ACT_MIN = 0; // fix number
-	public static final double L_BASE = 18.5;
-	public static final double L_PIVOT = 5.23;
-	public static final double L_FIXED = 11.5;
+	public static final double L_BASE = 23.37;
+	public static final double L_PIVOT = 5.02;
+	public static final double L_FIXED = 18.38;
 	
 
 	public LinearActuator(int deviceNumber) {
@@ -64,7 +64,7 @@ public class LinearActuator extends CANTalon {
 	 * @param angle
 	 * @return
 	 * 
-	 * Converts inputed angle to position linear actuator length
+	 * Converts angle (degrees) to  linear actuator length (inches)
 	 */
 	public double convertAngle(double angle) {
 		if (angle > MAX_ANGLE)
@@ -75,11 +75,23 @@ public class LinearActuator extends CANTalon {
 		
 		//Using law of cosines on climber geometry
 		//c^2 = a^2 + b^2 - 2*a*b*cos(angle)
-		double inches =  Math.sqrt(Math.pow(L_BASE, 2) + Math.pow(L_PIVOT, 2) - 2*L_BASE*L_PIVOT*Math.acos(angle));
+		double inches =  Math.sqrt(Math.pow(L_BASE, 2) + Math.pow(L_PIVOT, 2) - 2*L_BASE*L_PIVOT*Math.cos(angle*Math.PI/180));
 		//subtracting fixed length
 		inches -= L_FIXED;
 		SmartDashboard.sendData("Linear actuator inches", inches);
 		return inches;
+	}
+	
+	public double convertInches(double inch) {
+		if (inch > L_ACT_MAX)
+			inch = L_ACT_MAX;
+		if (inch < L_ACT_MIN)
+			inch = L_ACT_MIN;
+		
+		double angle = Math.acos((Math.pow(L_BASE, 2) + Math.pow(L_PIVOT, 2)-Math.pow(inch, 2))/(2*L_BASE*L_PIVOT))*180/Math.PI;
+		angle += L_FIXED;
+		SmartDashboard.sendData("Linear actuator angle", angle);
+		return angle;
 	}
 	
 	
