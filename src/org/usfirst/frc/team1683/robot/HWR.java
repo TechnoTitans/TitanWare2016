@@ -52,8 +52,14 @@ public class HWR {
 	public static final int ClIMB_DEPLOY_CHANNEL = 1;
 	public static final int CLIMB_RETRACT_CHANNEL = 3;
 
-	// Buttons
+	// Buttons Hp DriverStation
 	public static final int SPIN_UP_INTAKE = HWP.BUTTON_4;
 	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_5;
 	public static final int SHOOT_BALL = HWP.BUTTON_2;
+	
+//	//Buttons Dell DriverStation
+//	public static final int SPIN_UP_INTAKE = HWP.BUTTON_5;
+//	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_4;
+//	public static final int SHOOT_BALL = HWP.BUTTON_6; 
+	
 }
