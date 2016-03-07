@@ -16,6 +16,7 @@ public class TalonSRX extends CANTalon implements Motor {
 	private Encoder encoder;
 	private Thread thread;
 	private boolean calibrated = false;
+	private double PIDTargetSpeed;
 
 	/**
 	 * Private class to move motor in separate thread.
@@ -147,18 +148,18 @@ public class TalonSRX extends CANTalon implements Motor {
 	/**
 	 * Gets speed of the TalonSRX in RPM
 	 */
-	@Override
-	public double get() {
+//	@Override
+//	public double get() {
 		// speed = enc counts / 100 ms
 		// (speed * 60 secs)
 		// --------------------------------------
 		// 4096 encoder counts * 100 milliseconds
-		return (super.getSpeed() * 60) / (4096 * 0.1);
-	}
+//	}
 
 	@Override
 	public double getSpeed() {
-		return this.get();
+//		return this.get();
+		return (super.getSpeed() * 60) / (4096 * 0.1);
 	}
 
 	public double getRPM() {
@@ -183,6 +184,8 @@ public class TalonSRX extends CANTalon implements Motor {
 //		super.setInverted(false);
 		// super.configEncoderCodesPerRev(4096);
 //		calibrate();
+		super.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+//		super.configEncoderCodesPerRev(4096);
 		super.setPosition(0);
 	}
 
@@ -205,7 +208,6 @@ public class TalonSRX extends CANTalon implements Motor {
 		super.changeControlMode(TalonControlMode.Position);
 		super.set(position);
 		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
-		SmartDashboard.sendData("Talon " + this.getChannel() + " Error", super.getClosedLoopError());
 	}
 
 	public void PIDSpeed(double rpm) {
@@ -213,14 +215,22 @@ public class TalonSRX extends CANTalon implements Motor {
 		// speed = RPM * 1 min/(6000 (10 milliseconds)) * 4096 encoder counts /
 		// revolution
 		super.enableControl();
-		double speed = rpm * (4096.0 / 6000.0);
+		PIDTargetSpeed = rpm;
+//		double speed = rpm * (4096.0 / 6000.0);
 
-		SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
-		SmartDashboard.sendData(this.getChannel() + "Speed", speed);
+//		SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
+//		SmartDashboard.sendData(this.getChannel() + "Speed", speed);
 		super.changeControlMode(TalonControlMode.Speed);
-		super.set(speed);
-		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", getSpeed());
-		SmartDashboard.sendData("Talon " + this.getChannel() + " Error", super.getClosedLoopError());
+		super.set(rpm);
+//		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", getSpeed());
+	}
+	
+	public double PIDErrorSpeed() {
+		return PIDTargetSpeed - getSpeed();
+	}
+	
+	public double PIDTargetSpeed() {
+		return PIDTargetSpeed;
 	}
 
 	/**
