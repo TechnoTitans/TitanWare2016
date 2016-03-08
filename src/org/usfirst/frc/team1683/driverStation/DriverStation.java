@@ -1,9 +1,9 @@
 package org.usfirst.frc.team1683.driverStation;
 
 import org.usfirst.frc.team1683.robot.HWR;
-import org.usfirst.frc.team1683.shooter.Shooter;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class DriverStation {
 
@@ -19,11 +19,11 @@ public class DriverStation {
 	public static Joystick auxStick = new Joystick(HWR.AUX_JOYSTICK);
 
 	public static double scaleToMax(Joystick joy) {
-		return Shooter.BACK_LIMIT_ANGLE * joy.getRawAxis(YAxis);
+		return 450 * joy.getRawAxis(YAxis);
 	}
 
 	public static double scaleToMin(Joystick joy) {
-		return Shooter.FORWARD_LIMIT_ANGLE * joy.getRawAxis(YAxis);
+		return 10 * joy.getRawAxis(YAxis);
 	}
 
 	// TODO

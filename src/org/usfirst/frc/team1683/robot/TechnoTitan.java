@@ -5,10 +5,12 @@ import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.ClimbingPistons;
 import org.usfirst.frc.team1683.pneumatics.Piston;
 import org.usfirst.frc.team1683.sensors.Gyro;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.sensors.QuadEncoder;
 import org.usfirst.frc.team1683.sensors.TiltSensor;
 import org.usfirst.frc.team1683.sensors.PressureReader;
@@ -41,6 +43,8 @@ public class TechnoTitan extends IterativeRobot {
 	// LightRing lightRing;
 
 	Shooter shooter;
+	
+	LinearActuator actuator;
 
 	Compressor compressor;
 	
@@ -76,6 +80,8 @@ public class TechnoTitan extends IterativeRobot {
 
 		tiltSensor = new TiltSensor(HWR.ACCEL_CHANNEL_X, HWR.ACCEL_CHANNEL_Y);
 
+		actuator = new LinearActuator(HWP.CAN_5, false);
+		
 		climberPistons = new ClimbingPistons(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 
 		shootPiston = new Piston(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
@@ -86,7 +92,7 @@ public class TechnoTitan extends IterativeRobot {
 		TalonSRX angleMotor = new TalonSRX(HWR.ANGLE_MOTOR, false);
 
 //		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(leftShooter, rightShooter, angleMotor, shootPiston);
+		//shooter = new Shooter(leftShooter, rightShooter, angleMotor, shootPiston, HWR.LINEAR_ACTUATOR);
 		
 		hallEffect = new DigitalInput(0);
 
@@ -109,15 +115,18 @@ public class TechnoTitan extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		shooter.reset();
+//		shooter.reset();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		// drive.driveMode();
 		// pickerUpper.intakeMode();
-		shooter.shootMode();
+//		shooter.shootMode();
 		SmartDashboard.sendData("Hall Effect", hallEffect.get());
+		actuator.convertToInch(SmartDashboard.getDouble("Linear Actuator angle"));
+		actuator.convertToAngle(SmartDashboard.getDouble("Linear Actuator inch"));
+		SmartDashboard.sendData("Linear Actuator native position", actuator.getPos() );
 
 	}
 

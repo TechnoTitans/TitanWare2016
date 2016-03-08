@@ -7,6 +7,7 @@ import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.Piston;
 import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.robot.InputFilter;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
 public class Shooter {
@@ -26,14 +27,17 @@ public class Shooter {
 			/ (MAX_ANGLE - MIN_ANGLE);
 
 	public final static double FORWARD_LIMIT_ANGLE = 19;
-	public final static double BACK_LIMIT_ANGLE = 46;
+	public static final double  BACK_LIMIT_ANGLE = 46;
+	public static final int ALLOWABLE_ERROR = 400; // find num
 
 	private InputFilter inputFilter;
 
 	private double targetPos;
 	FindGoal vision;
 
-//	MotorGroup shooterMotors;
+	LinearActuator actuator;
+
+	// MotorGroup shooterMotors;
 	TalonSRX leftMotor;
 	TalonSRX rightMotor;
 	TalonSRX angleMotor;
@@ -50,13 +54,15 @@ public class Shooter {
 		INTAKE, HOLD, SHOOT;
 	}
 
-	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston, FindGoal vision) {
-		this(leftMotor, rightMotor, angleMotor, shootPiston);
+	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston,
+			int actuatorChannel, FindGoal vision) {
+		this(leftMotor, rightMotor, angleMotor, shootPiston, actuatorChannel);
 		// this.accel = accel;
 		this.vision = vision;
 	}
 
-	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston) {
+	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston,
+			int actuatorChannel) {
 		this.angleMotor = angleMotor;
 		this.shootPiston = shootPiston;
 		this.leftMotor = leftMotor;
@@ -65,9 +71,9 @@ public class Shooter {
 		// this.angleMotor.configEncoderCodesPerRev(4096);
 
 		this.angleMotor.calibrate();
-		this.angleMotor.enableLimitSwitch(true, true);
+		this.angleMotor.setAllowableClosedLoopErr(ALLOWABLE_ERROR);
 		this.angleMotor.PIDInit();
-		
+
 		this.leftMotor.PIDInit();
 		this.rightMotor.PIDInit();
 
@@ -78,8 +84,14 @@ public class Shooter {
 
 		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"));
 
+		actuator = new LinearActuator(actuatorChannel, false);
+
 	}
 
+	/**
+	 * returns scaled joystick output
+	 * @return
+	 */
 	public double getJoystickAngle() {
 		double angle;
 		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
@@ -117,6 +129,11 @@ public class Shooter {
 	}
 
 	/**
+	 * angles the Climber Piston based on scaled knob input
+	 */
+
+
+	/**
 	 * Set shooter to absolute position angle
 	 * 
 	 * @param angle
@@ -146,7 +163,10 @@ public class Shooter {
 	 */
 	public void shootMode() {
 
+		getJoystickAngle();
 		stateSwitcher(isCreated);
+
+		//angleClimberPistons();
 
 		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
 			shootBall();
@@ -165,8 +185,8 @@ public class Shooter {
 	public void hold(double angle) {
 		leftMotor.stop();
 		rightMotor.stop();
-//		leftMotor.PIDSpeed(0);
-//		rightMotor.PIDSpeed(0);
+		// leftMotor.PIDSpeed(0);
+		// rightMotor.PIDSpeed(0);
 		angleMotor.PIDPosition(angle);
 	}
 
@@ -175,15 +195,15 @@ public class Shooter {
 		rightMotor.PIDSpeed(speed);
 		angleMotor.PIDPosition(angle);
 	}
-	
+
 	public void updatePIDF() {
 		Settings.updateSettings();
-		
+
 		leftMotor.setP(Settings.shooterMotorP);
 		leftMotor.setI(Settings.shooterMotorI);
 		leftMotor.setD(Settings.shooterMotorD);
 		leftMotor.setF(Settings.shooterMotorF);
-		
+
 		rightMotor.setP(Settings.shooterMotorP);
 		rightMotor.setI(Settings.shooterMotorI);
 		rightMotor.setD(Settings.shooterMotorD);
@@ -193,7 +213,7 @@ public class Shooter {
 	public void stateSwitcher(boolean isCreated) {
 		String state = "out";
 		State nextState;
-		
+
 		updatePIDF();
 
 		if (!isCreated) {

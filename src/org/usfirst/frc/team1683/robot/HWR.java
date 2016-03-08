@@ -56,10 +56,13 @@ public class HWR {
 	public static final int SPIN_UP_INTAKE = HWP.BUTTON_4;
 	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_5;
 	public static final int SHOOT_BALL = HWP.BUTTON_2;
+	public static final int LIFT_HOOK = HWP.BUTTON_4;
+	public static final int ROBOT_CHINUP = HWP.BUTTON_1;
 	
 //	//Buttons Dell DriverStation
 //	public static final int SPIN_UP_INTAKE = HWP.BUTTON_5;
 //	public static final int SPIN_UP_SHOOTER = HWP.BUTTON_4;
 //	public static final int SHOOT_BALL = HWP.BUTTON_6; 
+//  public static final int LIFT_HOOK = HWP.BUTTON_5;
 	
 }
