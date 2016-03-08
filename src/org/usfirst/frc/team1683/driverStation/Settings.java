@@ -17,6 +17,9 @@ public class Settings {
 	public static double properDistance;
 
 	public static double antiDriftKp;
+	
+	public static double climberAngle;
+	public static double climberInches;
 
 	public static void updateSettings() {
 		angleMotorP = SmartDashboard.getDouble("Angle Motor P");
@@ -34,5 +37,8 @@ public class Settings {
 		properDistance = SmartDashboard.getDouble("Proper Distance");
 
 		antiDriftKp = SmartDashboard.getDouble("AntiDrift Kp");
+		
+		climberAngle = SmartDashboard.getDouble("Climber Pistons angle");
+		climberInches = SmartDashboard.getDouble("Climber Pistons inch");
 	}
 }
