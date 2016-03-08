@@ -103,11 +103,11 @@ public class Climber {
 			break;
 		}
 		default:
-			presentState = State.END_CASE;
+			nextState = State.END_CASE;
 			break;
 
 		}
-		SmartDashboard.sendData("Climber State", presentState.name());
+		SmartDashboard.sendData("Present Climber State", presentState.name());
 		presentState = nextState;
 
 	}
