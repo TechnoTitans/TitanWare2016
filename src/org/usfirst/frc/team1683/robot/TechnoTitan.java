@@ -7,7 +7,7 @@ import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.pneumatics.ClimbingPistons;
+import org.usfirst.frc.team1683.pneumatics.Climber;
 import org.usfirst.frc.team1683.pneumatics.Solenoid;
 import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
@@ -36,7 +36,7 @@ public class TechnoTitan extends IterativeRobot {
 	public static final double WHEEL_RADIUS = 3.391 / 2;
 	FindGoal findgoal;
 	TankDrive drive;
-	ClimbingPistons climberPistons;
+	Climber climberPistons;
 	TiltSensor tiltSensor;
 	Solenoid shootPiston;
 	PressureReader pressureReader;
@@ -82,7 +82,7 @@ public class TechnoTitan extends IterativeRobot {
 
 		actuator = new LinearActuator(HWP.CAN_5, false);
 		
-		climberPistons = new ClimbingPistons(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
+		climberPistons = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 
 		shootPiston = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 //		MotorGroup shooterGroup = new MotorGroup(new TalonSRX(HWR.SHOOTER_LEFT, true),

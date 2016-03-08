@@ -6,14 +6,6 @@ public class Solenoid extends edu.wpi.first.wpilibj.Solenoid {
 		super(moduleChannel, channel);
 	}
 
-	public void extend() {
-		super.set(true);
-	}
-
-	public void retract() {
-		super.set(false);
-	}
-
 	public boolean isExtended() {
 		return super.get();
 	}

@@ -8,41 +8,46 @@ import org.usfirst.frc.team1683.sensors.LinearActuator;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class ClimbingPistons {
+public class Climber {
 	Timer chinUpTimer;
 	LinearActuator actuator;
-	Solenoid chinUpDeploy;
-	Solenoid chinUpRetract;
+	Solenoid bottomSolenoid;
+	Solenoid topSolenoid;
 	public static State presentState;
 	public static State nextState;
 
 	public static final double LIFT_ANGLE = 45;
 	public static final double RETRACT_ANGLE = 0;
 	public static final double CHINUP_TIME = 1;
-	public static final double END_GAME_TIME = 135-27;
+	public static final double END_GAME_TIME = 135 - 27;
+
+	public static final boolean EXTEND = true;
+	public static final boolean RETRACT = false;
 
 	public static enum State {
 		INIT_CASE, END_CASE, LIFT_HOOK, START_CHINUP, ROBOT_CHINUP, LOWER_HOOK
 	}
 
-	public ClimbingPistons(int chinUpDeployChannel, int chinUpRetractChannel) {
+	public Climber(int bottomSolenoidChannel, int topSolenoidChannel) {
 		presentState = State.INIT_CASE;
 		chinUpTimer = new Timer();
+
+		topSolenoid = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, topSolenoidChannel);
+		bottomSolenoid = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, bottomSolenoidChannel);
+
 		actuator = new LinearActuator(HWR.LINEAR_ACTUATOR, false);
-		chinUpDeploy = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, chinUpDeployChannel);
-		chinUpRetract = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, chinUpRetractChannel);
 		actuator.PIDinit();
 
 	}
 
-	public void deployChinUp() {
-		chinUpDeploy.extend();
-		chinUpRetract.extend();
+	public void deployHook() {
+		bottomSolenoid.set(EXTEND);
+		topSolenoid.set(EXTEND);
 	}
 
-	public void retractChinUp() {
-		chinUpRetract.retract();
-		chinUpDeploy.retract();
+	public void retractHook() {
+		topSolenoid.set(RETRACT);
+		bottomSolenoid.set(RETRACT);
 	}
 
 	public void climbMode() {
@@ -55,56 +60,56 @@ public class ClimbingPistons {
 			break;
 		}
 		case LOWER_HOOK: {
-			this.retractChinUp();
-			SmartDashboard.sendData("State", "lower hook");
-			nextState = State.LOWER_HOOK;
+			this.retractHook();
 			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_4)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_4)
-					&& Timer.getMatchTime() > END_GAME_TIME) {
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_4) && Timer.getMatchTime() > END_GAME_TIME) {
 				nextState = State.LIFT_HOOK;
 			}
+			nextState = State.LOWER_HOOK;
 			break;
 		}
 		case LIFT_HOOK: {
-			this.deployChinUp();
+			this.deployHook();
 			chinUpTimer.reset();
-			SmartDashboard.sendData("State", "lift_hook");
-			nextState = State.LIFT_HOOK;
-			
+
 			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1))
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1)) {
 				nextState = State.START_CHINUP;
+			}
+
+			nextState = State.LIFT_HOOK;
+			break;
 		}
 		case START_CHINUP: {
-			this.deployChinUp();
-			SmartDashboard.sendData("State", "start chinup");
-			nextState = State.START_CHINUP;
-			
-			if(!(DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1))) 
+			this.deployHook();
+
+			if (!(DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1)))
 				nextState = State.LIFT_HOOK;
-			if(chinUpTimer.hasPeriodPassed(CHINUP_TIME)) 
+			if (chinUpTimer.hasPeriodPassed(CHINUP_TIME))
 				nextState = State.ROBOT_CHINUP;
+
+			nextState = State.START_CHINUP;
+			break;
 		}
 		case ROBOT_CHINUP: {
-			this.retractChinUp();
-			SmartDashboard.sendData("State", "chinUp");
+			this.retractHook();
 			nextState = State.ROBOT_CHINUP;
 			break;
 		}
 		case END_CASE: {
 
-			SmartDashboard.sendData("State", "end");
 			nextState = State.END_CASE;
 			break;
 		}
 		default:
-			SmartDashboard.sendData("State", "illegal");
 			presentState = State.END_CASE;
 			break;
 
 		}
+		SmartDashboard.sendData("Climber State", presentState.name());
 		presentState = nextState;
+
 	}
 
 }

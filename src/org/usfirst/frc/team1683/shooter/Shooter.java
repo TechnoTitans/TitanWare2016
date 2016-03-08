@@ -116,7 +116,7 @@ public class Shooter {
 	 */
 	public void shootBall() {
 		if (!shootPiston.isExtended())
-			shootPiston.extend();
+			shootPiston.set(true);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class Shooter {
 	 */
 	public void resetShootPistons() {
 		if (shootPiston.isExtended()) {
-			shootPiston.retract();
+			shootPiston.set(false);
 		}
 	}
 
