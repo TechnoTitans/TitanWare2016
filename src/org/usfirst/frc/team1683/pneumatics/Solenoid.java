@@ -1,8 +1,8 @@
 package org.usfirst.frc.team1683.pneumatics;
 
-public class Piston extends edu.wpi.first.wpilibj.Solenoid {
+public class Solenoid extends edu.wpi.first.wpilibj.Solenoid {
 
-	public Piston(int moduleChannel, int channel) {
+	public Solenoid(int moduleChannel, int channel) {
 		super(moduleChannel, channel);
 	}
 

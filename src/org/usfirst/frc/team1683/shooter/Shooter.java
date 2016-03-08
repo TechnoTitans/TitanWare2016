@@ -4,7 +4,7 @@ import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.Settings;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
-import org.usfirst.frc.team1683.pneumatics.Piston;
+import org.usfirst.frc.team1683.pneumatics.Solenoid;
 import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.robot.InputFilter;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
@@ -42,7 +42,7 @@ public class Shooter {
 	TalonSRX rightMotor;
 	TalonSRX angleMotor;
 
-	Piston shootPiston;
+	Solenoid shootPiston;
 
 	private boolean isCreated = false;
 	private State presentTeleOpState;
@@ -54,14 +54,14 @@ public class Shooter {
 		INTAKE, HOLD, SHOOT;
 	}
 
-	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston,
+	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Solenoid shootPiston,
 			int actuatorChannel, FindGoal vision) {
 		this(leftMotor, rightMotor, angleMotor, shootPiston, actuatorChannel);
 		// this.accel = accel;
 		this.vision = vision;
 	}
 
-	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Piston shootPiston,
+	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Solenoid shootPiston,
 			int actuatorChannel) {
 		this.angleMotor = angleMotor;
 		this.shootPiston = shootPiston;

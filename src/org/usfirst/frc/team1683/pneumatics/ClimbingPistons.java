@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.Timer;
 public class ClimbingPistons {
 	Timer chinUpTimer;
 	LinearActuator actuator;
-	Piston chinUpDeploy;
-	Piston chinUpRetract;
+	Solenoid chinUpDeploy;
+	Solenoid chinUpRetract;
 	public static State presentState;
 	public static State nextState;
 
@@ -29,8 +29,8 @@ public class ClimbingPistons {
 		presentState = State.INIT_CASE;
 		chinUpTimer = new Timer();
 		actuator = new LinearActuator(HWR.LINEAR_ACTUATOR, false);
-		chinUpDeploy = new Piston(HWR.DEFAULT_MODULE_CHANNEL, chinUpDeployChannel);
-		chinUpRetract = new Piston(HWR.DEFAULT_MODULE_CHANNEL, chinUpRetractChannel);
+		chinUpDeploy = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, chinUpDeployChannel);
+		chinUpRetract = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, chinUpRetractChannel);
 		actuator.PIDinit();
 
 	}
