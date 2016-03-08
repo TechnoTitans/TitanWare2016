@@ -10,6 +10,8 @@ public class Settings {
 	public static double shooterMotorI;
 	public static double shooterMotorD;
 	public static double shooterMotorF;
+	
+	public static double shooterRampRate;
 
 	public static double shooterFilterSensitivity;
 	public static double shooterTargetSpeed;
@@ -30,6 +32,8 @@ public class Settings {
 		shooterMotorI = SmartDashboard.getDouble("Shooter Motor I");
 		shooterMotorD = SmartDashboard.getDouble("Shooter Motor D");
 		shooterMotorF = SmartDashboard.getDouble("Shooter Motor F");
+		
+		shooterRampRate = SmartDashboard.getDouble("Shooter Ramp Rate");
 
 		shooterFilterSensitivity = SmartDashboard.getDouble("Shooter Filter Sensitivity");
 		shooterTargetSpeed = SmartDashboard.getDouble("TeleOp Shooter Target Speed");
