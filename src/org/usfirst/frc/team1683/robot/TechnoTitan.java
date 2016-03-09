@@ -92,7 +92,7 @@ public class TechnoTitan extends IterativeRobot {
 		TalonSRX angleMotor = new TalonSRX(HWR.ANGLE_MOTOR, false);
 
 //		pickerUpper = new PickerUpper(shooterGroup);
-		//shooter = new Shooter(leftShooter, rightShooter, angleMotor, shootPiston, HWR.LINEAR_ACTUATOR);
+		shooter = new Shooter(leftShooter, rightShooter, angleMotor, shootPiston, HWR.LINEAR_ACTUATOR);
 		
 		hallEffect = new DigitalInput(0);
 
@@ -122,11 +122,11 @@ public class TechnoTitan extends IterativeRobot {
 	public void teleopPeriodic() {
 		// drive.driveMode();
 		// pickerUpper.intakeMode();
-//		shooter.shootMode();
-		SmartDashboard.sendData("Hall Effect", hallEffect.get());
-		actuator.convertToInch(SmartDashboard.getDouble("Linear Actuator angle"));
-		actuator.convertToAngle(SmartDashboard.getDouble("Linear Actuator inch"));
-		SmartDashboard.sendData("Linear Actuator native position", actuator.getPos() );
+		shooter.shootMode();
+//		SmartDashboard.sendData("Hall Effect", hallEffect.get());
+//		actuator.convertToInch(SmartDashboard.getDouble("Linear Actuator angle"));
+//		actuator.convertToAngle(SmartDashboard.getDouble("Linear Actuator inch"));
+//		SmartDashboard.sendData("Linear Actuator native position", actuator.getPos() );
 
 	}
 
