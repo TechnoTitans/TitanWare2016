@@ -71,7 +71,7 @@ public class Shooter {
 		// this.angleMotor.configEncoderCodesPerRev(4096);
 
 		this.angleMotor.calibrate();
-		this.angleMotor.setAllowableClosedLoopErr(ALLOWABLE_ERROR);
+		this.angleMotor.setAllowableClosedLoopErr(0);
 		this.angleMotor.PIDInit();
 
 		this.leftMotor.PIDInit();
@@ -145,7 +145,7 @@ public class Shooter {
 			angle = BACK_LIMIT_ANGLE;
 		}
 
-		updatePrefs();
+		updatePIDF();
 
 		SmartDashboard.sendData("Shooter Set Angle", angle);
 
@@ -163,17 +163,24 @@ public class Shooter {
 	 */
 	public void shootMode() {
 
-		getJoystickAngle();
-		stateSwitcher(isCreated);
-
-		//angleClimberPistons();
-
-		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
-			shootBall();
-		else
-			resetShootPistons();
-
+//		getJoystickAngle();
+//		stateSwitcher(isCreated);
+//
+//		//angleClimberPistons();
+//
+//		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
+//			shootBall();
+//		else
+//			resetShootPistons();
+		
+		updatePIDF();
+		
 		updatePrefs();
+		
+		angleShooter(SmartDashboard.getDouble("Shooter Target Angle"));
+		
+		
+		report();
 	}
 
 	public void intake(double angle) {
@@ -208,6 +215,10 @@ public class Shooter {
 		rightMotor.setI(Settings.shooterMotorI);
 		rightMotor.setD(Settings.shooterMotorD);
 		rightMotor.setF(Settings.shooterMotorF);
+		
+		angleMotor.setP(Settings.angleMotorP);
+		angleMotor.setI(Settings.angleMotorI);
+		angleMotor.setD(Settings.angleMotorD);
 	}
 
 	public void stateSwitcher(boolean isCreated) {
