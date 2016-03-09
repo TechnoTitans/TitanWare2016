@@ -63,7 +63,7 @@ public class Shooter {
 		// this.angleMotor.configEncoderCodesPerRev(4096);
 
 		this.angleMotor.calibrate();
-		this.angleMotor.enableLimitSwitch(true, true);
+//		this.angleMotor.enableLimitSwitch(true, true);
 		this.angleMotor.PIDInit();
 		
 		this.leftMotor = new TalonSRX(leftChannel, false);
@@ -193,6 +193,10 @@ public class Shooter {
 		
 		leftMotor.setCloseLoopRampRate(Settings.shooterRampRate);
 		rightMotor.setCloseLoopRampRate(Settings.shooterRampRate);
+		
+		angleMotor.setP(Settings.angleMotorP);
+		angleMotor.setI(Settings.angleMotorI);
+		angleMotor.setD(Settings.angleMotorD);
 	}
 
 	public void stateSwitcher(boolean isCreated) {
