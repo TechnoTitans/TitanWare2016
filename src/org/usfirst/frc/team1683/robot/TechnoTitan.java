@@ -2,7 +2,6 @@
 package org.usfirst.frc.team1683.robot;
 
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
-import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.DriverStation;
@@ -87,12 +86,12 @@ public class TechnoTitan extends IterativeRobot {
 		shootPiston = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 //		MotorGroup shooterGroup = new MotorGroup(new TalonSRX(HWR.SHOOTER_LEFT, true),
 //				new TalonSRX(HWR.SHOOTER_RIGHT, true));
-		TalonSRX leftShooter = new TalonSRX(HWR.SHOOTER_LEFT, true);
-		TalonSRX rightShooter = new TalonSRX(HWR.SHOOTER_RIGHT, true);
-		TalonSRX angleMotor = new TalonSRX(HWR.ANGLE_MOTOR, false);
+//		TalonSRX leftShooter = new TalonSRX(HWR.SHOOTER_LEFT, false);
+//		TalonSRX rightShooter = new TalonSRX(HWR.SHOOTER_RIGHT, true);
 
 //		pickerUpper = new PickerUpper(shooterGroup);
-		shooter = new Shooter(leftShooter, rightShooter, angleMotor, shootPiston, HWR.LINEAR_ACTUATOR);
+
+		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
 		
 		hallEffect = new DigitalInput(0);
 

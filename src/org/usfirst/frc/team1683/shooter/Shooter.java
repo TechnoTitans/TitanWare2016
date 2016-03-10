@@ -46,7 +46,7 @@ public class Shooter {
 
 	private boolean isCreated = false;
 	private State presentTeleOpState;
-	public static final double INTAKE_SPEED = -50;
+	public static final double INTAKE_SPEED = -2000;
 	private static final double INTAKE_ANGLE = 0; // Pick better angle
 	private static final double HOLD_SPEED = 0;
 
@@ -54,37 +54,38 @@ public class Shooter {
 		INTAKE, HOLD, SHOOT;
 	}
 
-	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Solenoid shootPiston,
-			int actuatorChannel, FindGoal vision) {
-		this(leftMotor, rightMotor, angleMotor, shootPiston, actuatorChannel);
+
+	public Shooter(int leftChannel, int rightChannel, int angleMotorChannel, Solenoid shootPiston, FindGoal vision) {
+		this(leftChannel, rightChannel, angleMotorChannel, shootPiston);
 		// this.accel = accel;
 		this.vision = vision;
 	}
 
-	public Shooter(TalonSRX leftMotor, TalonSRX rightMotor, TalonSRX angleMotor, Solenoid shootPiston,
-			int actuatorChannel) {
-		this.angleMotor = angleMotor;
+	public Shooter(int leftChannel, int rightChannel, int angleMotorChannel, Solenoid shootPiston) {
+		this.angleMotor = new TalonSRX(angleMotorChannel, false);;
+		this.leftMotor = new TalonSRX(leftChannel, false);
+		this.rightMotor = new TalonSRX(rightChannel, false);
 		this.shootPiston = shootPiston;
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
 
+		
+		this.angleMotor.PIDInit();
+		this.leftMotor.PIDInit();
+		this.rightMotor.PIDInit();
+		
 		// this.angleMotor.configEncoderCodesPerRev(4096);
 
 		this.angleMotor.calibrate();
 		this.angleMotor.setAllowableClosedLoopErr(0);
-		this.angleMotor.PIDInit();
-
-		this.leftMotor.PIDInit();
-		this.rightMotor.PIDInit();
-
+//		this.angleMotor.enableLimitSwitch(true, true);
+		
 		this.leftMotor.enableBrakeMode(false); // coast mode
 		this.rightMotor.enableBrakeMode(false); // coast mode
-		leftMotor.reverseSensor(true);
-		rightMotor.reverseSensor(false);
+		this.leftMotor.reverseSensor(false);
+		this.rightMotor.reverseSensor(false);
 
 		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"));
 
-		actuator = new LinearActuator(actuatorChannel, false);
+//		actuator = new LinearActuator(actuatorChannel, false);
 
 	}
 
@@ -153,9 +154,10 @@ public class Shooter {
 
 		SmartDashboard.sendData("Shooter Filtered Angle", angle);
 
-		angle = angle * ANGLE_TO_POSITION_COEFFICENT;
+//		angle = angle * ANGLE_TO_POSITION_COEFFICENT;
 
-		angleMotor.PIDPosition(angle);
+//		angleMotor.PIDPosition(angle);
+		angleMotor.PIDAngle(angle);
 	}
 
 	/**
@@ -173,12 +175,9 @@ public class Shooter {
 			shootBall();
 		else
 			resetShootPistons();
-		
-		
-		
 //		angleShooter(SmartDashboard.getDouble("Shooter Target Angle"));
-		
-		
+
+		updatePrefs();
 		report();
 	}
 
@@ -215,6 +214,9 @@ public class Shooter {
 		rightMotor.setD(Settings.shooterMotorD);
 		rightMotor.setF(Settings.shooterMotorF);
 		
+		leftMotor.setCloseLoopRampRate(Settings.shooterRampRate);
+		rightMotor.setCloseLoopRampRate(Settings.shooterRampRate);
+
 		angleMotor.setP(Settings.angleMotorP);
 		angleMotor.setI(Settings.angleMotorI);
 		angleMotor.setD(Settings.angleMotorD);
@@ -274,6 +276,7 @@ public class Shooter {
 
 		presentTeleOpState = nextState;
 		SmartDashboard.sendData("Shooter state", state);
+//		report();
 	}
 
 	public void reset() {
@@ -285,6 +288,21 @@ public class Shooter {
 		SmartDashboard.sendData("Shooter Encoder Position", angleMotor.getEncPosition());
 		SmartDashboard.sendData("Shooter Position", angleMotor.getPosition());
 		SmartDashboard.sendData("Shooter Angle", angleMotor.getPosition() * POSITION_TO_ANGLE_COEFFICENT);
+		
+		SmartDashboard.sendData("Left Talon Target", leftMotor.PIDTargetSpeed());
+		SmartDashboard.sendData("Right Talon Target", rightMotor.PIDTargetSpeed());
+		SmartDashboard.sendData("Left Talon Speed", leftMotor.getSpeed());
+		SmartDashboard.sendData("Right Talon Speed", rightMotor.getSpeed());
+		SmartDashboard.sendData("Left Talon Error", leftMotor.PIDErrorSpeed());
+		SmartDashboard.sendData("Right Talon Error", rightMotor.PIDErrorSpeed());
+		
+		SmartDashboard.sendData("Left Setpoint", leftMotor.getSetpoint());
+		SmartDashboard.sendData("Left Speed", leftMotor.get());
+		SmartDashboard.sendData("Left Error", leftMotor.getClosedLoopError()/4096.0);
+		
+		SmartDashboard.sendData("right Setpoint", rightMotor.getSetpoint());
+		SmartDashboard.sendData("right Speed", rightMotor.get());
+		SmartDashboard.sendData("right Error", rightMotor.getClosedLoopError()/4096.0);
 	}
 
 	public void updatePrefs() {
@@ -298,6 +316,6 @@ public class Shooter {
 	 */
 	public void spinShooter(double rpm) {
 		leftMotor.PIDSpeed(rpm);
-		rightMotor.PIDSpeed(rpm);
+		rightMotor.PIDSpeed(-rpm);
 	}
 }
