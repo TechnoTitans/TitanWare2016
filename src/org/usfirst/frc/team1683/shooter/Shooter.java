@@ -26,8 +26,8 @@ public class Shooter {
 	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
 			/ (MAX_ANGLE - MIN_ANGLE);
 
-	public final static double FORWARD_LIMIT_ANGLE = 19;
-	public static final double  BACK_LIMIT_ANGLE = 46;
+	public final static double FORWARD_LIMIT_ANGLE = 0;
+	public static final double  BACK_LIMIT_ANGLE = 63;
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
 	private InputFilter inputFilter;
@@ -162,22 +162,21 @@ public class Shooter {
 	 * TeleOp
 	 */
 	public void shootMode() {
-
-//		getJoystickAngle();
-//		stateSwitcher(isCreated);
-//
-//		//angleClimberPistons();
-//
-//		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
-//			shootBall();
-//		else
-//			resetShootPistons();
-		
 		updatePIDF();
-		
 		updatePrefs();
+
+		stateSwitcher(isCreated);
+
+		//angleClimberPistons();
+
+		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
+			shootBall();
+		else
+			resetShootPistons();
 		
-		angleShooter(SmartDashboard.getDouble("Shooter Target Angle"));
+		
+		
+//		angleShooter(SmartDashboard.getDouble("Shooter Target Angle"));
 		
 		
 		report();
@@ -186,7 +185,7 @@ public class Shooter {
 	public void intake(double angle) {
 		leftMotor.PIDSpeed(INTAKE_SPEED);
 		rightMotor.PIDSpeed(INTAKE_SPEED);
-		angleMotor.PIDPosition(angle);
+		angleShooter(angle);
 	}
 
 	public void hold(double angle) {
@@ -194,13 +193,13 @@ public class Shooter {
 		rightMotor.stop();
 		// leftMotor.PIDSpeed(0);
 		// rightMotor.PIDSpeed(0);
-		angleMotor.PIDPosition(angle);
+		angleShooter(angle);
 	}
 
 	public void shoot(double speed, double angle) {
 		leftMotor.PIDSpeed(speed);
 		rightMotor.PIDSpeed(speed);
-		angleMotor.PIDPosition(angle);
+		angleShooter(angle);
 	}
 
 	public void updatePIDF() {
