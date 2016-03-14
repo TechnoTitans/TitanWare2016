@@ -5,11 +5,15 @@ public class Settings {
 	public static double angleMotorP;
 	public static double angleMotorI;
 	public static double angleMotorD;
+	
+	public static int angleAllowableClosedLoopErr;
 
 	public static double shooterMotorP;
 	public static double shooterMotorI;
 	public static double shooterMotorD;
 	public static double shooterMotorF;
+	
+	public static double shooterK;
 	
 	public static double shooterRampRate;
 
@@ -32,6 +36,10 @@ public class Settings {
 		shooterMotorI = SmartDashboard.getDouble("Shooter Motor I");
 		shooterMotorD = SmartDashboard.getDouble("Shooter Motor D");
 		shooterMotorF = SmartDashboard.getDouble("Shooter Motor F");
+		
+		angleAllowableClosedLoopErr = SmartDashboard.getInt("Shooter Allowable Closed Loop Error");
+		
+		shooterK = SmartDashboard.getDouble("Shooter K");
 		
 		shooterRampRate = SmartDashboard.getDouble("Shooter Ramp Rate");
 
