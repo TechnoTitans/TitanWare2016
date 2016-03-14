@@ -76,7 +76,9 @@ public class Shooter {
 
 		this.angleMotor.calibrate();
 		this.angleMotor.setAllowableClosedLoopErr(0);
+		this.angleMotor.enableBrakeMode(true);
 //		this.angleMotor.enableLimitSwitch(true, true);
+
 		
 		this.leftMotor.enableBrakeMode(false); // coast mode
 		this.rightMotor.enableBrakeMode(false); // coast mode
@@ -130,11 +132,6 @@ public class Shooter {
 	}
 
 	/**
-	 * angles the Climber Piston based on scaled knob input
-	 */
-
-
-	/**
 	 * Set shooter to absolute position angle
 	 * 
 	 * @param angle
@@ -146,7 +143,7 @@ public class Shooter {
 			angle = BACK_LIMIT_ANGLE;
 		}
 
-		updatePIDF();
+		updateSettings();
 
 		SmartDashboard.sendData("Shooter Set Angle", angle);
 
@@ -164,8 +161,7 @@ public class Shooter {
 	 * TeleOp
 	 */
 	public void shootMode() {
-		updatePIDF();
-		updatePrefs();
+		updateSettings();
 
 		stateSwitcher(isCreated);
 
@@ -177,7 +173,6 @@ public class Shooter {
 			resetShootPistons();
 //		angleShooter(SmartDashboard.getDouble("Shooter Target Angle"));
 
-		updatePrefs();
 		report();
 	}
 
@@ -201,7 +196,7 @@ public class Shooter {
 		angleShooter(angle);
 	}
 
-	public void updatePIDF() {
+	public void updateSettings() {
 		Settings.updateSettings();
 
 		leftMotor.setP(Settings.shooterMotorP);
@@ -220,13 +215,17 @@ public class Shooter {
 		angleMotor.setP(Settings.angleMotorP);
 		angleMotor.setI(Settings.angleMotorI);
 		angleMotor.setD(Settings.angleMotorD);
+		
+		angleMotor.setAllowableClosedLoopErr(Settings.angleAllowableClosedLoopErr);
+		
+		inputFilter.setFilterK(Settings.shooterK);
 	}
 
 	public void stateSwitcher(boolean isCreated) {
 		String state = "out";
 		State nextState;
 
-		updatePIDF();
+		updateSettings();
 
 		if (!isCreated) {
 			presentTeleOpState = State.HOLD;
@@ -305,9 +304,6 @@ public class Shooter {
 		SmartDashboard.sendData("right Error", rightMotor.getClosedLoopError()/4096.0);
 	}
 
-	public void updatePrefs() {
-		inputFilter.setFilterK(SmartDashboard.getDouble("Shooter K"));
-	}
 
 	/**
 	 * Set shooter to speed {@param rpm}

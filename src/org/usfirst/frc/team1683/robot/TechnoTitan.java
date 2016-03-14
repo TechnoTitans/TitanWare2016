@@ -16,6 +16,7 @@ import org.usfirst.frc.team1683.sensors.PressureReader;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -94,6 +95,11 @@ public class TechnoTitan extends IterativeRobot {
 		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
 		
 		hallEffect = new DigitalInput(0);
+		
+		CameraServer server = CameraServer.getInstance();
+		server.setQuality(50);
+		server.startAutomaticCapture("cam1");
+		
 
 	}
 
