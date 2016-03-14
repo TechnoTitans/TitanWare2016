@@ -79,7 +79,7 @@ public class FindGoal {
 		return this.distance;
 	}
 //
-	/*
+	/*/
 	 * checks if robot is aligned. -1 for too far left. 0 for just right. 1 for
 	 * too far right. 2 for error
 	 */
