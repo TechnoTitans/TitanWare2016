@@ -17,6 +17,7 @@ public class FindGoal {
 	private double distance = 0;
 	private double[] defaultvalue = new double[0];
 	private double optic_angle = 28.393 * Math.PI / 180; // M1103 cameras only
+	private double optic_angle1 = 0 * Math.PI / 180; // small black camera
 	private double FOVpx = 320; // pixels of the grip program
 	private double Targetin = 20; // target width
 	private final double CENTER_WIDTH_PX = 5;// The max offset
@@ -34,22 +35,27 @@ public class FindGoal {
 	public Contour[] getData() {
 		Contour[] contours;
 		try {
-			AREA = FindGoal.tableContour.getNumberArray("area", defaultvalue);
-			GOAL_X = FindGoal.tableContour.getNumberArray("centerX", defaultvalue);
-			GOAL_Y = FindGoal.tableContour.getNumberArray("centerY", defaultvalue);
-			WIDTH = FindGoal.tableContour.getNumberArray("width", defaultvalue);
-			HEIGHT = FindGoal.tableContour.getNumberArray("height", defaultvalue);
+			AREA = tableContour.getNumberArray("area", defaultvalue);
+			GOAL_X = tableContour.getNumberArray("centerX", defaultvalue);
+			GOAL_Y = tableContour.getNumberArray("centerY", defaultvalue);
+			WIDTH = tableContour.getNumberArray("width", defaultvalue);
+			HEIGHT = tableContour.getNumberArray("height", defaultvalue);
 			contours = new Contour[AREA.length];
+			if (AREA.length > 0) {
+				for (int i = 0; i < contours.length; i++) {
+					contours[i] = new Contour(i, HEIGHT[i], WIDTH[i], GOAL_X[i], GOAL_Y[i], AREA[i]);
+				}
+			}
+//			SmartDashboard.sendData("AREA LENGTH", AREA.length);
+//			SmartDashboard.sendData("HEIGHT LENGTH", HEIGHT.length);
+//			SmartDashboard.sendData("GOAL_X LENGTH", GOAL_X.length);
+//			SmartDashboard.sendData("GOAL_Y LENGTH", GOAL_Y.length);
+//			SmartDashboard.sendData("WIDTH LENGTH", WIDTH.length);
 		} catch (TableKeyNotDefinedException exp) {
 			System.out.println("TableKeyNotDefinedExceptionFix");
+			// SmartDashboard.sendData("", val);
 			contours = null;
 		}
-		if (AREA.length != 0) {
-			for (int i = 0; i < contours.length; i++) {
-				contours[i] = new Contour(i, HEIGHT[i], WIDTH[i], GOAL_X[i], GOAL_Y[i], AREA[i]);
-			}
-		} else
-			contours[0] = new Contour(0, 0, 0, 0, 0, 0);
 		return contours;
 	}
 

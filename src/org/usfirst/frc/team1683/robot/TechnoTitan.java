@@ -1,6 +1,6 @@
 
 package org.usfirst.frc.team1683.robot;
-
+import org.usfirst.frc.team1683.test.*;
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
@@ -40,7 +40,7 @@ public class TechnoTitan extends IterativeRobot {
 	Solenoid shootPiston;
 	PressureReader pressureReader;
 	// LightRing lightRing;
-
+	VisionTest visionTest;
 	Shooter shooter;
 	
 	LinearActuator actuator;
@@ -56,7 +56,7 @@ public class TechnoTitan extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		// switcher = new AutonomousSwitcher(drive);
-
+		visionTest=new VisionTest();
 		// GYRO
 		Gyro gyro = new Gyro(HWR.GYRO);
 
@@ -121,7 +121,8 @@ public class TechnoTitan extends IterativeRobot {
 	public void teleopPeriodic() {
 		// drive.driveMode();
 		// pickerUpper.intakeMode();
-		shooter.shootMode();
+		//shooter.shootMode();
+		visionTest.test();
 //		SmartDashboard.sendData("Hall Effect", hallEffect.get());
 //		actuator.convertToInch(SmartDashboard.getDouble("Linear Actuator angle"));
 //		actuator.convertToAngle(SmartDashboard.getDouble("Linear Actuator inch"));
