@@ -100,7 +100,7 @@ public class AutonomousSwitcher {
 	}
 
 	public Autonomous getAutoSelected() {
-		updateAutoSelected();
+//		updateAutoSelected();
 		return autoSelected;
 	}
 

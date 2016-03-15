@@ -5,6 +5,7 @@ import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.driverStation.Settings;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -82,7 +83,8 @@ public class ShootAtTarget extends Autonomous {
 			break;
 
 		case REACH_DISTANCE:
-			tankDrive.moveDistance(properDistance);
+			Settings.updateSettings();
+			tankDrive.moveDistance(Settings.properDistance);
 			nextState = State.FIND_TARGET;
 			break;
 

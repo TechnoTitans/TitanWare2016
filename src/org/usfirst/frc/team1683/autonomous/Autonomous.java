@@ -46,11 +46,7 @@ public abstract class Autonomous {
 	public static final double REACH_DISTANCE = 74; // 74 inches
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
-	public static double properDistance;
-
-	public void updatePreferences() {
-		properDistance = SmartDashboard.getDouble("properDistance");
-	}
+//	public static double properDistance;
 
 	public static void resetAuto() {
 		presentState = State.INIT_CASE;

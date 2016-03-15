@@ -8,6 +8,7 @@ import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.Climber;
 import org.usfirst.frc.team1683.pneumatics.Solenoid;
+import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.sensors.Gyro;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.sensors.QuadEncoder;
@@ -30,14 +31,13 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean LEFT_REVERSE = false;
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS = 3.391 / 2;
-	FindGoal findgoal;
 	TankDrive drive;
 	Climber climberPistons;
 	PressureReader pressureReader;
+	FindGoal vision;
 	// LightRing lightRing;
 	Shooter shooter;
 
-	LinearActuator actuator;
 
 
 
@@ -47,7 +47,6 @@ public class TechnoTitan extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		// switcher = new AutonomousSwitcher(drive);
 		
 		// GYRO
 		Gyro gyro = new Gyro(HWR.GYRO);
@@ -67,33 +66,35 @@ public class TechnoTitan extends IterativeRobot {
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
 		// END DRIVE TRAIN
 
-		actuator = new LinearActuator(HWP.CAN_5, false);
-
-		climberPistons = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 
 		Solenoid shootPiston = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
-
 		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
+		
+		LinearActuator actuator = new LinearActuator(HWP.CAN_5, false);
+		climberPistons = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
+		BuiltInAccel accel = new BuiltInAccel();
+		vision = new FindGoal();
 
+		switcher = new AutonomousSwitcher(drive, accel, vision, shooter, actuator);
 		// CameraServer server = CameraServer.getInstance();
 		// server.setQuality(50);
 		// server.startAutomaticCapture("cam1");
-
 	}
 
 	@Override
 	public void autonomousInit() {
-
+		switcher.updateAutoSelected();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		SmartDashboard.sendData("getLeftPosition",
-				((QuadEncoder) drive.getLeftGroup().getEncoder()).getTalon().getPosition());
-		SmartDashboard.sendData("getRightPosition",
-				((QuadEncoder) drive.getRightGroup().getEncoder()).getTalon().getPosition());
-		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder) drive.getLeftGroup().getEncoder()).getDistance());
-		SmartDashboard.sendData("getRightDistance", ((QuadEncoder) drive.getRightGroup().getEncoder()).getDistance());
+//		SmartDashboard.sendData("getLeftPosition",
+//				((QuadEncoder) drive.getLeftGroup().getEncoder()).getTalon().getPosition());
+//		SmartDashboard.sendData("getRightPosition",
+//				((QuadEncoder) drive.getRightGroup().getEncoder()).getTalon().getPosition());
+//		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder) drive.getLeftGroup().getEncoder()).getDistance());
+//		SmartDashboard.sendData("getRightDistance", ((QuadEncoder) drive.getRightGroup().getEncoder()).getDistance());
+		switcher.run();
 	}
 
 	@Override
