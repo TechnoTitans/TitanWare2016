@@ -38,7 +38,7 @@ public class Shooter {
 	private static final double LOW_GOAL_ANGLE = 30; // Pick better angle
 	private static final double LOW_GOAL_SPEED = 3500;
 	private static final double DEFAULT_SPEED = 3500;
-	public static final double ANGLE_OFFSET = 0; //change based on shooter mounting
+	public static final double ANGLE_OFFSET = 70; //change based on shooter mounting
 	
 	public static final double TARGET_OVERHANG = 5;
 	public static final double TARGET_HEIGHT = 97;
@@ -183,6 +183,8 @@ public class Shooter {
 		} else if (angle > BACK_LIMIT_ANGLE) {
 			angle = BACK_LIMIT_ANGLE;
 		}
+		
+		angle-=ANGLE_OFFSET;
 
 		updatePIDF();
 
