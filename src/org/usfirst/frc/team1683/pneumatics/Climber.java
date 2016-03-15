@@ -18,8 +18,8 @@ public class Climber {
 
 	public static final double LIFT_ANGLE = 45;
 	public static final double RETRACT_ANGLE = 0;
-	public static final double CHINUP_TIME = 1;
-	public static final double END_GAME_TIME = 135 - 27;
+	public static final double CHINUP_TIME = 5;
+	public static final double END_GAME_TIME = 115;//135 - 27;
 
 	public static final boolean EXTEND = true;
 	public static final boolean RETRACT = false;
@@ -52,7 +52,8 @@ public class Climber {
 
 	public void climbMode() {
 
-		actuator.angleClimberPistons();
+		//actuator.angleClimberPistons();
+		SmartDashboard.sendData("Present Climber State", presentState.name());
 
 		switch (presentState) {
 		case INIT_CASE: {
@@ -61,35 +62,34 @@ public class Climber {
 		}
 		case LOWER_HOOK: {
 			this.retractHook();
+			nextState = State.LOWER_HOOK;
 			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_4)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_4) && Timer.getMatchTime() > END_GAME_TIME) {
+					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_4) && Timer.getMatchTime() < END_GAME_TIME) {
 				nextState = State.LIFT_HOOK;
 			}
-			nextState = State.LOWER_HOOK;
+			
 			break;
 		}
 		case LIFT_HOOK: {
 			this.deployHook();
 			chinUpTimer.reset();
-
+			nextState = State.LIFT_HOOK;
 			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
 					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1)) {
 				nextState = State.START_CHINUP;
+				chinUpTimer.start();
 			}
-
-			nextState = State.LIFT_HOOK;
 			break;
 		}
 		case START_CHINUP: {
 			this.deployHook();
-
+			
+			nextState = State.START_CHINUP;
 			if (!(DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
 					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1)))
 				nextState = State.LIFT_HOOK;
 			if (chinUpTimer.hasPeriodPassed(CHINUP_TIME))
 				nextState = State.ROBOT_CHINUP;
-
-			nextState = State.START_CHINUP;
 			break;
 		}
 		case ROBOT_CHINUP: {
@@ -107,7 +107,9 @@ public class Climber {
 			break;
 
 		}
-		SmartDashboard.sendData("Present Climber State", presentState.name());
+		
+		SmartDashboard.sendData("Match Time", Timer.getMatchTime());
+		SmartDashboard.sendData("CHinup timer", chinUpTimer.get());
 		presentState = nextState;
 
 	}
