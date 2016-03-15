@@ -29,7 +29,6 @@ public class BreachDefense extends Autonomous {
 			break;
 
 		case STOW_PISTONS:
-			nextState = State.STOW_PISTONS;
 			if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE)
 				nextState = State.DRIVE_FORWARD;
 			break;

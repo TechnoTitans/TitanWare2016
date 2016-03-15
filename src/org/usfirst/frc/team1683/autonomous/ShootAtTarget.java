@@ -3,6 +3,7 @@ package org.usfirst.frc.team1683.autonomous;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.sensors.Gyro;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
@@ -23,6 +24,7 @@ public class ShootAtTarget extends Autonomous {
 	Shooter shooter;
 	ShootingPhysics physics;
 	Gyro gyro;
+	LinearActuator actuator;
 	double originalAngle;
 
 	public ShootAtTarget(TankDrive driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter, Gyro gyro) {
@@ -41,9 +43,12 @@ public class ShootAtTarget extends Autonomous {
 	public void run() {
 		switch (presentState) {
 		case INIT_CASE:
-			nextState = State.DRIVE_FORWARD;
+			nextState = State.STOW_PISTONS;
 			break;
 
+		case STOW_PISTONS:
+			if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE )
+			nextState = State.DRIVE_FORWARD;
 		case DRIVE_FORWARD:
 			// originalAngle = gyro.getAngle();
 			tankDrive.moveDistance(REACH_DISTANCE);

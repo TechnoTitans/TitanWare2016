@@ -1,6 +1,7 @@
 package org.usfirst.frc.team1683.autonomous;
 
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 
 /**
  * Reaches base of defense
@@ -10,6 +11,8 @@ import org.usfirst.frc.team1683.driveTrain.TankDrive;
  */
 public class ReachDefense extends Autonomous {
 
+	LinearActuator actuator;
+	
 	public ReachDefense(TankDrive driveTrain) {
 		super(driveTrain);
 	}
@@ -18,9 +21,12 @@ public class ReachDefense extends Autonomous {
 	public void run() {
 		switch (presentState) {
 		case INIT_CASE:
-			nextState = State.DRIVE_FORWARD;
+			nextState = State.STOW_PISTONS;
 			break;
 
+		case STOW_PISTONS:
+			if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE)
+				nextState = State.DRIVE_FORWARD;
 		case DRIVE_FORWARD:
 			tankDrive.moveDistance(REACH_DISTANCE);
 			nextState = State.END_CASE;
