@@ -115,6 +115,10 @@ public class LinearActuator extends TalonSRX {
 		PIDupdate(convertToInch(angle));
 	}
 	
+	public void angleClimberPistons(double angle) {
+		PIDupdate(convertToInch(angle));
+	}
+	
 	
 	public double getPos() {
 		return super.getEncPosition()*10.9375/820;

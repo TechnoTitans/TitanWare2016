@@ -35,13 +35,14 @@ public abstract class Autonomous {
 	}
 
 	public static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE, REACH_DISTANCE, FIND_TARGET, SPINUP, FIRE, REALIGN, STOP
+		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE, REACH_DISTANCE, FIND_TARGET, SPINUP, FIRE, REALIGN, STOP, STOW_PISTONS
 	}
 
 	public static enum AutonomousMode {
 		DO_NOTHING, REACH_DEFENSE, BREACH_DEFENSE, TEST_AUTO, SHOOT_AT_TARGET
 	}
 
+	public static final double ACTUATOR_ERROR_TOLERANCE = 0.05; // get actual number
 	public static final double REACH_DISTANCE = 74; // 74 inches
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;

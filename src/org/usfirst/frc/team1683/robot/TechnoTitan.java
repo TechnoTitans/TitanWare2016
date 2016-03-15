@@ -126,7 +126,6 @@ public class TechnoTitan extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		// drive.driveMode();
-		// pickerUpper.intakeMode();
 		//shooter.shootMode();
 		visionTest.test();
 //		SmartDashboard.sendData("Hall Effect", hallEffect.get());

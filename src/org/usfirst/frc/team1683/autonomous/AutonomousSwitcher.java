@@ -9,6 +9,7 @@ import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.BuiltInAccel;
 import org.usfirst.frc.team1683.sensors.Gyro;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
@@ -42,9 +43,10 @@ public class AutonomousSwitcher {
 	FindGoal vision;
 	Shooter shooter;
 	Gyro gyro;
+	LinearActuator actuator;
 	// ShootingPhysics physics;
 
-	public AutonomousSwitcher(DriveTrain driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter) {
+	public AutonomousSwitcher(DriveTrain driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter, LinearActuator actuator) {
 		// ShootingPhysics physics) {
 		chooser = new SendableChooser();
 		chooser.addDefault(DEFAULT_AUTO.name(), DEFAULT_AUTO.name());
@@ -58,6 +60,7 @@ public class AutonomousSwitcher {
 		// this.physics = physics;
 		this.accel = accel;
 		this.vision = vision;
+		this.actuator = actuator;
 		updateAutoSelected();
 	}
 
@@ -73,7 +76,7 @@ public class AutonomousSwitcher {
 			break;
 		case 2:
 			// case BREACH_DEFENSE:
-			autoSelected = new BreachDefense((TankDrive) driveTrain, accel);
+			autoSelected = new BreachDefense((TankDrive) driveTrain, accel, actuator);
 			break;
 		case 3:
 			// case SHOOT_AT_TARGET:

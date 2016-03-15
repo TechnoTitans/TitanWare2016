@@ -3,27 +3,36 @@ package org.usfirst.frc.team1683.autonomous;
 import org.usfirst.frc.team1683.driveTrain.Motor;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
 import org.usfirst.frc.team1683.sensors.BuiltInAccel;
+import org.usfirst.frc.team1683.sensors.LinearActuator;
 
 import edu.wpi.first.wpilibj.Timer;
 
 public class BreachDefense extends Autonomous {
 
 	BuiltInAccel accel;
+	LinearActuator actuator;
+	
 
-	public BreachDefense(TankDrive tankDrive, BuiltInAccel accel) {
+	public BreachDefense(TankDrive tankDrive, BuiltInAccel accel, LinearActuator actuator) {
 		super(tankDrive);
 		this.accel = accel;
 		timer = new Timer();
 		timeout = new Timer();
+		this.actuator = actuator;
 	}
 
 	@Override
 	public void run() {
 		switch (presentState) {
 		case INIT_CASE:
-			nextState = State.DRIVE_FORWARD;
+			nextState = State.STOW_PISTONS;
 			break;
 
+		case STOW_PISTONS:
+			nextState = State.STOW_PISTONS;
+			if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE)
+				nextState = State.DRIVE_FORWARD;
+			break;
 		case DRIVE_FORWARD:
 			// TODO: Need to add timeout to moveDistance?
 			tankDrive.moveDistance(REACH_DISTANCE + RAMP_LENGTH);
