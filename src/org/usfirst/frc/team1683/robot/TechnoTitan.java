@@ -32,7 +32,7 @@ public class TechnoTitan extends IterativeRobot {
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS = 3.391 / 2;
 	TankDrive drive;
-	Climber climberPistons;
+	Climber climber;
 	PressureReader pressureReader;
 	FindGoal vision;
 	// LightRing lightRing;
@@ -71,7 +71,7 @@ public class TechnoTitan extends IterativeRobot {
 		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
 		
 		LinearActuator actuator = new LinearActuator(HWP.CAN_5, false);
-		climberPistons = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
+		climber = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
 		BuiltInAccel accel = new BuiltInAccel();
 		vision = new FindGoal();
 
@@ -106,7 +106,7 @@ public class TechnoTitan extends IterativeRobot {
 	public void teleopPeriodic() {
 		drive.driveMode();
 		shooter.shootMode();
-
+		climber.climbMode();
 	}
 
 	@Override
