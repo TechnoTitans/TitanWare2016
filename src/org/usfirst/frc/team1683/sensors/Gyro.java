@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class Gyro extends AnalogGyro implements Sensor {
 
+	public static double GYRO_SENSITIVITY = 0.00656693; 
+	
 	public Gyro(int channel) {
 		super(channel);
 		super.initGyro();
 		super.reset();
-		super.setSensitivity(0.00656693);
+		super.setSensitivity(GYRO_SENSITIVITY);
 	}
 
 	@Override
