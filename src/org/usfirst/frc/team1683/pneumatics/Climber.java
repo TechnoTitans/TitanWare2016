@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Climber {
 	Timer chinUpTimer;
+	Timer endGameTimer;
 	LinearActuator actuator;
 	Solenoid bottomSolenoid;
 	Solenoid topSolenoid;
@@ -19,7 +20,7 @@ public class Climber {
 	public static final double LIFT_ANGLE = 45;
 	public static final double RETRACT_ANGLE = 0;
 	public static final double CHINUP_TIME = 5;
-	public static final double END_GAME_TIME = 115;//135 - 27;
+	public static final double END_GAME_TIME = 80;
 
 	public static final boolean EXTEND = true;
 	public static final boolean RETRACT = false;
@@ -28,10 +29,10 @@ public class Climber {
 		INIT_CASE, END_CASE, LIFT_HOOK, START_CHINUP, ROBOT_CHINUP, LOWER_HOOK
 	}
 
-	public Climber(int bottomSolenoidChannel, int topSolenoidChannel) {
+	public Climber(int bottomSolenoidChannel, int topSolenoidChannel, Timer endGameTimer) {
 		presentState = State.INIT_CASE;
 		chinUpTimer = new Timer();
-
+		this.endGameTimer = endGameTimer;
 		topSolenoid = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, topSolenoidChannel);
 		bottomSolenoid = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, bottomSolenoidChannel);
 
@@ -52,7 +53,7 @@ public class Climber {
 
 	public void climbMode() {
 
-		//actuator.angleClimberPistons();
+		// actuator.angleClimberPistons();
 		SmartDashboard.sendData("Present Climber State", presentState.name());
 
 		switch (presentState) {
@@ -63,19 +64,20 @@ public class Climber {
 		case LOWER_HOOK: {
 			this.retractHook();
 			nextState = State.LOWER_HOOK;
-			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_4)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_4) && Timer.getMatchTime() < END_GAME_TIME) {
+			if (DriverStation.leftStick.getRawButton(HWR.LIFT_HOOK)
+					&& DriverStation.rightStick.getRawButton(HWR.LIFT_HOOK)
+					&& endGameTimer.hasPeriodPassed(END_GAME_TIME)) {
 				nextState = State.LIFT_HOOK;
 			}
-			
+
 			break;
 		}
 		case LIFT_HOOK: {
 			this.deployHook();
 			chinUpTimer.reset();
 			nextState = State.LIFT_HOOK;
-			if (DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1)) {
+			if (DriverStation.leftStick.getRawButton(HWR.ROBOT_CHINUP)
+					&& DriverStation.rightStick.getRawButton(HWR.ROBOT_CHINUP)) {
 				nextState = State.START_CHINUP;
 				chinUpTimer.start();
 			}
@@ -83,10 +85,10 @@ public class Climber {
 		}
 		case START_CHINUP: {
 			this.deployHook();
-			
+
 			nextState = State.START_CHINUP;
-			if (!(DriverStation.leftStick.getRawButton(HWP.BUTTON_1)
-					&& DriverStation.rightStick.getRawButton(HWP.BUTTON_1)))
+			if (!(DriverStation.leftStick.getRawButton(HWR.ROBOT_CHINUP)
+					&& DriverStation.rightStick.getRawButton(HWR.ROBOT_CHINUP)))
 				nextState = State.LIFT_HOOK;
 			if (chinUpTimer.hasPeriodPassed(CHINUP_TIME))
 				nextState = State.ROBOT_CHINUP;
@@ -107,9 +109,8 @@ public class Climber {
 			break;
 
 		}
-		
-		SmartDashboard.sendData("Match Time", Timer.getMatchTime());
-		SmartDashboard.sendData("CHinup timer", chinUpTimer.get());
+
+		SmartDashboard.sendData("Chinup timer", chinUpTimer.get());
 		presentState = nextState;
 
 	}

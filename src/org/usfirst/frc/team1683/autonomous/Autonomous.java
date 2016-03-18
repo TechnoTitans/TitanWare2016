@@ -35,7 +35,7 @@ public abstract class Autonomous {
 	}
 
 	public static enum State {
-		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE, REACH_DISTANCE, FIND_TARGET, SPINUP, FIRE, REALIGN, STOP, STOW_PISTONS
+		INIT_CASE, END_CASE, DRIVE_FORWARD, CROSS_DEFENSE, REACH_DISTANCE, FIND_TARGET, SPINUP, FIRE, REALIGN, STOP, STOW_PISTONS, LOW_GOAL_TARGET
 	}
 
 	public static enum AutonomousMode {
@@ -46,6 +46,9 @@ public abstract class Autonomous {
 	public static final double REACH_DISTANCE = 74; // 74 inches
 	public static State presentState = State.INIT_CASE;
 	public static State nextState;
+	public static double lowGoalScoreDistance = 120 + 144; //FIX NUMBER
+	public static double lowGoalAngle = 56; //FIX NUMBER
+	
 //	public static double properDistance;
 
 	public static void resetAuto() {

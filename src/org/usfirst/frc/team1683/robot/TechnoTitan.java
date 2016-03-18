@@ -15,8 +15,10 @@ import org.usfirst.frc.team1683.sensors.QuadEncoder;
 import org.usfirst.frc.team1683.sensors.PressureReader;
 import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
+import org.usfirst.frc.team1683.vision.LightRing;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,10 +35,12 @@ public class TechnoTitan extends IterativeRobot {
 	public static final double WHEEL_RADIUS = 3.391 / 2;
 	TankDrive drive;
 	Climber climber;
+	Timer endGameTimer;
 	PressureReader pressureReader;
 	FindGoal vision;
-	// LightRing lightRing;
+	 LightRing lightRing;
 	Shooter shooter;
+	LinearActuator actuator;
 
 
 
@@ -52,12 +56,12 @@ public class TechnoTitan extends IterativeRobot {
 		Gyro gyro = new Gyro(HWR.GYRO);
 
 		// DRIVE TRAIN
-		TalonSRX leftETalonSRX = new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT_E, LEFT_REVERSE);
+		TalonSRX leftETalonSRX = new TalonSRX(HWR.LEFT_DRIVE_TRAIN_FRONT, LEFT_REVERSE);
 		TalonSRX rightETalonSRX = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT_E, RIGHT_REVERSE);
 
 		MotorGroup leftGroup = new MotorGroup(new QuadEncoder(leftETalonSRX, WHEEL_RADIUS),
 		// MotorGroup leftGroup = new MotorGroup(
-				leftETalonSRX, new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK, LEFT_REVERSE));
+				leftETalonSRX, new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK_E, LEFT_REVERSE));
 
 		MotorGroup rightGroup = new MotorGroup(new QuadEncoder(rightETalonSRX, WHEEL_RADIUS),
 		// MotorGroup rightGroup = new MotorGroup(
@@ -70,11 +74,20 @@ public class TechnoTitan extends IterativeRobot {
 		Solenoid shootPiston = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
 		
-		LinearActuator actuator = new LinearActuator(HWP.CAN_5, false);
-		climber = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL);
+		actuator = new LinearActuator(HWR.LINEAR_ACTUATOR, false);
+		
+		endGameTimer = new Timer();
+		
+		climber = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL, endGameTimer);
 		BuiltInAccel accel = new BuiltInAccel();
 		vision = new FindGoal();
 
+		pressureReader = new PressureReader(HWR.PRESSURE_SENSOR);
+		
+		lightRing = new LightRing(HWR.LIGHT_RING);
+		
+		lightRing.set(1);
+		
 		switcher = new AutonomousSwitcher(drive, accel, vision, shooter, actuator);
 		// CameraServer server = CameraServer.getInstance();
 		// server.setQuality(50);
@@ -99,6 +112,7 @@ public class TechnoTitan extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		endGameTimer.start();
 		// shooter.reset();
 	}
 
@@ -107,6 +121,8 @@ public class TechnoTitan extends IterativeRobot {
 		drive.driveMode();
 		shooter.shootMode();
 		climber.climbMode();
+		actuator.angleClimberPistons();
+		SmartDashboard.sendData("Pressure", pressureReader.getPressure());
 	}
 
 	@Override

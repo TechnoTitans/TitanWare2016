@@ -109,7 +109,7 @@ public class LinearActuator extends TalonSRX {
 	
 	public void angleClimberPistons() {
 		// scales raw input from knob
-		double angle = -60 * (DriverStation.auxStick.getRawAxis(DriverStation.ZAxis) - 1);
+		double angle = -90 * (DriverStation.auxStick.getRawAxis(DriverStation.ZAxis) - 1);
 		SmartDashboard.sendData("Knob angle", angle);
 		SmartDashboard.sendData("knob raw", DriverStation.auxStick.getRawAxis(DriverStation.ZAxis));
 		PIDupdate(convertToInch(angle));
