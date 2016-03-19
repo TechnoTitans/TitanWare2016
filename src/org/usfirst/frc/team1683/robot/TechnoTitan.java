@@ -2,6 +2,7 @@
 package org.usfirst.frc.team1683.robot;
 
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
+import org.usfirst.frc.team1683.autonomous.ReachDefense;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
 import org.usfirst.frc.team1683.driveTrain.TalonSRX;
 import org.usfirst.frc.team1683.driveTrain.TankDrive;
@@ -17,6 +18,8 @@ import org.usfirst.frc.team1683.shooter.Shooter;
 import org.usfirst.frc.team1683.vision.FindGoal;
 import org.usfirst.frc.team1683.vision.LightRing;
 
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -29,7 +32,7 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class TechnoTitan extends IterativeRobot {
 	public static AutonomousSwitcher switcher;
-//	public static final double WHEEL_DISTANCE_PER_PULSE = 10;
+	// public static final double WHEEL_DISTANCE_PER_PULSE = 10;
 	public static final boolean LEFT_REVERSE = false;
 	public static final boolean RIGHT_REVERSE = true;
 	public static final double WHEEL_RADIUS = 3.391 / 2;
@@ -38,12 +41,12 @@ public class TechnoTitan extends IterativeRobot {
 	Timer endGameTimer;
 	PressureReader pressureReader;
 	FindGoal vision;
-	 LightRing lightRing;
+	LightRing lightRing;
 	Shooter shooter;
 	LinearActuator actuator;
+	ReachDefense auto;
 
-
-
+	Compressor compressor = new Compressor(1);
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -51,7 +54,7 @@ public class TechnoTitan extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		
+
 		// GYRO
 		Gyro gyro = new Gyro(HWR.GYRO);
 
@@ -60,43 +63,46 @@ public class TechnoTitan extends IterativeRobot {
 		TalonSRX rightETalonSRX = new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_FRONT_E, RIGHT_REVERSE);
 
 		MotorGroup leftGroup = new MotorGroup(new QuadEncoder(leftETalonSRX, WHEEL_RADIUS),
-		// MotorGroup leftGroup = new MotorGroup(
+				// MotorGroup leftGroup = new MotorGroup(
 				leftETalonSRX, new TalonSRX(HWR.LEFT_DRIVE_TRAIN_BACK_E, LEFT_REVERSE));
 
 		MotorGroup rightGroup = new MotorGroup(new QuadEncoder(rightETalonSRX, WHEEL_RADIUS),
-		// MotorGroup rightGroup = new MotorGroup(
+				// MotorGroup rightGroup = new MotorGroup(
 				rightETalonSRX, new TalonSRX(HWR.RIGHT_DRIVE_TRAIN_BACK, RIGHT_REVERSE));
 
 		drive = new TankDrive(leftGroup, rightGroup, gyro);
 		// END DRIVE TRAIN
 
-
 		Solenoid shootPiston = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
-		
+
+		auto = new ReachDefense(drive);
+
 		actuator = new LinearActuator(HWR.LINEAR_ACTUATOR, false);
-		
+
 		endGameTimer = new Timer();
-		
+
 		climber = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL, endGameTimer);
 		BuiltInAccel accel = new BuiltInAccel();
 		vision = new FindGoal();
 
 		pressureReader = new PressureReader(HWR.PRESSURE_SENSOR);
-		
+
 		lightRing = new LightRing(HWR.LIGHT_RING);
-		
+
 		lightRing.set(1);
-		
+
 		switcher = new AutonomousSwitcher(drive, accel, vision, shooter, actuator);
-		// CameraServer server = CameraServer.getInstance();
-		// server.setQuality(50);
-		// server.startAutomaticCapture("cam1");
+		CameraServer server = CameraServer.getInstance();
+		server.setQuality(50);
+		server.startAutomaticCapture("cam1");
 	}
 
 	@Override
 	public void autonomousInit() {
-		switcher.updateAutoSelected();
+		// switcher.updateAutoSelected();
+		// compressor.stop();
+
 	}
 
 	@Override
@@ -107,21 +113,21 @@ public class TechnoTitan extends IterativeRobot {
 //				((QuadEncoder) drive.getRightGroup().getEncoder()).getTalon().getPosition());
 //		SmartDashboard.sendData("getLeftDistance", ((QuadEncoder) drive.getLeftGroup().getEncoder()).getDistance());
 //		SmartDashboard.sendData("getRightDistance", ((QuadEncoder) drive.getRightGroup().getEncoder()).getDistance());
-		switcher.run();
+		// switcher.run();
+		auto.run();
 	}
 
 	@Override
 	public void teleopInit() {
 		endGameTimer.start();
-		// shooter.reset();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		drive.driveMode();
 		shooter.shootMode();
-		climber.climbMode();
-		actuator.angleClimberPistons();
+		// climber.climbMode();
+		// actuator.angleClimberPistons();
 		SmartDashboard.sendData("Pressure", pressureReader.getPressure());
 	}
 

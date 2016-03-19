@@ -23,7 +23,7 @@ public class DriverStation {
 	}
 
 	public static double scaleToMin(Joystick joy) {
-		return Shooter.FORWARD_LIMIT_ANGLE * joy.getRawAxis(YAxis);
+		return Shooter.FORWARD_LIMIT_ANGLE * -joy.getRawAxis(YAxis);
 	}
 
 	// TODO

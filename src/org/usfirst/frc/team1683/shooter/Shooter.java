@@ -29,15 +29,15 @@ public class Shooter {
 
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
-	public final static double FORWARD_LIMIT_ANGLE = 0;
-	public static final double BACK_LIMIT_ANGLE = 70;
+	public final static double FORWARD_LIMIT_ANGLE = 5;
+	public static final double BACK_LIMIT_ANGLE = 60;
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
-	public static final double INTAKE_SPEED = -2000;
+	public static final double INTAKE_SPEED = -3000;
 	public static final double LOW_GOAL_ANGLE = 30; // Pick better angle
-	public static final double LOW_GOAL_SPEED = 3500;
-	private static final double DEFAULT_SPEED = 3500;
-	public static final double ANGLE_OFFSET = 70; // change based on shooter
+	public static final double LOW_GOAL_SPEED = 4500;
+	private static final double DEFAULT_SPEED = 4500;
+	public static final double ANGLE_OFFSET = 60; // change based on shooter
 													// mounting
 
 	public static final double TARGET_OVERHANG = 5;
@@ -183,7 +183,7 @@ public class Shooter {
 		else
 			angle = getJoystickAngle();
 
-		SmartDashboard.sendData("Shooter Angle", angle);
+//		SmartDashboard.sendData("Shooter Angle", angle);
 		return angle;
 	}
 
@@ -283,7 +283,7 @@ public class Shooter {
 
 		updatePIDF();
 
-		angleShooter(getAngle());
+		angleShooter(getJoystickAngle());
 		if (!isCreated) {
 			presentTeleOpState = State.HOLD;
 			this.isCreated = true;
@@ -344,6 +344,7 @@ public class Shooter {
 	public void report() {
 		SmartDashboard.sendData("Shooter Encoder Position", angleMotor.getEncPosition());
 		SmartDashboard.sendData("Shooter Position", angleMotor.getPosition());
+//		This is the position you're looking for.
 		SmartDashboard.sendData("Shooter Angle", angleMotor.getPosition() * 360);
 
 		SmartDashboard.sendData("Left Talon Target", leftMotor.PIDTargetSpeed());

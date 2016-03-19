@@ -4,6 +4,7 @@ import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Class to represent TalonSRXs attatched to motors.
@@ -29,11 +30,13 @@ public class TalonSRX extends CANTalon implements Motor {
 		private double distance;
 		private double speed;
 		private TalonSRX talonSrx;
+		private Timer timer;
 		// private Encoder encoder;
 
 		public MotorMover(TalonSRX talonSrx, double distance, double speed) {
 			this.talonSrx = talonSrx;
 			this.distance = distance;
+			timer = new Timer();
 			// this.encoder = encoder;
 			if (distance < 0)
 				this.speed = -speed;
@@ -45,7 +48,9 @@ public class TalonSRX extends CANTalon implements Motor {
 		public void run() {
 			encoder.reset();
 			// synchronized (this) {
-			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+//			TODO: make not magic number
+			timer.start();
+			while (Math.abs(encoder.getDistance()) < Math.abs(distance) && timer.get() < 3) {
 				talonSrx.set(speed);
 				// SmartDashboard.sendData("encoder val",
 				// encoder.getDistance());
@@ -54,6 +59,7 @@ public class TalonSRX extends CANTalon implements Motor {
 			// }
 			talonSrx.stop();
 			// notify();
+			
 			encoder.reset();
 		}
 	}
