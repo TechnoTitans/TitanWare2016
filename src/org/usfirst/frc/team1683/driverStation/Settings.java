@@ -26,6 +26,9 @@ public class Settings {
 	
 	public static double climberAngle;
 	public static double climberInches;
+	
+	public static double autoSpeed;
+	public static double autoTime;
 
 	public static void updateSettings() {
 		angleMotorP = SmartDashboard.getDouble("Angle Motor P");
@@ -52,5 +55,9 @@ public class Settings {
 		
 		climberAngle = SmartDashboard.getDouble("Climber Pistons angle");
 		climberInches = SmartDashboard.getDouble("Climber Pistons inch");
+		
+		autoSpeed = SmartDashboard.getDouble("Auto Speed");
+		autoTime = SmartDashboard.getDouble("Auto Time");
+		
 	}
 }

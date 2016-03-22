@@ -20,17 +20,19 @@ public class Shooter {
 
 	private final double MAX_ENCODER_COUNT = 512;
 	private final double MIN_ENCODER_COUNT = 0;
-	private final double MAX_ANGLE = 70;
-	private final double MIN_ANGLE = 0;
-	private final double POSITION_TO_ANGLE_COEFFICENT = (MAX_ANGLE - MIN_ANGLE)
-			/ (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
-	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
-			/ (MAX_ANGLE - MIN_ANGLE);
+//	public static final double MAX_ANGLE = 70;
+//	public static final double MIN_ANGLE = 0;
+//	private final double POSITION_TO_ANGLE_COEFFICENT = (MAX_ANGLE - MIN_ANGLE)
+//			/ (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
+//	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
+//			/ (MAX_ANGLE - MIN_ANGLE);
 
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
-	public final static double FORWARD_LIMIT_ANGLE = 5;
-	public static final double BACK_LIMIT_ANGLE = 60;
+	
+	public final static double FORWARD_LIMIT_ANGLE = 10;
+	public static final double BACK_LIMIT_ANGLE = 65;
+	
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
 	public static final double INTAKE_SPEED = -3000;
@@ -59,8 +61,8 @@ public class Shooter {
 
 	Solenoid shootPiston;
 
-	//public double visionDistance = 20; // WE NEED TO REPLACE THIS WITH YI'S
-										// DISTANCE METHOD
+	// public double visionDistance = 20; // WE NEED TO REPLACE THIS WITH YI'S
+	// DISTANCE METHOD
 
 	private boolean isCreated = false;
 	private State presentTeleOpState;
@@ -109,21 +111,29 @@ public class Shooter {
 	 */
 	public double getJoystickAngle() {
 		double angle;
-		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
-			angle = DriverStation.scaleToMax(DriverStation.auxStick);
-		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
-			angle = DriverStation.scaleToMin(DriverStation.auxStick);
-		} else {
-			angle = 0;
-		}
+//		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
+//			angle = DriverStation.scaleToMax(DriverStation.auxStick);
+//		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
+//			angle = DriverStation.scaleToMin(DriverStation.auxStick);
+//		} else {
+//			angle = (BACK_LIMIT_ANGLE + FORWARD_LIMIT_ANGLE) / 2;
+//		}
 
+		angle = (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) + 1) / 2 * (BACK_LIMIT_ANGLE - FORWARD_LIMIT_ANGLE) + FORWARD_LIMIT_ANGLE;
+		
 		SmartDashboard.sendData("Joystick position", angle);
-		// SmartDashboard.sendData("Joystick filtered position", angle);
+
 		return angle;
 	}
 
 	public void setShooterSensitivity(double sensitivity) {
 		inputFilter.setFilterK(sensitivity);
+	}
+
+	public double setSpeed() {
+		double speed = DriverStation.auxStick.getRawAxis(DriverStation.ZAxis) * 750 + 3750;
+		SmartDashboard.sendData("Shooter speed", speed);
+		return speed;
 	}
 
 	/**
@@ -173,7 +183,7 @@ public class Shooter {
 	public double getAngle() {
 		double visionDistance = SmartDashboard.getDouble("Vision Distance");
 		double angle;
-		
+
 		if (DriverStation.auxStick.getRawButton(HWR.SWITCH_SHOOTER_MODE))
 			angle = getJoystickAngle();
 
@@ -183,7 +193,7 @@ public class Shooter {
 		else
 			angle = getJoystickAngle();
 
-//		SmartDashboard.sendData("Shooter Angle", angle);
+		// SmartDashboard.sendData("Shooter Angle", angle);
 		return angle;
 	}
 
@@ -279,6 +289,7 @@ public class Shooter {
 
 	public void stateSwitcher(boolean isCreated) {
 		String state = "out";
+		double speed = setSpeed();
 		State nextState;
 
 		updatePIDF();
@@ -315,8 +326,8 @@ public class Shooter {
 		}
 		case SHOOT: {
 			state = "SHOOT";
-			//shoot(getSpeed());
-			shoot(3500);
+			// shoot(getSpeed());
+			shoot(speed);
 			nextState = State.SHOOT;
 			if (!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
 				nextState = State.HOLD;
@@ -344,8 +355,9 @@ public class Shooter {
 	public void report() {
 		SmartDashboard.sendData("Shooter Encoder Position", angleMotor.getEncPosition());
 		SmartDashboard.sendData("Shooter Position", angleMotor.getPosition());
-//		This is the position you're looking for.
-		SmartDashboard.sendData("Shooter Angle", angleMotor.getPosition() * 360);
+		// This is the position you're looking for.
+		SmartDashboard.sendData("Shooter relAngle", angleMotor.getPosition() * 360);
+		SmartDashboard.sendData("Shooter Angle", BACK_LIMIT_ANGLE + (angleMotor.getPosition() * 360));
 
 		SmartDashboard.sendData("Left Talon Target", leftMotor.PIDTargetSpeed());
 		SmartDashboard.sendData("Right Talon Target", rightMotor.PIDTargetSpeed());

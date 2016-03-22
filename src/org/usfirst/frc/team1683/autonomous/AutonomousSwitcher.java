@@ -72,7 +72,7 @@ public class AutonomousSwitcher {
 		switch (autoMode) {
 		case 1:
 			// case REACH_DEFENSE:
-			autoSelected = new ReachDefense((TankDrive) driveTrain);
+			autoSelected = new ReachDefense((TankDrive) driveTrain, shooter);
 			break;
 		case 2:
 			// case BREACH_DEFENSE:

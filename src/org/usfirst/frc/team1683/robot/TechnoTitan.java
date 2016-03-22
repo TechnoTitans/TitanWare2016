@@ -76,7 +76,7 @@ public class TechnoTitan extends IterativeRobot {
 		Solenoid shootPiston = new Solenoid(HWR.DEFAULT_MODULE_CHANNEL, HWR.SHOOTER_PISTON_CHANNEL);
 		shooter = new Shooter(HWR.SHOOTER_LEFT, HWR.SHOOTER_RIGHT, HWR.ANGLE_MOTOR, shootPiston);
 
-		auto = new ReachDefense(drive);
+		auto = new ReachDefense(drive, shooter);
 
 		actuator = new LinearActuator(HWR.LINEAR_ACTUATOR, false);
 

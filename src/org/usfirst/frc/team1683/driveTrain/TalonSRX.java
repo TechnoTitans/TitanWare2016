@@ -50,6 +50,7 @@ public class TalonSRX extends CANTalon implements Motor {
 			// synchronized (this) {
 //			TODO: make not magic number
 			timer.start();
+//			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
 			while (Math.abs(encoder.getDistance()) < Math.abs(distance) && timer.get() < 3) {
 				talonSrx.set(speed);
 				// SmartDashboard.sendData("encoder val",
