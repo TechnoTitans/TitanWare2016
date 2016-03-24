@@ -18,19 +18,10 @@ public class Shooter {
 	public static final boolean EXTENDED = true;
 	public static final boolean RETRACTED = false;
 
-	private final double MAX_ENCODER_COUNT = 512;
-	private final double MIN_ENCODER_COUNT = 0;
-//	public static final double MAX_ANGLE = 70;
-//	public static final double MIN_ANGLE = 0;
-//	private final double POSITION_TO_ANGLE_COEFFICENT = (MAX_ANGLE - MIN_ANGLE)
-//			/ (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
-//	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
-//			/ (MAX_ANGLE - MIN_ANGLE);
-
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
 	
-	public final static double FORWARD_LIMIT_ANGLE = 10;
+	public static final double FORWARD_LIMIT_ANGLE = 10;
 	public static final double BACK_LIMIT_ANGLE = 65;
 	
 	public static final int ALLOWABLE_ERROR = 400; // find num
@@ -49,32 +40,21 @@ public class Shooter {
 
 	private InputFilter inputFilter;
 
-	private double targetPos;
 	FindGoal vision;
 
 	LinearActuator actuator;
 
-	// MotorGroup shooterMotors;
 	TalonSRX leftMotor;
 	TalonSRX rightMotor;
 	TalonSRX angleMotor;
 
 	Solenoid shootPiston;
 
-	// public double visionDistance = 20; // WE NEED TO REPLACE THIS WITH YI'S
-	// DISTANCE METHOD
-
 	private boolean isCreated = false;
 	private State presentTeleOpState;
 
 	public enum State {
 		INTAKE, HOLD, SHOOT;
-	}
-
-	public Shooter(int leftChannel, int rightChannel, int angleMotorChannel, Solenoid shootPiston, FindGoal vision) {
-		this(leftChannel, rightChannel, angleMotorChannel, shootPiston);
-		// this.accel = accel;
-		this.vision = vision;
 	}
 
 	public Shooter(int leftChannel, int rightChannel, int angleMotorChannel, Solenoid shootPiston) {
@@ -348,7 +328,7 @@ public class Shooter {
 	}
 
 	public void reset() {
-		targetPos = angleMotor.getPosition();
+		angleMotor.getPosition();
 		angleMotor.calibrate();
 	}
 
