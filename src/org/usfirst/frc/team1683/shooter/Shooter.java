@@ -5,21 +5,34 @@ import org.usfirst.frc.team1683.driverStation.DriverStation;
 import org.usfirst.frc.team1683.driverStation.Settings;
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.pneumatics.Solenoid;
+import org.usfirst.frc.team1683.robot.HWP;
 import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.robot.InputFilter;
+import org.usfirst.frc.team1683.robot.TechnoTitan;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 
+
 public class Shooter {
 	// Maximum and minimum range of shooting (subject to change).
+	private final double MAX_ENCODER_COUNT = 512;
+	private final double MIN_ENCODER_COUNT = 0;
+//	public static final double MAX_ANGLE = 70;
+//	public static final double MIN_ANGLE = 0;
+//	private final double POSITION_TO_ANGLE_COEFFICENT = (MAX_ANGLE - MIN_ANGLE)
+//			/ (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
+//	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
+//			/ (MAX_ANGLE - MIN_ANGLE);
+
+
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
 	
-	public static final double FORWARD_LIMIT_ANGLE = 10;
+	public final static double FORWARD_LIMIT_ANGLE = 10;
 	public static final double BACK_LIMIT_ANGLE = 65;
-	 
+
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
 	public static final double INTAKE_SPEED = -3000;
@@ -38,6 +51,7 @@ public class Shooter {
 	// For smoothing changing shooter angles
 	private InputFilter inputFilter;
 
+	// MotorGroup shooterMotors;
 	TalonSRX leftMotor;
 	TalonSRX rightMotor;
 	TalonSRX angleMotor;
@@ -45,11 +59,17 @@ public class Shooter {
 	Solenoid shootPiston;
 
 	// private boolean isCreated = false;
+	// public double visionDistance = 20; // WE NEED TO REPLACE THIS WITH YI'S
+	// DISTANCE METHOD
+
+	boolean isToggled = false;
+	private boolean isCreated = false;
 	private State presentTeleOpState;
 
 	public enum State {
 		INTAKE, HOLD, SHOOT;
 	}
+
 
 	public Shooter(int leftChannel, int rightChannel, int angleMotorChannel, Solenoid shootPiston) {
 		this.angleMotor = new TalonSRX(angleMotorChannel, true);
@@ -76,8 +96,6 @@ public class Shooter {
 
 		this.presentTeleOpState = State.HOLD;
 
-		// actuator = new LinearActuator(actuatorChannel, false);
-
 	}
 
 	/**
@@ -103,15 +121,17 @@ public class Shooter {
 
 		return angle;
 	}
+	
+	private boolean isToggled() {
+		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWP.BUTTON_6)) {
+			isToggled = !isToggled;
+		}
+		SmartDashboard.sendData("Button Toggle", isToggled ? "on" : "off");
+		return isToggled;
+	}
 
 	public void setShooterSensitivity(double sensitivity) {
 		inputFilter.setFilterK(sensitivity);
-	}
-
-	public double setSpeed() {
-		double speed = DriverStation.auxStick.getRawAxis(DriverStation.ZAxis) * 750 + 3750;
-		SmartDashboard.sendData("Shooter speed", speed);
-		return speed;
 	}
 
 	/**
@@ -134,40 +154,44 @@ public class Shooter {
 	/**
 	 * takes in distance from vision in inches
 	 * 
-	 * @param visDist
+	 * 
 	 * @return
 	 */
-	public double getFloorDistance(double visDist) {
-		return Math.sqrt(Math.pow(visDist, 2) - Math.pow(TARGET_HEIGHT - CAMERA_VER_OFF, 2)) + CAMERA_HOR_OFF
-				+ TARGET_OVERHANG;
+	public double getFloorDistance() {
+		return Math.sqrt(Math.pow(TechnoTitan.vision.FindDistance(), 2) - Math.pow(TARGET_HEIGHT - CAMERA_VER_OFF, 2))
+				+ CAMERA_HOR_OFF + TARGET_OVERHANG;
 	}
 
 	public double getSpeed() {
-		double visionDistance = SmartDashboard.getDouble("Vision Distance");
+
 		double speed;
-		if (getAngle() < LOW_GOAL_ANGLE)
-			speed = LOW_GOAL_SPEED;
-		else if (getFloorDistance(visionDistance) < MAX_DISTANCE && getFloorDistance(visionDistance) > MIN_DISTANCE)
-			speed = 0.0001054 * Math.pow(getFloorDistance(visionDistance), 4)
-					- 0.04996 * Math.pow(getFloorDistance(visionDistance), 3)
-					+ 8.614 * Math.pow(getFloorDistance(visionDistance), 2) - 632.4 * getFloorDistance(visionDistance)
-					+ 2.083 * Math.pow(10, 4);
-		else
-			speed = DEFAULT_SPEED;
-		SmartDashboard.sendData("Shooter Speed", speed);
+		speed = DriverStation.auxStick.getRawAxis(DriverStation.ZAxis) * 750 + 3750;
+
+		// if (getAngle() < LOW_GOAL_ANGLE)
+		// speed = LOW_GOAL_SPEED;
+		// else if (getFloorDistance() < MAX_DISTANCE && getFloorDistance() >
+		// MIN_DISTANCE)
+		// speed = 0.0001054 * Math.pow(getFloorDistance(), 4) - 0.04996 *
+		// Math.pow(getFloorDistance(), 3)
+		// + 8.614 * Math.pow(getFloorDistance(), 2) - 632.4 *
+		// getFloorDistance() + 2.083 * Math.pow(10, 4);
+		// else
+		// speed = DEFAULT_SPEED;
+		//
+		SmartDashboard.sendData("Shooter speed", speed);
+
 		return speed;
 	}
 
 	public double getAngle() {
-		double visionDistance = SmartDashboard.getDouble("Vision Distance");
+		//REDO STUFF WITH POT
 		double angle;
 
 		if (DriverStation.auxStick.getRawButton(HWR.SWITCH_SHOOTER_MODE))
 			angle = getJoystickAngle();
 
-		else if (getFloorDistance(visionDistance) < MAX_DISTANCE && getFloorDistance(visionDistance) > MIN_DISTANCE)
-			angle = 0.0007799 * Math.pow(getFloorDistance(visionDistance), 2)
-					- 0.3196 * getFloorDistance(visionDistance) + 89.48;
+		else if (getFloorDistance() < MAX_DISTANCE && getFloorDistance() > MIN_DISTANCE)
+			angle = 0.0007799 * Math.pow(getFloorDistance(), 2) - 0.3196 * getFloorDistance() + 89.48;
 		else
 			angle = getJoystickAngle();
 
@@ -213,8 +237,9 @@ public class Shooter {
 
 		stateSwitcher();
 
-		// angleClimberPistons();
-
+		if(isToggled()) getAngle();
+		else getJoystickAngle();
+		
 		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
 			shootBall();
 		else
@@ -268,7 +293,7 @@ public class Shooter {
 
 	public void stateSwitcher() {
 		String state = "out";
-		double speed = setSpeed();
+		double speed = getSpeed();
 		State nextState;
 
 		updatePIDF();
@@ -327,7 +352,7 @@ public class Shooter {
 	}
 
 	public void reset() {
-		angleMotor.getPosition();
+//		targetPos = angleMotor.getPosition();
 		angleMotor.calibrate();
 	}
 
@@ -368,3 +393,4 @@ public class Shooter {
 		rightMotor.PIDSpeed(-rpm);
 	}
 }
+
