@@ -84,7 +84,7 @@ public class FindGoal {
 	// TODO:Test values for shooter. Plot points on graphical analysis and take
 	// derivative.
 	// }
-	public double FindHeight() {
+	public double getHeight() {
 		Contour[] contours = getData();
 		double cameratarget;
 		cameratarget = 20 * (contours[getClosestContour(contours)].Y_POS - 160) / contours[getClosestContour(contours)].WIDTH;
