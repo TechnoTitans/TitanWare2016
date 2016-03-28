@@ -158,7 +158,7 @@ public class Shooter {
 	 * @return
 	 */
 	public double getFloorDistance() {
-		return Math.sqrt(Math.pow(TechnoTitan.vision.FindDistance(), 2) - Math.pow(TARGET_HEIGHT - CAMERA_VER_OFF, 2))
+		return Math.sqrt(Math.pow(TechnoTitan.vision.getDistance(), 2) - Math.pow(TARGET_HEIGHT - CAMERA_VER_OFF, 2))
 				+ CAMERA_HOR_OFF + TARGET_OVERHANG;
 	}
 

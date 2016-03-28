@@ -2,8 +2,6 @@ package org.usfirst.frc.team1683.vision;
 
 import org.usfirst.frc.team1683.vision.Contour;
 
-import com.ni.vision.NIVision.ContourPoint;
-
 /**
  * Vision methods
  * 
@@ -35,7 +33,7 @@ public class FindGoal {
 		tableContour = NetworkTable.getTable("GRIP/myContoursReport");
 	}
 
-	public Contour[] getData() {
+	private Contour[] getData() {
 		Contour[] contours;
 		try {
 			AREA = tableContour.getNumberArray("area", defaultvalue);
@@ -62,7 +60,7 @@ public class FindGoal {
 		return contours;
 	}
 
-	public int ClosestContour(Contour[] contours) {
+	public int getClosestContour(Contour[] contours) {
 		int maxarea = 0;
 		for (int i = 0; i < contours.length; i++) {
 			if (contours[maxarea].AREA > contours[i].AREA) {
@@ -75,17 +73,13 @@ public class FindGoal {
 	/*
 	 * checks distance to target not to base of target
 	 */
-	public double FindDistance() {
+	public double getDistance() {
 		Contour[] contours = getData();
-		this.distance = Targetin * FOVpx / (2 * contours[ClosestContour(contours)].WIDTH * Math.tan(optic_angle));
+		this.distance = Targetin * FOVpx / (2 * contours[getClosestContour(contours)].WIDTH * Math.tan(optic_angle));
 		SmartDashboard.sendData("DistanceTarget", this.distance);
 		return this.distance;
 	}
 //
-	/*/
-	 * checks if robot is aligned. -1 for too far left. 0 for just right. 1 for
-	 * too far right. 2 for error
-	 */
 	// public double ShooterSpeed(){
 	// TODO:Test values for shooter. Plot points on graphical analysis and take
 	// derivative.
@@ -93,13 +87,13 @@ public class FindGoal {
 	public double FindHeight() {
 		Contour[] contours = getData();
 		double cameratarget;
-		cameratarget = 20 * (contours[ClosestContour(contours)].Y_POS - 160) / contours[ClosestContour(contours)].WIDTH;
+		cameratarget = 20 * (contours[getClosestContour(contours)].Y_POS - 160) / contours[getClosestContour(contours)].WIDTH;
 		return (cameratarget - SHOOTER_HEIGHT);
 	}
 	
 	public int getOffset() {
 		Contour[] contours = getData();
-		return (int) (FOVpx / 2 - contours[ClosestContour(contours)].X_POS);
+		return (int) (FOVpx / 2 - contours[getClosestContour(contours)].X_POS);
 	}
 
 	public boolean isCentered() {
