@@ -12,6 +12,8 @@ import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 
+public class Shooter {
+	// Maximum and minimum range of shooting (subject to change).
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
 	
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 	public static final double LOW_GOAL_ANGLE = 30; // Pick better angle
 	public static final double LOW_GOAL_SPEED = 4500;
 	private static final double DEFAULT_SPEED = 4500;
+
 	public static final double ANGLE_OFFSET = 60; // change based on shooter
 													// mounting
 	// For calculating floor distance
