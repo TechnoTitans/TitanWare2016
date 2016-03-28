@@ -89,9 +89,9 @@ public class ShootAtTarget extends Autonomous {
 			break;
 
 		case FIND_TARGET:
-			if (vision.isCentered() == 1) {
+			if (vision.getOffset() > 0) {
 				tankDrive.turn(-1);
-			} else if (vision.isCentered() == -1) {
+			} else if (vision.getOffset() < 0) {
 				tankDrive.turn(1);
 			} else {
 				nextState = State.FIRE;

@@ -1,6 +1,9 @@
 package org.usfirst.frc.team1683.vision;
 
 import org.usfirst.frc.team1683.vision.Contour;
+
+import com.ni.vision.NIVision.ContourPoint;
+
 /**
  * Vision methods
  * 
@@ -93,20 +96,30 @@ public class FindGoal {
 		cameratarget = 20 * (contours[ClosestContour(contours)].Y_POS - 160) / contours[ClosestContour(contours)].WIDTH;
 		return (cameratarget - SHOOTER_HEIGHT);
 	}
-
-	public int isCentered() {
+	
+	public int getOffset() {
 		Contour[] contours = getData();
-		double offset;
-		offset = FOVpx / 2 - contours[ClosestContour(contours)].X_POS;
-		SmartDashboard.sendData("Offset", offset);
-		if (offset < -CENTER_WIDTH_PX) {
-			return 1;
-		} else if (offset > CENTER_WIDTH_PX) {
-			return -1;
-		} else if ((offset > -CENTER_WIDTH_PX) && (offset < CENTER_WIDTH_PX)) {
-			return 0;
-		} else {
-			return 2;
-		}
+		return (int) (FOVpx / 2 - contours[ClosestContour(contours)].X_POS);
+	}
+
+	public boolean isCentered() {
+//		Contour[] contours = getData();
+		double offset = getOffset();
+//		offset = FOVpx / 2 - contours[ClosestContour(contours)].X_POS;
+//		SmartDashboard.sendData("Offset", offset);
+//		if (offset < -CENTER_WIDTH_PX) {
+//			return 1;
+//		} else if (offset > CENTER_WIDTH_PX) {
+//			return -1;
+//		} else if ((offset > -CENTER_WIDTH_PX) && (offset < CENTER_WIDTH_PX)) {
+//			return 0;
+//		} else {
+//			return 2;
+//		}
+		
+		if (Math.abs(offset) < CENTER_WIDTH_PX) 
+			return true;
+		return false;
 	}
 }
+
