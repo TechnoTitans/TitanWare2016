@@ -40,7 +40,7 @@ public class TechnoTitan extends IterativeRobot {
 	Climber climber;
 	Timer endGameTimer;
 	PressureReader pressureReader;
-	FindGoal vision;
+	public static FindGoal vision;
 	LightRing lightRing;
 	Shooter shooter;
 	LinearActuator actuator;
