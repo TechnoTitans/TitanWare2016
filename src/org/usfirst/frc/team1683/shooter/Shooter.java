@@ -10,20 +10,14 @@ import org.usfirst.frc.team1683.robot.InputFilter;
 import org.usfirst.frc.team1683.sensors.LinearActuator;
 import org.usfirst.frc.team1683.vision.FindGoal;
 
-public class Shooter {
-	public static final double JOYSTICK_TOLERANCE = 0.05;
-	public static final double TOLERANCE = 1.0;
-	public static final double SPEED_TOLERANCE = 0.07;
-	public static final double SHOOT_SPEED = SmartDashboard.getDouble("Shooter speed");
-	public static final boolean EXTENDED = true;
-	public static final boolean RETRACTED = false;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
 	
 	public static final double FORWARD_LIMIT_ANGLE = 10;
 	public static final double BACK_LIMIT_ANGLE = 65;
-	
+	 
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
 	public static final double INTAKE_SPEED = -3000;
@@ -32,17 +26,14 @@ public class Shooter {
 	private static final double DEFAULT_SPEED = 4500;
 	public static final double ANGLE_OFFSET = 60; // change based on shooter
 													// mounting
-
+	// For calculating floor distance
 	public static final double TARGET_OVERHANG = 5;
 	public static final double TARGET_HEIGHT = 97;
 	public static final double CAMERA_HOR_OFF = 8;
 	public static final double CAMERA_VER_OFF = 13;
 
+	// For smoothing changing shooter angles
 	private InputFilter inputFilter;
-
-	FindGoal vision;
-
-	LinearActuator actuator;
 
 	TalonSRX leftMotor;
 	TalonSRX rightMotor;
@@ -50,7 +41,7 @@ public class Shooter {
 
 	Solenoid shootPiston;
 
-	private boolean isCreated = false;
+	// private boolean isCreated = false;
 	private State presentTeleOpState;
 
 	public enum State {
@@ -80,6 +71,8 @@ public class Shooter {
 
 		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"));
 
+		this.presentTeleOpState = State.HOLD;
+
 		// actuator = new LinearActuator(actuatorChannel, false);
 
 	}
@@ -91,16 +84,18 @@ public class Shooter {
 	 */
 	public double getJoystickAngle() {
 		double angle;
-//		if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
-//			angle = DriverStation.scaleToMax(DriverStation.auxStick);
-//		} else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) < -0.04) {
-//			angle = DriverStation.scaleToMin(DriverStation.auxStick);
-//		} else {
-//			angle = (BACK_LIMIT_ANGLE + FORWARD_LIMIT_ANGLE) / 2;
-//		}
+		// if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) > 0.04) {
+		// angle = DriverStation.scaleToMax(DriverStation.auxStick);
+		// } else if (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) <
+		// -0.04) {
+		// angle = DriverStation.scaleToMin(DriverStation.auxStick);
+		// } else {
+		// angle = (BACK_LIMIT_ANGLE + FORWARD_LIMIT_ANGLE) / 2;
+		// }
 
-		angle = (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) + 1) / 2 * (BACK_LIMIT_ANGLE - FORWARD_LIMIT_ANGLE) + FORWARD_LIMIT_ANGLE;
-		
+		angle = (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) + 1) / 2
+				* (BACK_LIMIT_ANGLE - FORWARD_LIMIT_ANGLE) + FORWARD_LIMIT_ANGLE;
+
 		SmartDashboard.sendData("Joystick position", angle);
 
 		return angle;
@@ -202,6 +197,7 @@ public class Shooter {
 		// angle = angle * ANGLE_TO_POSITION_COEFFICENT;
 
 		// angleMotor.PIDPosition(angle);
+		angleMotor.setFeedbackDevice(FeedbackDevice.AnalogPot);
 		angleMotor.PIDAngle(angle);
 	}
 
@@ -212,7 +208,7 @@ public class Shooter {
 		updatePIDF();
 		updatePrefs();
 
-		stateSwitcher(isCreated);
+		stateSwitcher();
 
 		// angleClimberPistons();
 
@@ -267,7 +263,7 @@ public class Shooter {
 		angleMotor.setD(Settings.angleMotorD);
 	}
 
-	public void stateSwitcher(boolean isCreated) {
+	public void stateSwitcher() {
 		String state = "out";
 		double speed = setSpeed();
 		State nextState;
@@ -275,10 +271,10 @@ public class Shooter {
 		updatePIDF();
 
 		angleShooter(getJoystickAngle());
-		if (!isCreated) {
-			presentTeleOpState = State.HOLD;
-			this.isCreated = true;
-		}
+		// if (!isCreated) {
+		// presentTeleOpState = State.HOLD;
+		// this.isCreated = true;
+		// }
 		switch (presentTeleOpState) {
 		case HOLD: {
 			state = "HOLD";
