@@ -114,5 +114,29 @@ public class Climber {
 		presentState = nextState;
 
 	}
+	
+//	/**
+//	 * 
+//	 * @param inch
+//	 * @return angle
+//	 * Converts inches (moving) into angles (degrees)
+//	 */
+//	public double convertToAngle(double inch) {
+//		
+//		inch = clampInches(inch);
+//		inch += L_FIXED;
+//		double angle = Math.acos((Math.pow(L_BASE, 2) + Math.pow(L_PIVOT, 2)-Math.pow(inch, 2))/(2*L_BASE*L_PIVOT))*180/Math.PI;
+//		angle += ANGLE_OFFSET;
+//		SmartDashboard.sendData("Linear actuator Angle", angle);
+//		return angle;
+//	}
+//	
+//	public void angleClimberPistons() {
+//		// scales raw input from knob
+//		double angle =  * (DriverStation.auxStick.getRawAxis(DriverStation.ZAxis) + 1)/2;
+//		SmartDashboard.sendData("Knob angle", angle);
+//		SmartDashboard.sendData("knob raw", DriverStation.auxStick.getRawAxis(DriverStation.ZAxis));
+//		PIDupdate(convertToInch(angle));
+//	}
 
 }
