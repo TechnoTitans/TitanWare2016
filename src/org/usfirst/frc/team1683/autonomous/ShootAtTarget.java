@@ -25,7 +25,7 @@ public class ShootAtTarget extends Autonomous {
 	Shooter shooter;
 	ShootingPhysics physics;
 	Gyro gyro;
-	LinearActuator actuator;
+//	LinearActuator actuator;
 	double originalAngle;
 
 	public ShootAtTarget(TankDrive driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter, Gyro gyro) {
@@ -44,12 +44,12 @@ public class ShootAtTarget extends Autonomous {
 	public void run() {
 		switch (presentState) {
 		case INIT_CASE:
-			nextState = State.STOW_PISTONS;
+			nextState = State.DRIVE_FORWARD;
 			break;
 
-		case STOW_PISTONS:
-			if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE )
-			nextState = State.DRIVE_FORWARD;
+//		case STOW_PISTONS:
+//			if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE )
+//			nextState = State.DRIVE_FORWARD;
 		case DRIVE_FORWARD:
 			// originalAngle = gyro.getAngle();
 			tankDrive.moveDistance(REACH_DISTANCE);
