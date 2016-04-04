@@ -1,6 +1,6 @@
 
 package org.usfirst.frc.team1683.robot;
-
+import org.usfirst.frc.team1683.test.VisionTest;
 import org.usfirst.frc.team1683.autonomous.AutonomousSwitcher;
 import org.usfirst.frc.team1683.autonomous.ReachDefense;
 import org.usfirst.frc.team1683.driveTrain.MotorGroup;
@@ -45,7 +45,7 @@ public class TechnoTitan extends IterativeRobot {
 	Shooter shooter;
 	LinearActuator actuator;
 	ReachDefense auto;
-
+	VisionTest visionTest;
 	Compressor compressor = new Compressor(1);
 
 	/**
@@ -85,7 +85,7 @@ public class TechnoTitan extends IterativeRobot {
 		climber = new Climber(HWR.ClIMB_DEPLOY_CHANNEL, HWR.CLIMB_RETRACT_CHANNEL, endGameTimer);
 		BuiltInAccel accel = new BuiltInAccel();
 		vision = new FindGoal();
-
+		visionTest=new VisionTest();
 		pressureReader = new PressureReader(HWR.PRESSURE_SENSOR);
 
 		lightRing = new LightRing(HWR.LIGHT_RING);
@@ -126,6 +126,7 @@ public class TechnoTitan extends IterativeRobot {
 	public void teleopPeriodic() {
 		drive.driveMode();
 		shooter.shootMode();
+		visionTest.test();
 		// climber.climbMode();
 		// actuator.angleClimberPistons();
 		SmartDashboard.sendData("Pressure", pressureReader.getPressure());
