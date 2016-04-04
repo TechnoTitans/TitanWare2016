@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class ReachDefense extends Autonomous {
 
-	LinearActuator actuator;
+//	LinearActuator actuator;
 	Shooter shooter;
 //	Timer timeout;
 	

@@ -69,7 +69,7 @@ public class LinearActuator extends TalonSRX {
 	 * @return position in inches from encoder counts
 	 */
 	public double getPosInches() {
-		return super.getEncPosition() / COUNTS_PER_INCH;
+		return super.getPosition() / COUNTS_PER_INCH;
 	}
 	
 	
