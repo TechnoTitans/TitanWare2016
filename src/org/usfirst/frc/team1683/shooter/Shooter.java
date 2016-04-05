@@ -293,7 +293,7 @@ public class Shooter {
 
 	public void stateSwitcher() {
 		String state = "out";
-		double speed = getSpeed();
+		//double speed = getSpeed();
 		State nextState;
 
 		updatePIDF();
@@ -331,6 +331,7 @@ public class Shooter {
 		case SHOOT: {
 			state = "SHOOT";
 			// shoot(getSpeed());
+			double speed = SmartDashboard.getDouble("Shooter Speed RPM");
 			shoot(speed);
 			nextState = State.SHOOT;
 			if (!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
