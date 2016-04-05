@@ -27,7 +27,7 @@ public class ReachDefense extends Autonomous {
 
 	@Override
 	public void run() {
-		shooter.angleShooter(Shooter.BACK_LIMIT_ANGLE);
+		shooter.angleShooter(Shooter.MAX_ANGLE);
 		switch (presentState) {
 		case INIT_CASE:
 //			timeout.start();
