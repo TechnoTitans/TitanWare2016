@@ -14,24 +14,29 @@ import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 
-
 public class Shooter {
 	// Maximum and minimum range of shooting (subject to change).
-	private final double MAX_ENCODER_COUNT = 512;
-	private final double MIN_ENCODER_COUNT = 0;
-//	public static final double MAX_ANGLE = 70;
-//	public static final double MIN_ANGLE = 0;
-//	private final double POSITION_TO_ANGLE_COEFFICENT = (MAX_ANGLE - MIN_ANGLE)
-//			/ (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
-//	private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT)
-//			/ (MAX_ANGLE - MIN_ANGLE);
-
+	// private final double MAX_ENCODER_COUNT = 512;
+	// private final double MIN_ENCODER_COUNT = 0;
+	// public static final double MAX_ANGLE = 70;
+	// public static final double MIN_ANGLE = 0;
+	// private final double POSITION_TO_ANGLE_COEFFICENT = (MAX_ANGLE -
+	// MIN_ANGLE)
+	// / (MAX_ENCODER_COUNT - MIN_ENCODER_COUNT);
+	// private final double ANGLE_TO_POSITION_COEFFICENT = (MAX_ENCODER_COUNT -
+	// MIN_ENCODER_COUNT)
+	// / (MAX_ANGLE - MIN_ANGLE);
 
 	public static final double MAX_DISTANCE = 136;
 	public static final double MIN_DISTANCE = 80.6;
-	
-	public final static double FORWARD_LIMIT_ANGLE = 10;
-	public static final double BACK_LIMIT_ANGLE = 65;
+
+	public final static double MIN_ANGLE = -10;
+	public static final double MAX_ANGLE = 70;
+
+	public static final double MIN_POT_COUNT = 370;
+	public static final double MAX_POT_COUNT = 696;
+
+	public static final double COUNTS_PER_DEGREE = (MAX_POT_COUNT - MIN_POT_COUNT) / (MAX_ANGLE - MIN_ANGLE);
 
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
@@ -69,7 +74,6 @@ public class Shooter {
 	public enum State {
 		INTAKE, HOLD, SHOOT;
 	}
-
 
 	public Shooter(int leftChannel, int rightChannel, int angleMotorChannel, Solenoid shootPiston) {
 		this.angleMotor = new TalonSRX(angleMotorChannel, true);
@@ -114,14 +118,13 @@ public class Shooter {
 		// angle = (BACK_LIMIT_ANGLE + FORWARD_LIMIT_ANGLE) / 2;
 		// }
 
-		angle = (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) + 1) / 2
-				* (BACK_LIMIT_ANGLE - FORWARD_LIMIT_ANGLE) + FORWARD_LIMIT_ANGLE;
+		angle = (DriverStation.auxStick.getRawAxis(DriverStation.YAxis) + 1) / 2 * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE;
 
 		SmartDashboard.sendData("Joystick position", angle);
 
 		return angle;
 	}
-	
+
 	private boolean isToggled() {
 		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWP.BUTTON_6)) {
 			isToggled = !isToggled;
@@ -184,7 +187,7 @@ public class Shooter {
 	}
 
 	public double getAngle() {
-		//REDO STUFF WITH POT
+		// REDO STUFF WITH POT
 		double angle;
 
 		if (DriverStation.auxStick.getRawButton(HWR.SWITCH_SHOOTER_MODE))
@@ -205,13 +208,13 @@ public class Shooter {
 	 * @param angle
 	 */
 	public void angleShooter(double angle) {
-		if (angle < FORWARD_LIMIT_ANGLE) {
-			angle = FORWARD_LIMIT_ANGLE;
-		} else if (angle > BACK_LIMIT_ANGLE) {
-			angle = BACK_LIMIT_ANGLE;
+		if (angle < MIN_ANGLE) {
+			angle = MIN_ANGLE;
+		} else if (angle > MAX_ANGLE) {
+			angle = MAX_ANGLE;
 		}
 
-		angle -= ANGLE_OFFSET;
+		// angle -= ANGLE_OFFSET;
 
 		updatePIDF();
 
@@ -221,11 +224,18 @@ public class Shooter {
 
 		SmartDashboard.sendData("Shooter Filtered Angle", angle);
 
+		SmartDashboard.sendData("Target Angle", angle);
+
+		double potCounts = (angle - MIN_ANGLE) * COUNTS_PER_DEGREE + MIN_POT_COUNT;
+
+		SmartDashboard.sendData("Target Pot Counts", potCounts);
+
 		// angle = angle * ANGLE_TO_POSITION_COEFFICENT;
 
 		// angleMotor.PIDPosition(angle);
+		// angleMotor.PIDAngle(angle);
 		angleMotor.setFeedbackDevice(FeedbackDevice.AnalogPot);
-		angleMotor.PIDAngle(angle);
+		angleMotor.PIDPosition(potCounts);
 	}
 
 	/**
@@ -237,9 +247,11 @@ public class Shooter {
 
 		stateSwitcher();
 
-		if(isToggled()) getAngle();
-		else getJoystickAngle();
-		
+		if (isToggled())
+			getAngle();
+		else
+			getJoystickAngle();
+
 		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
 			shootBall();
 		else
@@ -353,7 +365,7 @@ public class Shooter {
 	}
 
 	public void reset() {
-//		targetPos = angleMotor.getPosition();
+		// targetPos = angleMotor.getPosition();
 		angleMotor.calibrate();
 	}
 
@@ -361,8 +373,8 @@ public class Shooter {
 		SmartDashboard.sendData("Shooter Encoder Position", angleMotor.getEncPosition());
 		SmartDashboard.sendData("Shooter Position", angleMotor.getPosition());
 		// This is the position you're looking for.
-		SmartDashboard.sendData("Shooter relAngle", angleMotor.getPosition() * 360);
-		SmartDashboard.sendData("Shooter Angle", BACK_LIMIT_ANGLE + (angleMotor.getPosition() * 360));
+		SmartDashboard.sendData("Shooter relAngle", angleMotor.getPosition() / COUNTS_PER_DEGREE);
+		SmartDashboard.sendData("Shooter Angle", ((angleMotor.getPosition() - MIN_POT_COUNT) / COUNTS_PER_DEGREE) + MIN_ANGLE);
 
 		SmartDashboard.sendData("Left Talon Target", leftMotor.PIDTargetSpeed());
 		SmartDashboard.sendData("Right Talon Target", rightMotor.PIDTargetSpeed());
@@ -394,4 +406,3 @@ public class Shooter {
 		rightMotor.PIDSpeed(-rpm);
 	}
 }
-

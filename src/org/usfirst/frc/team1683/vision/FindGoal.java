@@ -1,6 +1,7 @@
 package org.usfirst.frc.team1683.vision;
 
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
+import org.usfirst.frc.team1683.robot.InputFilter;
 import org.usfirst.frc.team1683.vision.Contour;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -12,13 +13,15 @@ public class FindGoal {
 	private double distance = 0;
 	private double defaultvalue = 0;
 	private double optic_angle = 28.393 * Math.PI / 180; // M1103 cameras only
-//	private double optic_angle = Math.toRadians(67); // M1103 cameras only
+//	private double optic_angle = Math.toRadians(67.0/2.0); // M1103 cameras only
 
 	private double optic_angle1 = 0 * Math.PI / 180; // small black camera
 	private double FOVpx = 320; // pixels of the grip program
 	private double Targetin = 20; // target width
 	private final double CENTER_WIDTH_PX = 5;// The max offset
 	private final double SHOOTER_HEIGHT = 0;// TODO
+	
+	private InputFilter distanceFilter;
 	/*
 	 * go to
 	 * https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-
@@ -27,6 +30,7 @@ public class FindGoal {
 
 	public FindGoal() {
 		tableContour = NetworkTable.getTable("RoboRealm");
+		distanceFilter = new InputFilter(.95);
 	}
 
 	private Contour getData() {
@@ -84,6 +88,17 @@ public class FindGoal {
 //			this.distance = -1;
 //		}
 		return this.distance;
+	}
+	
+	public double getFilteredDistance() {
+		double distance = getDistance();
+		
+		if (distance < 20*12) {
+			distanceFilter.setFilterK(SmartDashboard.getDouble("distanceFilterK"));
+			distance = distanceFilter.filterInput(distance);
+		}
+		
+		return distance;
 	}
 
 	//

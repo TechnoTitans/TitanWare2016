@@ -15,7 +15,8 @@ public class HWR {
 	public static final int RIGHT_DRIVE_TRAIN_FRONT_E = HWP.CAN_9;
 	public static final int RIGHT_DRIVE_TRAIN_BACK = HWP.CAN_8;
 	public static final int LIGHT_RING = HWP.CAN_2;
-	public static final int ANGLE_MOTOR = HWP.CAN_5;
+//	public static final int ANGLE_MOTOR = HWP.CAN_5;
+	public static final int ANGLE_MOTOR = HWP.CAN_1;
 	public static final int SHOOTER_LEFT = HWP.CAN_6; // change to can_6
 	public static final int SHOOTER_RIGHT = HWP.CAN_7; // change to can_7
 	public static final int LINEAR_ACTUATOR = HWP.CAN_4;
