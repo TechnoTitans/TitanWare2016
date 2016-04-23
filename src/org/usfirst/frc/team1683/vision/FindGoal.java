@@ -80,6 +80,8 @@ public class FindGoal {
 	 */
 	public double getDistance() {
 		Contour contour = getData();
+		
+		SmartDashboard.sendData("contour width", contour.WIDTH);
 		this.distance = Targetin * FOVpx / (2 * contour.WIDTH * Math.tan(optic_angle));
 //		try {
 //		} catch (ArrayIndexOutOfBoundsException ex) {

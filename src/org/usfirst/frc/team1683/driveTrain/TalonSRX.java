@@ -2,6 +2,7 @@ package org.usfirst.frc.team1683.driveTrain;
 
 import org.usfirst.frc.team1683.driverStation.SmartDashboard;
 import org.usfirst.frc.team1683.sensors.Encoder;
+import org.usfirst.frc.team1683.shooter.Shooter;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Timer;
@@ -48,9 +49,9 @@ public class TalonSRX extends CANTalon implements Motor {
 		public void run() {
 			encoder.reset();
 			// synchronized (this) {
-//			TODO: make not magic number
+			// TODO: make not magic number
 			timer.start();
-//			while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
+			// while (Math.abs(encoder.getDistance()) < Math.abs(distance)) {
 			while (Math.abs(encoder.getDistance()) < Math.abs(distance) && timer.get() < 3) {
 				talonSrx.set(speed);
 				// SmartDashboard.sendData("encoder val",
@@ -60,7 +61,7 @@ public class TalonSRX extends CANTalon implements Motor {
 			// }
 			talonSrx.stop();
 			// notify();
-			
+
 			encoder.reset();
 		}
 	}
@@ -155,17 +156,17 @@ public class TalonSRX extends CANTalon implements Motor {
 	/**
 	 * Gets speed of the TalonSRX in RPM
 	 */
-//	@Override
-//	public double get() {
-		// speed = enc counts / 100 ms
-		// (speed * 60 secs)
-		// --------------------------------------
-		// 4096 encoder counts * 100 milliseconds
-//	}
+	// @Override
+	// public double get() {
+	// speed = enc counts / 100 ms
+	// (speed * 60 secs)
+	// --------------------------------------
+	// 4096 encoder counts * 100 milliseconds
+	// }
 
 	@Override
 	public double getSpeed() {
-//		return this.get();
+		// return this.get();
 		return (super.getSpeed() * 60) / (4096 * 0.1);
 	}
 
@@ -179,21 +180,23 @@ public class TalonSRX extends CANTalon implements Motor {
 	}
 
 	public void PIDInit() throws EncoderNotFoundException {
-//		if (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent)) {
-			// SmartDashboard.sendData("Encoder on Talon " + getChannel() + "
-			// not found", true);
-//			throw new EncoderNotFoundException();
-//		} else
-			// SmartDashboard.sendData("Encoder on Talon " + getChannel() + "
-			// not found", false);
-//			super.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		// if
+		// (!super.isSensorPresent(FeedbackDevice.PulseWidth).equals(FeedbackDeviceStatus.FeedbackStatusPresent))
+		// {
+		// SmartDashboard.sendData("Encoder on Talon " + getChannel() + "
+		// not found", true);
+		// throw new EncoderNotFoundException();
+		// } else
+		// SmartDashboard.sendData("Encoder on Talon " + getChannel() + "
+		// not found", false);
+		// super.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 
-//		super.setInverted(false);
+		// super.setInverted(false);
 		// super.configEncoderCodesPerRev(4096);
-//		calibrate();
+		// calibrate();
 		super.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-//		super.configEncoderCodesPerRev(4096);
-		super.setPosition(0);
+		// super.configEncoderCodesPerRev(4096);
+//		super.setPosition(0);
 	}
 
 	public void PIDUpdate(double P, double I, double D) {
@@ -213,8 +216,10 @@ public class TalonSRX extends CANTalon implements Motor {
 	public void PIDPosition(double position) {
 		// PIDUpdate();
 		super.changeControlMode(TalonControlMode.Position);
-		super.set(position);
-		SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
+		if (!Shooter.errorFlag) {
+			super.set(position);
+			SmartDashboard.sendData("Talon " + this.getChannel() + " Position", super.getPosition());
+		}
 	}
 
 	public void PIDSpeed(double rpm) {
@@ -223,19 +228,20 @@ public class TalonSRX extends CANTalon implements Motor {
 		// revolution
 		super.enableControl();
 		PIDTargetSpeed = rpm;
-//		double speed = rpm * (4096.0 / 6000.0);
+		// double speed = rpm * (4096.0 / 6000.0);
 
-//		SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
-//		SmartDashboard.sendData(this.getChannel() + "Speed", speed);
+		// SmartDashboard.sendData(this.getChannel() + "RPM", rpm);
+		// SmartDashboard.sendData(this.getChannel() + "Speed", speed);
 		super.changeControlMode(TalonControlMode.Speed);
 		super.set(rpm);
-//		SmartDashboard.sendData("Talon " + this.getChannel() + " Speed", getSpeed());
+		// SmartDashboard.sendData("Talon " + this.getChannel() + " Speed",
+		// getSpeed());
 	}
-	
+
 	public double PIDErrorSpeed() {
 		return PIDTargetSpeed - getSpeed();
 	}
-	
+
 	public double PIDTargetSpeed() {
 		return PIDTargetSpeed;
 	}

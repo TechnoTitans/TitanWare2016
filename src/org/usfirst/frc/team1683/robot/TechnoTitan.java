@@ -100,6 +100,10 @@ public class TechnoTitan extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		Shooter.errorFlag = false;
+		Shooter.errorTimer.start();
+		Shooter.errorTimer.reset();
+		
 		// switcher.updateAutoSelected();
 		// compressor.stop();
 
@@ -120,17 +124,20 @@ public class TechnoTitan extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		endGameTimer.start();
+		Shooter.errorFlag = false;
+		Shooter.errorTimer.reset();
+		Shooter.errorTimer.start();
+		
+
 	}
 
 	@Override
 	public void teleopPeriodic() {
-//		drive.driveMode();
+		drive.driveMode();
 //		visionTest.test();
-		// climber.climbMode();
-		// actuator.angleClimberPistons();
-//		SmartDashboard.sendData("Pressure", pressureReader.getPressure());
-//		shooter.angleShooter(SmartDashboard.getDouble("Shooter Angle to go to"));
 		shooter.shootMode();
+		SmartDashboard.sendData("Distance Target", vision.getDistance());
+		SmartDashboard.sendData("Shooter Vision Angle", shooter.getAngle());
 //		shooter.report();
 	}
 

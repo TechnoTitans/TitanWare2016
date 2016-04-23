@@ -9,6 +9,11 @@ public class InputFilter {
 		this.filterK = sensitivity;
 	}
 
+	public InputFilter(double sensitivity, double initOldOutput) {
+		this(sensitivity);
+		this.oldOutput = initOldOutput;
+	}
+
 	public double getFilterK() {
 		return filterK;
 	}

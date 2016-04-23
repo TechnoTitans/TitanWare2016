@@ -9,10 +9,9 @@ import org.usfirst.frc.team1683.robot.HWP;
 import org.usfirst.frc.team1683.robot.HWR;
 import org.usfirst.frc.team1683.robot.InputFilter;
 import org.usfirst.frc.team1683.robot.TechnoTitan;
-import org.usfirst.frc.team1683.sensors.LinearActuator;
-import org.usfirst.frc.team1683.vision.FindGoal;
 
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter {
 	// Maximum and minimum range of shooting (subject to change).
@@ -27,20 +26,24 @@ public class Shooter {
 	// MIN_ENCODER_COUNT)
 	// / (MAX_ANGLE - MIN_ANGLE);
 
-	public static final double MAX_DISTANCE = 136;
-	public static final double MIN_DISTANCE = 80.6;
+	public static final double MAX_DISTANCE = 190;
+	public static final double MIN_DISTANCE = 90;
 
-	public final static double MIN_ANGLE = -10;
-	public static final double MAX_ANGLE = 70;
+	public final static double MIN_ANGLE = -15;
+	public static final double MAX_ANGLE = 54;
 
-	public static final double MIN_POT_COUNT = 370;
-	public static final double MAX_POT_COUNT = 696;
+	public static final double MIN_POT_COUNT = 327;
+	public static final double MAX_POT_COUNT = 722;
 
 	public static final double COUNTS_PER_DEGREE = (MAX_POT_COUNT - MIN_POT_COUNT) / (MAX_ANGLE - MIN_ANGLE);
 
 	public static final int ALLOWABLE_ERROR = 400; // find num
 
-	public static final double INTAKE_SPEED = -3000;
+	public static final double ANGLE_ERROR_THRESHOLD = 0.125 * (MAX_POT_COUNT - MIN_POT_COUNT);
+	public static final double ALLOWABLE_ERROR_TIME = 5.0;
+	public static boolean errorFlag = false;
+
+	public static final double INTAKE_SPEED = -4000;
 	public static final double LOW_GOAL_ANGLE = 30; // Pick better angle
 	public static final double LOW_GOAL_SPEED = 4500;
 	private static final double DEFAULT_SPEED = 4500;
@@ -61,6 +64,7 @@ public class Shooter {
 	TalonSRX rightMotor;
 	TalonSRX angleMotor;
 
+	public static Timer errorTimer;
 	Solenoid shootPiston;
 
 	// private boolean isCreated = false;
@@ -68,7 +72,8 @@ public class Shooter {
 	// DISTANCE METHOD
 
 	boolean isToggled = false;
-	private boolean isCreated = false;
+	boolean isManualToggled = false;
+	// private boolean isCreated = false;
 	private State presentTeleOpState;
 
 	public enum State {
@@ -85,6 +90,9 @@ public class Shooter {
 		this.leftMotor.PIDInit();
 		this.rightMotor.PIDInit();
 
+		errorTimer = new Timer();
+		// errorTimer.start();
+
 		// this.angleMotor.configEncoderCodesPerRev(4096);
 
 		this.angleMotor.calibrate();
@@ -96,7 +104,8 @@ public class Shooter {
 		this.leftMotor.reverseSensor(false);
 		this.rightMotor.reverseSensor(false);
 
-		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"));
+//		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"), getAnglePosition());
+		inputFilter = new InputFilter(SmartDashboard.getDouble("Shooter K"), MAX_ANGLE);
 
 		this.presentTeleOpState = State.HOLD;
 
@@ -131,6 +140,14 @@ public class Shooter {
 		}
 		SmartDashboard.sendData("Button Toggle", isToggled ? "on" : "off");
 		return isToggled;
+	}
+
+	private boolean isManualToggled() {
+		if (DriverStation.antiBounce(HWR.AUX_JOYSTICK, HWP.BUTTON_11)) {
+			isManualToggled = !isManualToggled;
+		}
+		SmartDashboard.sendData(" Override Button Toggle", isManualToggled ? "on" : "off");
+		return isManualToggled;
 	}
 
 	public void setShooterSensitivity(double sensitivity) {
@@ -186,19 +203,41 @@ public class Shooter {
 		return speed;
 	}
 
+	/**
+	 * 
+	 * @return angle (degrees) based off vision distance
+	 * 
+	 */
 	public double getAngle() {
-		// REDO STUFF WITH POT
+
 		double angle;
+		double visionDistance = TechnoTitan.vision.getDistance();
+		SmartDashboard.sendData("DistanceTarget", visionDistance);
+		// double visionDistance = TechnoTitan.vision.getFilteredDistance();
 
-		if (DriverStation.auxStick.getRawButton(HWR.SWITCH_SHOOTER_MODE))
+		if (visionDistance <= MAX_DISTANCE && visionDistance >= MIN_DISTANCE) {
+			angle = -.00003121 * Math.pow(visionDistance, 3) + 0.01671 * Math.pow(visionDistance, 2)
+					- 3.029 * visionDistance + 220;
+			SmartDashboard.sendData("Shooter Vision Angle", angle);
+		} else
 			angle = getJoystickAngle();
 
-		else if (getFloorDistance() < MAX_DISTANCE && getFloorDistance() > MIN_DISTANCE)
-			angle = 0.0007799 * Math.pow(getFloorDistance(), 2) - 0.3196 * getFloorDistance() + 89.48;
-		else
-			angle = getJoystickAngle();
+		return restrictAngle(angle);
 
-		// SmartDashboard.sendData("Shooter Angle", angle);
+	}
+	
+	public double getAnglePosition() {
+//		double potCounts = (angle - MIN_ANGLE) * COUNTS_PER_DEGREE + MIN_POT_COUNT;
+		return (angleMotor.getPosition() - MIN_POT_COUNT) / COUNTS_PER_DEGREE + MIN_ANGLE;
+	}
+
+	public double restrictAngle(double angle) {
+		if (angle > MAX_ANGLE) {
+			angle = MAX_ANGLE;
+		} else if (angle < MIN_ANGLE) {
+			angle = MAX_ANGLE;
+		}
+
 		return angle;
 	}
 
@@ -208,13 +247,30 @@ public class Shooter {
 	 * @param angle
 	 */
 	public void angleShooter(double angle) {
-		if (angle < MIN_ANGLE) {
-			angle = MIN_ANGLE;
-		} else if (angle > MAX_ANGLE) {
-			angle = MAX_ANGLE;
-		}
+		angle = restrictAngle(angle);
 
 		// angle -= ANGLE_OFFSET;
+		SmartDashboard.sendData("Pot Position", angleMotor.getPosition());
+		SmartDashboard.sendData("Angle Motor Error", angleMotor.getError());
+
+		if (Math.abs(angleMotor.getError()) < ANGLE_ERROR_THRESHOLD) {
+			errorTimer.reset();
+		}
+
+		// if (errorTimer.hasPeriodPassed(ALLOWABLE_ERROR_TIME)) {
+		if (errorTimer.get() > ALLOWABLE_ERROR_TIME) {
+			SmartDashboard.sendData("Error Timer", errorTimer.get());
+			angleMotor.disableControl();
+			errorFlag = true;
+			angleMotor.stop();
+			SmartDashboard.sendData("Control Enabled", false);
+		} else if (isManualToggled()) {
+			angleMotor.disable();
+			SmartDashboard.sendData("Control Enabled", false);
+		} else {
+			angleMotor.enableControl();
+			SmartDashboard.sendData("Control Enabled", true);
+		}
 
 		updatePIDF();
 
@@ -223,7 +279,7 @@ public class Shooter {
 		angle = inputFilter.filterInput(angle);
 
 		SmartDashboard.sendData("Shooter Filtered Angle", angle);
-
+		SmartDashboard.sendData("Error Timer", errorTimer.get());
 		SmartDashboard.sendData("Target Angle", angle);
 
 		double potCounts = (angle - MIN_ANGLE) * COUNTS_PER_DEGREE + MIN_POT_COUNT;
@@ -234,8 +290,10 @@ public class Shooter {
 
 		// angleMotor.PIDPosition(angle);
 		// angleMotor.PIDAngle(angle);
-		angleMotor.setFeedbackDevice(FeedbackDevice.AnalogPot);
-		angleMotor.PIDPosition(potCounts);
+		if (!errorFlag) {
+			angleMotor.setFeedbackDevice(FeedbackDevice.AnalogPot);
+			angleMotor.PIDPosition(potCounts);
+		}
 	}
 
 	/**
@@ -248,15 +306,15 @@ public class Shooter {
 		stateSwitcher();
 
 		if (isToggled())
-			getAngle();
+			angleShooter(getAngle());
+			//angleShooter(SmartDashboard.getDouble("Target Angle"));
 		else
-			getJoystickAngle();
+			angleShooter(getJoystickAngle());
 
 		if (presentTeleOpState == State.SHOOT && DriverStation.auxStick.getRawButton(HWR.SHOOT_BALL))
 			shootBall();
 		else
 			resetShootPistons();
-		// angleShooter(getAngle(SmartDashboard.getDouble("Target Distance")));
 
 		updatePrefs();
 		report();
@@ -305,16 +363,11 @@ public class Shooter {
 
 	public void stateSwitcher() {
 		String state = "out";
-		//double speed = getSpeed();
+		double speed = getSpeed();
 		State nextState;
 
 		updatePIDF();
 
-		angleShooter(getJoystickAngle());
-		// if (!isCreated) {
-		// presentTeleOpState = State.HOLD;
-		// this.isCreated = true;
-		// }
 		switch (presentTeleOpState) {
 		case HOLD: {
 			state = "HOLD";
@@ -343,7 +396,7 @@ public class Shooter {
 		case SHOOT: {
 			state = "SHOOT";
 			// shoot(getSpeed());
-			double speed = SmartDashboard.getDouble("Shooter Speed RPM");
+			// double speed = SmartDashboard.getDouble("Shooter Speed RPM");
 			shoot(speed);
 			nextState = State.SHOOT;
 			if (!DriverStation.auxStick.getRawButton(HWR.SPIN_UP_SHOOTER)) {
@@ -374,7 +427,8 @@ public class Shooter {
 		SmartDashboard.sendData("Shooter Position", angleMotor.getPosition());
 		// This is the position you're looking for.
 		SmartDashboard.sendData("Shooter relAngle", angleMotor.getPosition() / COUNTS_PER_DEGREE);
-		SmartDashboard.sendData("Shooter Angle", ((angleMotor.getPosition() - MIN_POT_COUNT) / COUNTS_PER_DEGREE) + MIN_ANGLE);
+		SmartDashboard.sendData("Shooter Angle",
+				((angleMotor.getPosition() - MIN_POT_COUNT) / COUNTS_PER_DEGREE) + MIN_ANGLE);
 
 		SmartDashboard.sendData("Left Talon Target", leftMotor.PIDTargetSpeed());
 		SmartDashboard.sendData("Right Talon Target", rightMotor.PIDTargetSpeed());
