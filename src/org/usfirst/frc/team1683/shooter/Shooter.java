@@ -29,11 +29,11 @@ public class Shooter {
 	public static final double MAX_DISTANCE = 190;
 	public static final double MIN_DISTANCE = 90;
 
-	public final static double MIN_ANGLE = -15;
-	public static final double MAX_ANGLE = 54;
+	public final static double MIN_ANGLE = 9;
+	public static final double MAX_ANGLE = 60;
 
 	public static final double MIN_POT_COUNT = 327;
-	public static final double MAX_POT_COUNT = 722;
+	public static final double MAX_POT_COUNT = 706;
 
 	public static final double COUNTS_PER_DEGREE = (MAX_POT_COUNT - MIN_POT_COUNT) / (MAX_ANGLE - MIN_ANGLE);
 
@@ -306,8 +306,8 @@ public class Shooter {
 		stateSwitcher();
 
 		if (isToggled())
-			angleShooter(getAngle());
-			//angleShooter(SmartDashboard.getDouble("Target Angle"));
+			//angleShooter(getAngle());
+			angleShooter(SmartDashboard.getDouble("Target Angle"));
 		else
 			angleShooter(getJoystickAngle());
 
