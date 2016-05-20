@@ -216,8 +216,10 @@ public class Shooter {
 		// double visionDistance = TechnoTitan.vision.getFilteredDistance();
 
 		if (visionDistance <= MAX_DISTANCE && visionDistance >= MIN_DISTANCE) {
-			angle = -.00003121 * Math.pow(visionDistance, 3) + 0.01671 * Math.pow(visionDistance, 2)
-					- 3.029 * visionDistance + 220;
+			angle = .00000008707 * Math.pow(visionDistance, 5) -.00004673 * Math.pow(visionDistance, 4) 
+					+.009827 * Math.pow(visionDistance, 3) -1.011 * Math.pow(visionDistance, 2) 
+					+ 50.69 * visionDistance -930.6; 
+			// equation for shooting curve
 			SmartDashboard.sendData("Shooter Vision Angle", angle);
 		} else
 			angle = getJoystickAngle();
