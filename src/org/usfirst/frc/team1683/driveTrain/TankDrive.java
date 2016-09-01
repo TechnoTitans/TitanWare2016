@@ -13,196 +13,196 @@ import org.usfirst.frc.team1683.sensors.Gyro;
  */
 public class TankDrive implements DriveTrain {
 
-	private MotorGroup left;
-	private MotorGroup right;
-	private Gyro gyro;
-	private Thread thread;
+    private MotorGroup left;
+    private MotorGroup right;
+    private Gyro gyro;
+    private Thread thread;
 
-	private AntiDrift antiDrift;
-	private final double kp = 0.6;
-	// private AntiDrift antiDrift;
+    private AntiDrift antiDrift;
+    private final double kp = 0.6;
+    // private AntiDrift antiDrift;
 
-	private class RobotTurner implements Runnable {
+    private class RobotTurner implements Runnable {
 
-		private double speed;
-		private double angle;
+	private double speed;
+	private double angle;
 
-		public RobotTurner(double angle, double speed) {
-			this.angle = angle;
-			if (angle < 0) {
-				this.speed = -speed;
-			} else {
-				this.speed = speed;
-			}
-		}
-
-		@Override
-		public void run() {
-			double initialHeading = gyro.getAngle();
-
-			while (Math.abs(gyro.getAngle() - initialHeading) < Math.abs(angle)) {
-				// TODO: make sure these directions are right
-				SmartDashboard.sendData("Gyro Angle2", gyro.getAngle());
-				left.set(-speed);
-				right.set(speed);
-			}
-			left.stop();
-			right.stop();
-		}
-
+	public RobotTurner(double angle, double speed) {
+	    this.angle = angle;
+	    if (angle < 0) {
+		this.speed = -speed;
+	    } else {
+		this.speed = speed;
+	    }
 	}
 
-	public TankDrive(MotorGroup left, MotorGroup right) {
-		this.left = left;
-		this.right = right;
-	}
-
-	public TankDrive(MotorGroup left, MotorGroup right, Gyro gyro) {
-		this.left = left;
-		this.right = right;
-		this.gyro = gyro;
-		// this.gyro.reset();
-		antiDrift = new AntiDrift(left, right, gyro, kp);
-	}
-
-	/**
-	 * @param distance
-	 *            Distance to move in inches.
-	 * @throws EncoderNotFoundException
-	 *             Encoder not found.
-	 */
 	@Override
-	public void moveDistance(double distance) throws EncoderNotFoundException {
-		moveDistance(distance, Motor.MID_SPEED);
-	}
+	public void run() {
+	    double initialHeading = gyro.getAngle();
 
-	/**
-	 * @param distance
-	 *            Distance to move in inches.
-	 * @param speed
-	 *            Speed from 0 to 1.
-	 * @throws EncoderNotFoundException
-	 *             Encoder not found.
-	 */
-	@Override
-	public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
-		left.moveDistance(distance, speed);
-		right.moveDistance(distance, speed);
-	}
-
-	/**
-	 * @param degrees
-	 *            How much to turn the robot.
-	 */
-	@Override
-	public void turn(double degrees) throws GyroNotFoundException {
-		turn(degrees, Motor.LOW_SPEED);
-	}
-
-	public void turn(double degrees, double speed) throws GyroNotFoundException {
-		if (hasGyro()) {
-			if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
-				thread = new Thread(new RobotTurner(degrees, speed));
-			}
-			if (thread.getState().equals(Thread.State.NEW)) {
-				thread.start();
-			}
-		} else {
-			throw new GyroNotFoundException();
-		}
-	}
-
-	/**
-	 * Sets the speed.
-	 */
-	@Override
-	public void set(double speed) {
-		left.set(speed);
+	    while (Math.abs(gyro.getAngle() - initialHeading) < Math.abs(angle)) {
+		// TODO: make sure these directions are right
+		SmartDashboard.sendData("Gyro Angle2", gyro.getAngle());
+		left.set(-speed);
 		right.set(speed);
-	};
-
-	/**
-	 * Stop the drive train.
-	 */
-	@Override
-	public void stop() {
-		left.enableBrakeMode(true);
-		right.enableBrakeMode(true);
-		left.stop();
-		right.stop();
+	    }
+	    left.stop();
+	    right.stop();
 	}
 
-	/**
-	 * Stop without braking.
-	 */
-	@Override
-	public void coast() {
-		left.enableBrakeMode(false);
-		right.enableBrakeMode(false);
-		left.stop();
-		right.stop();
+    }
+
+    public TankDrive(MotorGroup left, MotorGroup right) {
+	this.left = left;
+	this.right = right;
+    }
+
+    public TankDrive(MotorGroup left, MotorGroup right, Gyro gyro) {
+	this.left = left;
+	this.right = right;
+	this.gyro = gyro;
+	// this.gyro.reset();
+	antiDrift = new AntiDrift(left, right, gyro, kp);
+    }
+
+    /**
+     * @param distance
+     *            Distance to move in inches.
+     * @throws EncoderNotFoundException
+     *             Encoder not found.
+     */
+    @Override
+    public void moveDistance(double distance) throws EncoderNotFoundException {
+	moveDistance(distance, Motor.MID_SPEED);
+    }
+
+    /**
+     * @param distance
+     *            Distance to move in inches.
+     * @param speed
+     *            Speed from 0 to 1.
+     * @throws EncoderNotFoundException
+     *             Encoder not found.
+     */
+    @Override
+    public void moveDistance(double distance, double speed) throws EncoderNotFoundException {
+	left.moveDistance(distance, speed);
+	right.moveDistance(distance, speed);
+    }
+
+    /**
+     * @param degrees
+     *            How much to turn the robot.
+     */
+    @Override
+    public void turn(double degrees) throws GyroNotFoundException {
+	turn(degrees, Motor.LOW_SPEED);
+    }
+
+    public void turn(double degrees, double speed) throws GyroNotFoundException {
+	if (hasGyro()) {
+	    if (thread == null || thread.getState().equals(Thread.State.TERMINATED)) {
+		thread = new Thread(new RobotTurner(degrees, speed));
+	    }
+	    if (thread.getState().equals(Thread.State.NEW)) {
+		thread.start();
+	    }
+	} else {
+	    throw new GyroNotFoundException();
 	}
+    }
 
-	/**
-	 * Start driving.
-	 */
-	@Override
-	public void driveMode() {
-		left.enableBrakeMode(false);
-		right.enableBrakeMode(false);
+    /**
+     * Sets the speed.
+     */
+    @Override
+    public void set(double speed) {
+	left.set(speed);
+	right.set(speed);
+    };
 
-		double lSpeed = -DriverStation.leftStick.getRawAxis(DriverStation.YAxis);
-		double rSpeed = -DriverStation.rightStick.getRawAxis(DriverStation.YAxis);
+    /**
+     * Stop the drive train.
+     */
+    @Override
+    public void stop() {
+	left.enableBrakeMode(true);
+	right.enableBrakeMode(true);
+	left.stop();
+	right.stop();
+    }
 
-		left.set(lSpeed);
-		right.set(rSpeed);
-	}
+    /**
+     * Stop without braking.
+     */
+    @Override
+    public void coast() {
+	left.enableBrakeMode(false);
+	right.enableBrakeMode(false);
+	left.stop();
+	right.stop();
+    }
 
-	@Override
-	public Encoder getLeftEncoder() {
-		return left.getEncoder();
-	}
+    /**
+     * Start driving.
+     */
+    @Override
+    public void driveMode() {
+	left.enableBrakeMode(false);
+	right.enableBrakeMode(false);
 
-	@Override
-	public Encoder getRightEncoder() {
-		return right.getEncoder();
-	}
+	double lSpeed = -DriverStation.leftStick.getRawAxis(DriverStation.YAxis);
+	double rSpeed = -DriverStation.rightStick.getRawAxis(DriverStation.YAxis);
 
-	@Override
-	public void resetEncoders() {
-		left.getEncoder().reset();
-		right.getEncoder().reset();
-	}
+	left.set(lSpeed);
+	right.set(rSpeed);
+    }
 
-	@Override
-	public MotorGroup getLeftGroup() {
-		return left;
-	}
+    @Override
+    public Encoder getLeftEncoder() {
+	return left.getEncoder();
+    }
 
-	@Override
-	public MotorGroup getRightGroup() {
-		return right;
-	}
+    @Override
+    public Encoder getRightEncoder() {
+	return right.getEncoder();
+    }
 
-	// public void enableAntiDrift() {
-	/// left.enableAntiDrift(antiDrift);
-	// right.enableAntiDrift(antiDrift);
-	// }
+    @Override
+    public void resetEncoders() {
+	left.getEncoder().reset();
+	right.getEncoder().reset();
+    }
 
-	// public void disableAntiDrift() {
-	// left.disableAntiDrift();
-	// right.disableAntiDrift();
-	// }
+    @Override
+    public MotorGroup getLeftGroup() {
+	return left;
+    }
 
-	// public boolean isAntiDriftEnabled() {
-	// return left.isAntiDriftEnabled() && right.isAntiDriftEnabled();
-	// }
+    @Override
+    public MotorGroup getRightGroup() {
+	return right;
+    }
 
-	public Gyro getGyro() {
-		return gyro;
-	}
+    // public void enableAntiDrift() {
+    /// left.enableAntiDrift(antiDrift);
+    // right.enableAntiDrift(antiDrift);
+    // }
 
-	public boolean hasGyro() {
-		return !(gyro == null);
-	}
+    // public void disableAntiDrift() {
+    // left.disableAntiDrift();
+    // right.disableAntiDrift();
+    // }
+
+    // public boolean isAntiDriftEnabled() {
+    // return left.isAntiDriftEnabled() && right.isAntiDriftEnabled();
+    // }
+
+    public Gyro getGyro() {
+	return gyro;
+    }
+
+    public boolean hasGyro() {
+	return !(gyro == null);
+    }
 }
