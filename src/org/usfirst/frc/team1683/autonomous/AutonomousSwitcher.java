@@ -46,7 +46,8 @@ public class AutonomousSwitcher {
 	LinearActuator actuator;
 	// ShootingPhysics physics;
 
-	public AutonomousSwitcher(DriveTrain driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter, LinearActuator actuator) {
+	public AutonomousSwitcher(DriveTrain driveTrain, BuiltInAccel accel, FindGoal vision, Shooter shooter,
+			LinearActuator actuator) {
 		// ShootingPhysics physics) {
 		chooser = new SendableChooser();
 		chooser.addDefault(DEFAULT_AUTO.name(), DEFAULT_AUTO.name());
@@ -80,8 +81,7 @@ public class AutonomousSwitcher {
 			break;
 		case 3:
 			// case SHOOT_AT_TARGET:
-			autoSelected = new ShootAtTarget((TankDrive) driveTrain, accel, vision,
-					shooter, gyro);
+			autoSelected = new ShootAtTarget((TankDrive) driveTrain, accel, vision, shooter, gyro);
 			break;
 		case -1:
 			// case TEST_AUTO:
@@ -100,7 +100,7 @@ public class AutonomousSwitcher {
 	}
 
 	public Autonomous getAutoSelected() {
-//		updateAutoSelected();
+		// updateAutoSelected();
 		return autoSelected;
 	}
 
