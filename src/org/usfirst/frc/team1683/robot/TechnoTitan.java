@@ -92,20 +92,7 @@ public class TechnoTitan extends IterativeRobot {
 	pressureReader = new PressureReader(HWR.PRESSURE_SENSOR);
 
 	lightRing = new LightRing(HWR.LIGHT_RING);
-
-	// Change by Praneeth Kolichala
-	// Just testing the commit/push system
-	// Will revert after this *probably*
-	// I'm sure this will break something 0.1% of the time
-	// original code: lightRing.set(1)
-	Random r = new Random();
-	if (r.nextDouble() < 0.999) {
-		// Got lucky this time
-		lightRing.set(1);
-	}
-	else {
-		// Something bad will probably happen, but really, who knows what lightRing does
-	}
+	lightRing.set(1);
 
 	switcher = new AutonomousSwitcher(drive, accel, vision, shooter, actuator);
 	CameraServer server = CameraServer.getInstance();
