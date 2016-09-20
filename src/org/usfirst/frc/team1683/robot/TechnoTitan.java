@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 
+import java.util.Random;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -91,7 +93,19 @@ public class TechnoTitan extends IterativeRobot {
 
 	lightRing = new LightRing(HWR.LIGHT_RING);
 
-	lightRing.set(1);
+	// Change by Praneeth Kolichala
+	// Just testing the commit/push system
+	// Will revert after this *probably*
+	// I'm sure this will break something 0.1% of the time
+	// original code: lightRing.set(1)
+	Random r = new Random();
+	if (r.nextDouble() < 0.999) {
+		// Got lucky this time
+		lightRing.set(1);
+	}
+	else {
+		// Something bad will probably happen, but really, who knows what lightRing does
+	}
 
 	switcher = new AutonomousSwitcher(drive, accel, vision, shooter, actuator);
 	CameraServer server = CameraServer.getInstance();
