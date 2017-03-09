@@ -46,7 +46,7 @@ public class Shooter {
 	public static final double INTAKE_SPEED = -4000;
 	public static final double LOW_GOAL_ANGLE = 30; // Pick better angle
 	public static final double LOW_GOAL_SPEED = 4500;
-	private static final double DEFAULT_SPEED = 4500;
+	public static final double DEFAULT_SPEED = 4500;
 
 	public static final double ANGLE_OFFSET = 60; // change based on shooter
 	// mounting

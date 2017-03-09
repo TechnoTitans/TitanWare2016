@@ -5,30 +5,30 @@ import org.usfirst.frc.team1683.driveTrain.TankDrive;
 
 public class DoNothing extends Autonomous {
 
-    // LinearActuator actuator;
+	// LinearActuator actuator;
 
-    public DoNothing(TankDrive driveTrain) {
-	super(driveTrain);
-    }
-
-    @Override
-    public void run() {
-	switch (presentState) {
-	    case INIT_CASE:
-		nextState = State.END_CASE;
-		// nextState = State.STOW_PISTONS;
-		break;
-
-	    // case STOW_PISTONS:
-	    // if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE )
-	    // nextState = State.END_CASE;
-	    // case END_CASE:
-	    // nextState = State.END_CASE;
-	    // break;
-
-	    default:
-		break;
+	public DoNothing(TankDrive driveTrain) {
+		super(driveTrain);
 	}
-	presentState = nextState;
-    }
+
+	@Override
+	public void run() {
+		switch (presentState) {
+			case INIT_CASE:
+				nextState = State.END_CASE;
+				// nextState = State.STOW_PISTONS;
+				break;
+
+			// case STOW_PISTONS:
+			// if(actuator.getError() < Autonomous.ACTUATOR_ERROR_TOLERANCE )
+			// nextState = State.END_CASE;
+			// case END_CASE:
+			// nextState = State.END_CASE;
+			// break;
+
+			default:
+				break;
+		}
+		presentState = nextState;
+	}
 }

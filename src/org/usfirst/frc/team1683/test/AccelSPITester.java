@@ -6,16 +6,16 @@ import org.usfirst.frc.team1683.sensors.AccelSPI;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
 public class AccelSPITester {
-    AccelSPI accel;
+	AccelSPI accel;
 
-    public AccelSPITester() {
-	accel = new AccelSPI(Accelerometer.Range.k2G);
-    }
+	public AccelSPITester() {
+		accel = new AccelSPI(Accelerometer.Range.k2G);
+	}
 
-    public void test() {
-	SmartDashboard.sendData("X normal", accel.getX());
-	SmartDashboard.sendData("Y normal", accel.getY());
-	SmartDashboard.sendData("Z normal", accel.getZ());
+	public void test() {
+		SmartDashboard.sendData("X normal", accel.getX());
+		SmartDashboard.sendData("Y normal", accel.getY());
+		SmartDashboard.sendData("Z normal", accel.getZ());
 
-    }
+	}
 }

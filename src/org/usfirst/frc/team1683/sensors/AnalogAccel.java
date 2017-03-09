@@ -12,7 +12,7 @@ public class AnalogAccel extends edu.wpi.first.wpilibj.AnalogAccelerometer {
 
 	@Override
 	public double getAcceleration() {
-	return super.getAcceleration();
-    }
+		return super.getAcceleration();
+	}
 
 }
